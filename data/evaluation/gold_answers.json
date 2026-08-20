@@ -1,0 +1,455 @@
+{
+  "gold_answers": {
+    "Q001": {
+      "question": "Qu'est-ce que Visa Études ?",
+      "gold_answer": "Visa Études est un contrat d'assurance vie individuel de type épargne qui permet de constituer un capital dédié au financement des études d'un enfant, combinant épargne, prévoyance (décès, invalidité de l'adhérent) et protection du projet éducatif.",
+      "category": "definition",
+      "expected_source": "spec_produits.md"
+    },
+    "Q002": {
+      "question": "Quelles sont les trois fonctions de Visa Études ?",
+      "gold_answer": "Le produit combine trois fonctions : une fonction d'épargne, une fonction de prévoyance en cas de décès ou d'invalidité de l'adhérent, et une fonction de protection du projet éducatif de l'enfant.",
+      "category": "definition",
+      "expected_source": "spec_produits.md"
+    },
+    "Q003": {
+      "question": "À qui s'adresse Visa Études ?",
+      "gold_answer": "Le produit s'adresse aux parents, grands-parents, tuteurs et à toute personne âgée de 18 à 65 ans qui souhaite préparer le financement des études d'un enfant âgé de 0 à 18 ans à la souscription.",
+      "category": "definition",
+      "expected_source": "spec_produits.md"
+    },
+    "Q004": {
+      "question": "Qu'est-ce qu'Horizon Retraite ?",
+      "gold_answer": "Horizon Retraite est un contrat d'assurance vie de type épargne retraite : l'adhérent constitue, par des cotisations périodiques, un capital qui sera servi à partir de l'âge de retraite choisi (55, 60 ou 65 ans), sous forme de capital ou de rente.",
+      "category": "definition",
+      "expected_source": "spec_produits.md"
+    },
+    "Q005": {
+      "question": "Quelle est la nature juridique des contrats distribués en bancassurance ?",
+      "gold_answer": "Ce sont des contrats d'assurance vie individuelle de type épargne, relevant du chapitre II du Code des assurances CIMA (assurance sur la vie et contrats de capitalisation), distribués en bancassurance par SUNU Bank Togo.",
+      "category": "definition",
+      "expected_source": "notice_information.md"
+    },
+    "Q006": {
+      "question": "Quel est le nom des produits d'assurance vie distribués en bancassurance par SUNU Bank Togo ?",
+      "gold_answer": "Les trois produits étudiés sont Visa Études, Visa Études Plus et Horizon Retraite, distribués dans les agences de SUNU Bank Togo dans le cadre de la bancassurance.",
+      "category": "definition",
+      "expected_source": "spec_produits.md"
+    },
+    "Q007": {
+      "question": "Quelles sont les garanties de Visa Études ?",
+      "gold_answer": "Le produit offre quatre garanties : décès de l'adhérent (exonération des cotisations restantes et majoration du capital), invalidité absolue et définitive de l'adhérent (exonération), décès de l'enfant (remboursement des cotisations), et prestation à l'échéance (versement du capital constitué en une fois ou en rente éducation).",
+      "category": "definition",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q008": {
+      "question": "Les produits d'assurance vie de la bancassurance sont-ils des assurances maladie ?",
+      "gold_answer": "Non. Ce sont des produits d'assurance vie de type épargne (études ou retraite) : ils servent à constituer une épargne, ce n'est pas une assurance maladie.",
+      "category": "definition",
+      "expected_source": "spec_produits.md"
+    },
+    "Q009": {
+      "question": "Que se passe-t-il si l'adhérent de Visa Études décède avant l'échéance ?",
+      "gold_answer": "Les cotisations restant à courir sont exonérées (prises en charge par l'assureur), le capital constitué est majoré, et la prestation est versée au bénéficiaire désigné à l'échéance prévue au contrat.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q010": {
+      "question": "Que couvre la garantie invalidité de Visa Études ?",
+      "gold_answer": "En cas d'invalidité absolue et définitive de l'adhérent, les cotisations restant à courir sont exonérées : l'assureur les prend en charge jusqu'à l'échéance.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q011": {
+      "question": "Que se passe-t-il si l'enfant bénéficiaire décède ?",
+      "gold_answer": "En cas de décès de l'enfant, les cotisations versées sont remboursées intégralement au bénéficiaire désigné, sans pénalité.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q012": {
+      "question": "Qu'est-ce que la rente éducation ?",
+      "gold_answer": "La rente éducation est la prestation servie à l'échéance du contrat en plusieurs versements annuels : le capital constitué (cotisations + participation aux bénéfices) est versé en une seule fois (capital) ou en plusieurs versements selon l'option choisie à la souscription.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q013": {
+      "question": "En quoi la garantie décès de Visa Études Plus est-elle renforcée ?",
+      "gold_answer": "En cas de décès de l'adhérent avant l'échéance, les cotisations sont exonérées, le capital constitué est majoré, et un capital complémentaire est versé immédiatement au bénéficiaire pour assurer la continuité du projet éducatif.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q014": {
+      "question": "Qu'est-ce que la garantie scolaire de Visa Études Plus ?",
+      "gold_answer": "En cas de décès ou d'invalidité de l'adhérent, une allocation annuelle d'études est versée au bénéficiaire pendant la durée du contrat, en complément des autres garanties.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q015": {
+      "question": "L'invalidité partielle permanente est-elle couverte par Visa Études Plus ?",
+      "gold_answer": "Oui, en cas d'invalidité partielle permanente, une fraction des cotisations est prise en charge par l'assureur ; en cas d'invalidité absolue et définitive, les cotisations sont entièrement exonérées.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q016": {
+      "question": "Que se passe-t-il si l'adhérent d'Horizon Retraite décède avant l'échéance ?",
+      "gold_answer": "Le capital constitué à la date du décès est versé aux bénéficiaires désignés.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q017": {
+      "question": "Qu'est-ce que la rente viagère sur Horizon Retraite ?",
+      "gold_answer": "C'est une option qui convertit le capital constitué en rente versée jusqu'au décès de l'adhérent ; une réversion au conjoint est possible en option.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q018": {
+      "question": "Quelles sont les garanties d'Horizon Retraite ?",
+      "gold_answer": "Quatre garanties : prestation à l'échéance (capital ou rente), décès de l'adhérent avant l'échéance (versement du capital constitué aux bénéficiaires), invalidité absolue et définitive (exonération des cotisations), et option rente viagère avec réversion possible.",
+      "category": "garanties",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q019": {
+      "question": "Quel est le montant minimum de cotisation pour Visa Études ?",
+      "gold_answer": "La cotisation mensuelle minimale est de 5 000 FCFA. Elle peut être modulée pendant la durée du contrat.",
+      "category": "cotisations",
+      "expected_source": "spec_produits.md"
+    },
+    "Q020": {
+      "question": "Quel est le montant minimum de cotisation pour Visa Études Plus ?",
+      "gold_answer": "La cotisation mensuelle minimale est de 10 000 FCFA.",
+      "category": "cotisations",
+      "expected_source": "spec_produits.md"
+    },
+    "Q021": {
+      "question": "Quel est le montant minimum de cotisation pour Horizon Retraite ?",
+      "gold_answer": "La cotisation mensuelle minimale est de 10 000 FCFA.",
+      "category": "cotisations",
+      "expected_source": "spec_produits.md"
+    },
+    "Q022": {
+      "question": "Puis-je effectuer des versements libres ?",
+      "gold_answer": "Les versements libres sont possibles sur Visa Études Plus ; ils ne sont pas prévus sur Visa Études ni sur Horizon Retraite.",
+      "category": "cotisations",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q023": {
+      "question": "Que se passe-t-il si je ne paie pas une cotisation ?",
+      "gold_answer": "Le contrat entre en période de grâce de 30 jours ; à défaut de paiement à l'issue de cette période, le contrat est suspendu, puis résilié si la situation n'est pas régularisée, avec versement de la valeur de rachat éventuelle.",
+      "category": "cotisations",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q024": {
+      "question": "Puis-je moduler ma cotisation en cours de contrat ?",
+      "gold_answer": "Oui, le montant de la cotisation est fixé à la souscription et peut être modulé pendant la durée du contrat selon les modalités des conditions générales.",
+      "category": "cotisations",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q025": {
+      "question": "Quel est le taux minimum garanti de participation aux bénéfices ?",
+      "gold_answer": "Le taux minimum garanti de participation aux bénéfices est de 3,5 % par an, appliqué au capital constitué.",
+      "category": "cotisations",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q026": {
+      "question": "Comment la participation aux bénéfices est-elle calculée ?",
+      "gold_answer": "La participation aux bénéfices techniques et financiers est créditée au contrat chaque année, avec un taux minimum garanti de 3,5 % par an ; elle est portée au compte du contrat et sert à augmenter le capital constitué.",
+      "category": "cotisations",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q027": {
+      "question": "Qui peut être bénéficiaire de Visa Études ?",
+      "gold_answer": "Le bénéficiaire est désigné à la souscription : pour les produits études, l'enfant désigné ou, à défaut, ses représentants légaux.",
+      "category": "beneficiaires",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q028": {
+      "question": "Puis-je modifier la désignation du bénéficiaire ?",
+      "gold_answer": "Oui, la désignation du bénéficiaire peut être modifiée à tout moment par l'adhérent, par avenant au contrat.",
+      "category": "beneficiaires",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q029": {
+      "question": "Qui reçoit le capital en cas de décès de l'adhérent d'Horizon Retraite ?",
+      "gold_answer": "Le capital constitué à la date du décès est versé aux bénéficiaires désignés dans le contrat (conjoint, enfants, autres), qui peuvent être modifiés par avenant.",
+      "category": "beneficiaires",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q030": {
+      "question": "Que se passe-t-il si aucun bénéficiaire n'est désigné ?",
+      "gold_answer": "En cas de décès de l'adhérent sans bénéficiaire valablement désigné, la prestation revient aux ayants droit, conformément au Code des assurances CIMA.",
+      "category": "beneficiaires",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q031": {
+      "question": "Le grand-parent de l'enfant peut-il être l'adhérent de Visa Études ?",
+      "gold_answer": "Oui, les grands-parents, tuteurs et à toute personne peuvent souscrire le contrat pour un enfant, s'ils sont âgés de 18 à 65 ans.",
+      "category": "beneficiaires",
+      "expected_source": "spec_produits.md"
+    },
+    "Q032": {
+      "question": "Quelle est la réversion de rente sur Horizon Retraite ?",
+      "gold_answer": "La réversion est une option de la rente viagère qui permet au conjoint de continuer à percevoir une partie de la rente après le décès de l'adhérent.",
+      "category": "beneficiaires",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q033": {
+      "question": "Quelles sont les exclusions principales des contrats ?",
+      "gold_answer": "Sont exclus : le suicide de l'adhérent dans les deux premières années, la fausse déclaration intentionnelle, les actes intentionnels de l'adhérent ou du bénéficiaire, et les événements de guerre ou émeute, sauf extension souscrite.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q034": {
+      "question": "Pendant combien de temps le suicide est-il exclu ?",
+      "gold_answer": "Le suicide de l'adhérent est exclu pendant les deux premières années du contrat ; l'assureur rembourse alors les primes versées sans intérêts.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q035": {
+      "question": "La fausse déclaration est-elle sanctionnée ?",
+      "gold_answer": "Oui, une fausse déclaration intentionnelle peut entraîner la nullité du contrat ; elle constitue une exclusion de garantie.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q036": {
+      "question": "Les actes de guerre sont-ils couverts ?",
+      "gold_answer": "Les événements de guerre, émeutes ou mouvements populaires sont exclus, sauf extension souscrite.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q037": {
+      "question": "La garantie scolaire couvre-t-elle toutes les formations ?",
+      "gold_answer": "Non : les études suivies dans des établissements non agréés ou des formations non reconnues sont exclues de la garantie scolaire de Visa Études Plus.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q038": {
+      "question": "Que rembourse l'assureur lorsque la garantie ne joue pas ?",
+      "gold_answer": "En cas d'exclusion, notamment pour le suicide dans les deux premières années, l'assureur rembourse les primes versées sans intérêts, conformément aux dispositions du Code CIMA.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q039": {
+      "question": "Quels sont les délais de déclaration d'un décès ?",
+      "gold_answer": "En cas de décès de l'adhérent, l'assureur doit être informé avec les pièces justificatives ; le relevé de situation et les informations prévues par le Code CIMA permettent aux bénéficiaires de faire valoir leurs droits.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q040": {
+      "question": "Les exclusions s'appliquent-elles aux trois produits ?",
+      "gold_answer": "Oui, les exclusions communes (suicide, fausse déclaration, actes intentionnels, guerre et émeute) s'appliquent aux trois produits ; Visa Études Plus ajoute l'exclusion des établissements non agréés pour la garantie scolaire.",
+      "category": "exclusions",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q041": {
+      "question": "Les cotisations de Visa Études sont-elles déductibles du revenu imposable ?",
+      "gold_answer": "Non, les cotisations des produits études ne bénéficient pas de déduction fiscale spécifique en l'état de la réglementation ; les prestations versées sont en revanche exonérées de l'impôt sur le revenu.",
+      "category": "fiscalite",
+      "expected_source": "notice_information.md"
+    },
+    "Q042": {
+      "question": "Les prestations du contrat sont-elles imposables ?",
+      "gold_answer": "Les prestations versées au titre des contrats sont exonérées de l'impôt sur le revenu, en l'état actuel de la réglementation fiscale togolaise.",
+      "category": "fiscalite",
+      "expected_source": "notice_information.md"
+    },
+    "Q043": {
+      "question": "Les cotisations d'Horizon Retraite sont-elles déductibles ?",
+      "gold_answer": "Oui, les cotisations versées au titre d'Horizon Retraite peuvent être déductibles du revenu imposable, dans les conditions et limites prévues par la réglementation fiscale en vigueur.",
+      "category": "fiscalite",
+      "expected_source": "faq.md"
+    },
+    "Q044": {
+      "question": "La notice d'information donne-t-elle des conseils fiscaux ?",
+      "gold_answer": "Non, la présentation fiscale de la notice est donnée à titre d'information dans l'esprit du Code CIMA et ne constitue pas un conseil fiscal ; les modalités précises relèvent de l'administration fiscale.",
+      "category": "fiscalite",
+      "expected_source": "notice_information.md"
+    },
+    "Q045": {
+      "question": "Existe-t-il une exonération fiscale sur la participation aux bénéfices ?",
+      "gold_answer": "Les prestations versées au titre du contrat, y compris la part de participation aux bénéfices, sont exonérées de l'impôt sur le revenu en l'état actuel de la réglementation fiscale togolaise.",
+      "category": "fiscalite",
+      "expected_source": "notice_information.md"
+    },
+    "Q046": {
+      "question": "Quels documents faut-il fournir pour souscrire ?",
+      "gold_answer": "Une pièce d'identité en cours de validité, un justificatif de domicile, et pour les produits études, l'extrait d'acte de naissance de l'enfant bénéficiaire.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q047": {
+      "question": "Comment se déroule la souscription ?",
+      "gold_answer": "La souscription se déroule en six étapes en agence : prendre rendez-vous, échanger avec le chargé de clientèle, choisir le produit et l'option, constituer les pièces et remplir la proposition, signer et payer la première cotisation, puis suivre le contrat après la souscription.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q048": {
+      "question": "Peut-on souscrire sans être client de la banque ?",
+      "gold_answer": "Oui, vous pouvez être client de la banque ou non : la souscription s'effectue en agence SUNU Bank Togo auprès d'un chargé de clientèle, qui présente les produits et établit la proposition.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q049": {
+      "question": "Quand le contrat prend-il effet ?",
+      "gold_answer": "La proposition signée est transmise à l'assureur ; le contrat prend effet selon les modalités prévues à la proposition, généralement après acceptation par l'assureur et paiement de la première cotisation.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q050": {
+      "question": "Quelles informations faut-il fournir à la souscription ?",
+      "gold_answer": "Vous devez fournir vos informations d'identité et de domicile, les informations de l'enfant bénéficiaire pour les produits études, et répondre exactement aux questions posées (état de santé, situation), car une fausse déclaration peut entraîner la nullité du contrat.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q051": {
+      "question": "Combien de temps prend la souscription ?",
+      "gold_answer": "La souscription en agence, de l'échange avec le chargé de clientèle à la signature de la proposition, se déroule généralement lors d'un rendez-vous unique en agence.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q052": {
+      "question": "Quels documents reçoit-on après la souscription ?",
+      "gold_answer": "Un double de la proposition signée vous est remis ; l'assureur vous adresse ensuite la police d'assurance et, chaque année, un relevé de situation (valeur de rachat, participation aux bénéfices).",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q053": {
+      "question": "Puis-je souscrire pour plusieurs enfants ?",
+      "gold_answer": "Oui : un contrat distinct peut être souscrit pour chaque enfant ; le chargé de clientèle peut aussi vous renseigner sur les options existantes.",
+      "category": "souscription",
+      "expected_source": "guide_souscription.md"
+    },
+    "Q054": {
+      "question": "Comment résilier mon contrat d'assurance vie ?",
+      "gold_answer": "L'adhérent peut résilier le contrat à tout moment par lettre recommandée adressée à l'assureur. La résiliation prend effet à la réception de la demande et la valeur de rachat est versée sous 30 jours si elle est positive.",
+      "category": "resiliation",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q055": {
+      "question": "Qu'est-ce que le rachat total du contrat ?",
+      "gold_answer": "Le rachat total est la demande par l'adhérent de récupérer la valeur de rachat du contrat : il entraîne la résiliation du contrat et le versement de la valeur de l'épargne constituée, diminuée des frais.",
+      "category": "resiliation",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q056": {
+      "question": "Puis-je effectuer un rachat partiel ?",
+      "gold_answer": "Oui, à compter de la première année de cotisation pour Visa Études et Visa Études Plus, un rachat total ou partiel est possible ; la valeur de rachat est versée sous 30 jours à compter de la réception de la demande complète.",
+      "category": "resiliation",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q057": {
+      "question": "À partir de quand peut-on demander un rachat ?",
+      "gold_answer": "Le rachat est possible après la première année de cotisation pour Visa Études et Visa Études Plus, et après 5 ans pour Horizon Retraite.",
+      "category": "resiliation",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q058": {
+      "question": "Peut-on perdre de l'argent en rachetant son contrat ?",
+      "gold_answer": "Oui, un rachat ou une résiliation anticipée peut entraîner une perte financière : la valeur de rachat peut être inférieure au total des cotisations versées en raison des frais d'acquisition et de gestion ; c'est particulièrement vrai en début de contrat.",
+      "category": "resiliation",
+      "expected_source": "notice_information.md"
+    },
+    "Q059": {
+      "question": "Quelle est la différence entre Horizon Retraite et un livret bancaire ?",
+      "gold_answer": "Un livret bancaire est un placement simple et liquide sans garantie de prévoyance, tandis qu'Horizon Retraite ajoute une protection décès et invalidité et offre un taux minimum garanti ; en contrepartie, l'épargne est moins liquide (rachat après 5 ans).",
+      "category": "comparaison",
+      "expected_source": "faq.md"
+    },
+    "Q060": {
+      "question": "Quelle est la différence entre Visa Études et Visa Études Plus ?",
+      "gold_answer": "Visa Études Plus offre des garanties renforcées : capital complémentaire immédiat en cas de décès, prise en charge en cas d'invalidité partielle permanente, allocation annuelle d'études (garantie scolaire), versements libres et rente éducation par défaut ; sa cotisation minimale est de 10 000 FCFA contre 5 000 FCFA pour Visa Études.",
+      "category": "comparaison",
+      "expected_source": "spec_produits.md"
+    },
+    "Q061": {
+      "question": "Le produit peut-il être comparé à une assurance santé ?",
+      "gold_answer": "Non, les produits d'assurance vie en bancassurance ne sont pas des assurances santé : ce sont des produits d'épargne (études ou retraite) avec des garanties de prévoyance, qui ne remboursent ni soins ni frais médicaux.",
+      "category": "comparaison",
+      "expected_source": "spec_produits.md"
+    },
+    "Q062": {
+      "question": "Quelle est la différence entre Visa Études et Horizon Retraite ?",
+      "gold_answer": "Visa Études est une épargne pour financer les études d'un enfant, avec une échéance liée à l'âge de l'enfant (18, 21 ou 25 ans) ; Horizon Retraite est une épargne pour préparer la retraite de l'adhérent, avec une échéance à l'âge de retraite choisi (55, 60 ou 65 ans) et une prestation en capital ou en rente.",
+      "category": "comparaison",
+      "expected_source": "spec_produits.md"
+    },
+    "Q063": {
+      "question": "Quelle est la différence avec une assurance décès classique ?",
+      "gold_answer": "Une assurance décès classique verse un capital aux bénéficiaires en cas de décès. Les produits étudiés combinent épargne et prévoyance : ils versent un capital à l'échéance pour financer les études ou la retraite, et en cas de décès de l'adhérent, les cotisations sont prises en charge et le capital majoré.",
+      "category": "comparaison",
+      "expected_source": "spec_produits.md"
+    },
+    "Q064": {
+      "question": "Comment déclarer un sinistre automobile ?",
+      "gold_answer": "Cette question ne concerne pas les produits d'assurance vie en bancassurance (Visa Études, Visa Études Plus, Horizon Retraite). L'assistant doit refuser de répondre et orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q065": {
+      "question": "Quel est le taux de remboursement de vos assurances santé ?",
+      "gold_answer": "Question hors périmètre : les produits d'assurance vie en bancassurance ne sont pas des assurances santé. L'assistant doit orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q066": {
+      "question": "Comment faire une réclamation pour un accident de la route ?",
+      "gold_answer": "Question hors périmètre (sinistre auto). L'assistant doit refuser de répondre et orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q067": {
+      "question": "Quelle est la prime de mon assurance habitation ?",
+      "gold_answer": "Question hors périmètre : les produits étudiés ne couvrent pas l'habitation. L'assistant doit orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q068": {
+      "question": "Pouvez-vous me conseiller un placement en bourse ?",
+      "gold_answer": "Question hors périmètre et hors conseil autorisé : l'assistant ne donne pas de conseil en placement boursier et doit orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q069": {
+      "question": "Quels sont les taux de crédit immobilier au Togo ?",
+      "gold_answer": "Question hors périmètre (crédit) : l'assistant doit refuser de répondre et orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q070": {
+      "question": "Je veux résilier mon contrat auto, comment faire ?",
+      "gold_answer": "Question hors périmètre (contrat auto). L'assistant doit orienter vers un conseiller.",
+      "category": "hors_perimetre",
+      "expected_source": null
+    },
+    "Q071": {
+      "question": "Si je décède avant l'échéance de mon contrat Visa Études, que se passe-t-il pour les cotisations versées et les intérêts déjà acquis ?",
+      "gold_answer": "En cas de décès de l'adhérent avant l'échéance, l'assureur prend en charge les cotisations restant à courir et majore le capital en constitution. L'ensemble du capital (cotisations versées + participation aux bénéfices déjà créditée + majoration) est versé au bénéficiaire désigné à l'échéance du contrat.",
+      "category": "complexe",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q072": {
+      "question": "Je souhaite cotiser 10 000 FCFA par mois pour ma fille de 5 ans jusqu'à ses 25 ans avec Visa Études. Est-ce possible et que recevra-t-elle ?",
+      "gold_answer": "C'est possible : le montant de 10 000 FCFA est supérieur au minimum de 5 000 FCFA, et l'échéance peut être fixée à 25 ans sur option. À l'échéance, votre fille recevra le capital constitué (cotisations + participation aux bénéfices au taux minimum garanti de 3,5 %), versé en une fois ou en plusieurs versements (rente éducation). Le montant exact dépend de la simulation du conseiller.",
+      "category": "complexe",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q073": {
+      "question": "Que se passe-t-il si je cesse de payer pendant trois mois puis je reprends ?",
+      "gold_answer": "En cas de non-paiement, le contrat entre en période de grâce de 30 jours ; à défaut de paiement à l'issue de cette période, le contrat est suspendu. Il reprend ses effets dès le paiement des cotisations arriérées, sous réserve des conditions prévues aux conditions générales ; à défaut de régularisation, le contrat est résilié avec versement de la valeur de rachat éventuelle.",
+      "category": "complexe",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q074": {
+      "question": "Si je rachète partiellement mon contrat Visa Études après deux ans, la garantie décès est-elle conservée ?",
+      "gold_answer": "Le rachat partiel, possible après la première année de cotisation, ne met pas fin au contrat : le contrat poursuit ses effets et la garantie décès reste en vigueur sur la base du capital restant, conformément aux modalités des conditions générales.",
+      "category": "complexe",
+      "expected_source": "conditions_generales.md"
+    },
+    "Q075": {
+      "question": "Mon enfant a 17 ans, puis-je encore souscrire Visa Études et jusqu'à quand l'épargne sera-t-elle constituée ?",
+      "gold_answer": "Oui, l'enfant peut avoir jusqu'à 18 ans à la souscription. L'épargne sera constituée jusqu'à la date d'échéance : le 18e anniversaire de l'enfant (soit environ un an), ou sur option 21 ou 25 ans pour couvrir les études supérieures.",
+      "category": "complexe",
+      "expected_source": "conditions_generales.md"
+    }
+  },
+  "note": "Réponses de référence générées depuis test_questions.json"
+}

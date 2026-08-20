@@ -1,0 +1,51 @@
+{
+  "scores": {
+    "faithfulness": 0.5346,
+    "answer_relevancy": 0.2624,
+    "context_precision": 0.6967,
+    "context_recall": 1.0
+  },
+  "details": {
+    "faithfulness": {
+      "mean": 0.5346,
+      "median": 0.5,
+      "std": 0.4684,
+      "valid": 65,
+      "total": 68,
+      "given_up": 0,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "answer_relevancy": {
+      "mean": 0.2624,
+      "median": 0.1672,
+      "std": 0.276,
+      "valid": 68,
+      "total": 68,
+      "given_up": 0,
+      "min": 0.0,
+      "max": 0.8813
+    },
+    "context_precision": {
+      "mean": 0.6967,
+      "median": 0.8042,
+      "std": 0.3431,
+      "valid": 63,
+      "total": 68,
+      "given_up": 0,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "context_recall": {
+      "mean": 1.0,
+      "median": 1.0,
+      "std": 0.0,
+      "valid": 65,
+      "total": 68,
+      "given_up": 0,
+      "min": 1.0,
+      "max": 1.0
+    }
+  },
+  "overall_mean": 0.6234
+}
