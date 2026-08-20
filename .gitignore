@@ -8,6 +8,9 @@ __pycache__/
 data/processed/chroma_db/
 data/processed/chroma_db_*/
 data/evaluation/results/
+data/evaluation/ragas_worker*.pid
+data/evaluation/ragas_done.flag
+data/evaluation/ragas_workers_running.flag
 data/sunu_portal.db
 data/models/
 .idea/

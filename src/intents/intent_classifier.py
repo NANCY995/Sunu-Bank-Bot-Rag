@@ -32,6 +32,8 @@ OUT_OF_SCOPE_KEYWORDS = [
     "assurance auto",
     "assurance santé",
     "crédit",
+    "prêt",
+    "pret",
     "placement boursier",
     "voyage",
     "santé",

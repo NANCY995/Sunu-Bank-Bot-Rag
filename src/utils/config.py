@@ -23,6 +23,8 @@ SCORE_THRESHOLD = float(os.getenv("SCORE_THRESHOLD", "0.5"))
 CHROMA_PERSIST_DIR = Path(
     os.getenv("CHROMA_PERSIST_DIR", str(PROCESSED_DATA_DIR / "chroma_db"))
 )
+if not CHROMA_PERSIST_DIR.is_absolute():
+    CHROMA_PERSIST_DIR = PROJECT_ROOT / CHROMA_PERSIST_DIR
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "300"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "30"))
 USE_OPENAI_EMBEDDINGS = os.getenv("USE_OPENAI_EMBEDDINGS", "true").lower() == "true"

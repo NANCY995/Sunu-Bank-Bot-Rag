@@ -21,7 +21,7 @@ class TestCorpusLoader(unittest.TestCase):
         docs = load_corpus(RAW_DATA_DIR)
         names = [d.metadata.get("source", "") for d in docs]
         self.assertFalse(any(name.endswith("README.md") for name in names))
-        self.assertEqual(len(docs), 6)
+        self.assertEqual(len(docs), 9)
 
 
 class TestVectorstore(unittest.TestCase):

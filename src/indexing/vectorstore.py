@@ -25,12 +25,16 @@ def create_vectorstore(
         log.info(
             "Collection %s inexistante ou non supprimable : %s", COLLECTION_NAME, exc
         )
-    return Chroma.from_documents(
-        documents=chunks,
-        embedding=embedding_model,
+    client.get_or_create_collection(
+        COLLECTION_NAME, metadata={"hnsw:space": "cosine"}
+    )
+    vectorstore = Chroma(
         client=client,
         collection_name=COLLECTION_NAME,
+        embedding_function=embedding_model,
     )
+    vectorstore.add_documents(documents=chunks)
+    return vectorstore
 
 
 def load_vectorstore(

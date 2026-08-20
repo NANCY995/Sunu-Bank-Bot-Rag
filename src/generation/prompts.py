@@ -84,5 +84,7 @@ OUT_OF_SCOPE_KEYWORDS = [
     "assurance santé",
     "assurance habitation",
     "crédit",
+    "prêt",
+    "pret",
     "placement boursier",
 ]
