@@ -26,11 +26,35 @@ def render_chat(client) -> None:
     if "rag_history" not in st.session_state:
         st.session_state["rag_history"] = []
 
+    col1, col2 = st.columns([0.8, 0.2])
+    with col2:
+        if st.button("🗑️ Effacer", use_container_width=True):
+            st.session_state["rag_history"] = []
+            st.rerun()
+
     for entry in st.session_state["rag_history"]:
         with st.chat_message(entry["role"]):
             st.markdown(entry["content"])
 
+    if not st.session_state["rag_history"]:
+        st.caption("Suggestions de questions :")
+        sug_cols = st.columns(3)
+        suggestions = [
+            "Quelles sont les garanties de Visa Etudes ?",
+            "Comment fonctionne Horizon Retraite ?",
+            "Difference entre Visa Etudes et Plus ?"
+        ]
+        for col, sug in zip(sug_cols, suggestions):
+            if col.button(sug, use_container_width=True):
+                st.session_state["rag_pending_prompt"] = sug
+                st.rerun()
+
     prompt = st.chat_input("Votre question...")
+    
+    # Process pending prompt from suggestion buttons
+    if "rag_pending_prompt" in st.session_state:
+        prompt = st.session_state.pop("rag_pending_prompt")
+
     if prompt:
         st.session_state["rag_history"].append({"role": "user", "content": prompt})
         with st.chat_message("user"):
@@ -47,6 +71,8 @@ def render_chat(client) -> None:
                         '<span class="sunu-badge sunu-badge-warning">ESCALADE</span>',
                         unsafe_allow_html=True,
                     )
+                if data.get("intent"):
+                    st.caption(f"Intention : {data['intent']}")
         st.session_state["rag_history"].append(
             {"role": "assistant", "content": error if error else data["answer"]}
         )
@@ -138,12 +164,12 @@ def render_analytics(client) -> None:
                 title="Scores RAGAS",
             )
             fig.update_layout(
-                font={"family": "JetBrains Mono, IBM Plex Mono, monospace", "size": 12},
-                paper_bgcolor="#fdfcfc",
-                plot_bgcolor="#fdfcfc",
-                font_color="#201d1d",
-                title_font_color="#201d1d",
-                title_font_size=14,
+                font={"family": "Outfit, Inter, sans-serif", "size": 13},
+                paper_bgcolor="#FFFFFF",
+                plot_bgcolor="#FFFFFF",
+                font_color="#1A1A1A",
+                title_font_color="#1A1A1A",
+                title_font_size=16,
                 margin={"l": 0, "r": 0, "t": 40, "b": 0},
                 coloraxis_showscale=False,
                 xaxis={"showgrid": False, "linecolor": "rgba(15,0,0,0.12)"},

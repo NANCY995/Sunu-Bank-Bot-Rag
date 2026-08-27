@@ -49,17 +49,17 @@ def render(client) -> None:
             level = data["risk_level"]
 
             if proba < 0.3:
-                color = "#30d158"
+                color = "#34C759"
                 variant = "success"
                 icon = "[OK]"
                 msg = "Risque faible : aucun suivi particulier necessaire."
             elif proba < 0.5:
-                color = "#ff9f0a"
+                color = "#FF9F0A"
                 variant = "warning"
                 icon = "[!]"
                 msg = "Risque modere : monitorer le comportement de l'assure."
             else:
-                color = "#ff3b30"
+                color = "#FF3B30"
                 variant = "danger"
                 icon = "[!!]"
                 msg = (
@@ -68,14 +68,14 @@ def render(client) -> None:
                 )
 
             st.markdown(
-                f'<div class="sunu-card" style="border-left:3px solid {color};">'
+                f'<div class="sunu-card" style="border-left:4px solid {color};">'
                 f'<span class="sunu-badge sunu-badge-{variant}">{icon} {level.upper()}</span>'
                 f"<br><br>"
-                f'<span style="font-size:2rem;font-weight:700;color:#201d1d;">{proba * 100:.1f} %</span>'
+                f'<span style="font-family:\'Outfit\',sans-serif;font-size:2.5rem;font-weight:700;color:#1A1A1A;">{proba * 100:.1f} %</span>'
                 f"<br>"
-                f'<span style="font-size:0.75rem;color:#646262;">Probabilite de churn</span>'
+                f'<span style="font-size:0.875rem;color:#8C92A4;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Probabilite de churn</span>'
                 f"<br><br>"
-                f'<span style="font-size:0.875rem;color:#424245;">{msg}</span>'
+                f'<span style="font-size:0.9375rem;color:#4A505C;font-weight:500;">{msg}</span>'
                 f"</div>",
                 unsafe_allow_html=True,
             )

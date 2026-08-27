@@ -1,7 +1,7 @@
 """Routes d'authentification : inscription, connexion, profil."""
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from sqlalchemy.orm import Session
 
 from src.api.database import User
@@ -24,15 +24,14 @@ class LoginRequest(BaseModel):
 
 
 class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     email: str
     username: str
     full_name: str
     role: str
     is_active: bool
-
-    class Config:
-        from_attributes = True
 
 
 class TokenResponse(BaseModel):
@@ -41,14 +40,31 @@ class TokenResponse(BaseModel):
     user: UserOut
 
 
-def _hash_password(password: str) -> str:
-    import hashlib
+import hashlib
+import hmac
+import os
+import secrets
 
-    return hashlib.sha256(password.encode()).hexdigest()
+
+def _hash_password(password: str) -> str:
+    """Hache le mot de passe avec PBKDF2-HMAC-SHA256 et un sel cryptographique."""
+    salt = secrets.token_hex(16)
+    key = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100_000)
+    return f"pbkdf2_sha256${salt}${key.hex()}"
 
 
 def _verify_password(plain: str, hashed: str) -> bool:
-    return _hash_password(plain) == hashed
+    """Vérifie le mot de passe avec support PBKDF2 et compatibilité SHA256 legacy."""
+    if hashed.startswith("pbkdf2_sha256$"):
+        parts = hashed.split("$")
+        if len(parts) != 3:
+            return False
+        salt, stored_hash = parts[1], parts[2]
+        key = hashlib.pbkdf2_hmac("sha256", plain.encode(), salt.encode(), 100_000)
+        return hmac.compare_digest(key.hex(), stored_hash)
+    # Rétrocompatibilité avec les hashs sha256 simples existants
+    legacy_hash = hashlib.sha256(plain.encode()).hexdigest()
+    return hmac.compare_digest(legacy_hash, hashed)
 
 
 @router.post("/register", response_model=TokenResponse, status_code=201)

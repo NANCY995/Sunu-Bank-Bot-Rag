@@ -18,7 +18,10 @@ def build_rag_chain(retriever, llm):
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", SYSTEM_PROMPT),
-            ("human", "Question : {question}"),
+            (
+                "human",
+                "Voici la question posée par l'utilisateur à traiter strictement selon les règles et le contexte documentaire fournis ci-dessus :\n<user_query>\n{question}\n</user_query>",
+            ),
         ]
     )
     chain = (

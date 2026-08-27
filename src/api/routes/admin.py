@@ -1,7 +1,7 @@
 """Routes d'administration : gestion des utilisateurs."""
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from sqlalchemy.orm import Session
 
 from src.api.database import User
@@ -26,6 +26,8 @@ class UserUpdate(BaseModel):
 
 
 class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     email: str
     username: str
@@ -33,14 +35,8 @@ class UserOut(BaseModel):
     role: str
     is_active: bool
 
-    class Config:
-        from_attributes = True
 
-
-def _hash_password(password: str) -> str:
-    import hashlib
-
-    return hashlib.sha256(password.encode()).hexdigest()
+from src.api.routes.auth import _hash_password
 
 
 @router.get("/users", response_model=list[UserOut])

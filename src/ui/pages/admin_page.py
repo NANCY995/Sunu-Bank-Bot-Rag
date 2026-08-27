@@ -70,9 +70,9 @@ def render(client) -> None:
             st.error(err)
         else:
             st.markdown(
-                '<div class="sunu-card" style="border-left:3px solid #30d158;">'
+                '<div class="sunu-card" style="border-left:4px solid #34C759;">'
                 '<span class="sunu-badge sunu-badge-success">[OK] CREE</span><br><br>'
-                '<span style="font-size:0.875rem;color:#424245;">Utilisateur cree avec succes.</span>'
+                '<span style="font-size:0.9375rem;color:#4A505C;font-weight:500;">Utilisateur cree avec succes.</span>'
                 "</div>",
                 unsafe_allow_html=True,
             )

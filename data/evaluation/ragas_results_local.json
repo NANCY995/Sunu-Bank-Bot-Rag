@@ -1,0 +1,9 @@
+{
+  "judge": "local-qwen2.5-1.5b",
+  "scores": {
+    "faithfulness": 0.544018005212035,
+    "answer_relevancy": 0.5314140171252094,
+    "context_precision": 0.6559,
+    "context_recall": 1.0
+  }
+}

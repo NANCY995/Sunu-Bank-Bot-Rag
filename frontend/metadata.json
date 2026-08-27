@@ -1,0 +1,6 @@
+{
+  "name": "SUNU Bank Togo RAG Portal",
+  "description": "Portail RAG sécurisé et Financial Concierge pour SUNU Bank Togo avec authentification multi-facteurs, onboarding interactif et intelligence financière.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

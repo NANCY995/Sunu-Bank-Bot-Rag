@@ -6,52 +6,45 @@ distribués par SUNU Bank Togo, notamment Visa Études, Visa Études Plus et Hor
 
 Le projet comprend :
 
-1. **Le cœur RAG** : corpus, indexation ChromaDB, retrieval, génération (persona
-   commercial SUNU Bank, gestion des objections, closing), escalade vers conseiller.
-2. **Un portail web** (Streamlit) : tableau de bord, chat RAG, provisioning, churn,
-   fraude, analytics, administration.
-3. **Une API REST** (FastAPI) : authentification JWT, endpoints RAG, prédictions ML,
-   KPIs, administration.
-4. **Des modèles ML** de démonstration (provisionnement, churn, détection de fraude)
-   entraînés sur données synthétiques reproductibles.
+1. **Le cœur RAG** : corpus, indexation ChromaDB, retrieval, génération (persona commercial SUNU Bank, gestion des objections, closing), escalade vers conseiller.
+2. **Un portail web utilisateur moderne** (React / Tailwind / TypeScript dans `frontend/`) : Concierge financier interactif, devis officiel PDF, simulateur de crédit & épargne retraite, mode sombre/clair, authentification.
+3. **Une API REST** (FastAPI) : authentification JWT, endpoints RAG, prédictions ML, KPIs, administration.
+4. **Des modèles ML** de démonstration (provisionnement, churn, détection de fraude) entraînés sur données synthétiques reproductibles.
 
-## Installation
+## Installation & Démarrage rapide
 
 ```bash
-python -m venv .venv
+# 1. Installer l'environnement Python
 .venv\Scripts\activate
 pip install -r requirements.txt
+
+# 2. Installer et lancer le portail frontend
+cd frontend
+bun install
+bun run dev
 ```
 
-Copier `.env.example` vers `.env` et renseigner les clés API. En mode hors ligne
-(recommandé), laisser `USE_LOCAL_LLM=true` et `USE_GOOGLE_LLM=false` : le chat utilise
-alors le modèle local Qwen 2.5 (`models/qwen2.5-1.5b-instruct-q4_k_m.gguf`).
+### Lancement en un clic (Recommandé)
 
-## Utilisation
-
-### Cœur RAG
-
+Double-cliquer sur `scripts/run_all.bat` ou exécuter :
 ```bash
-python main.py index             # indexer le corpus dans la base vectorielle
-python main.py chat              # conversation en ligne de commande
-python main.py eval-retrieval    # évaluer la recherche documentaire (sans LLM)
-python main.py eval              # évaluer le pipeline RAGAS + retrieval
-python main.py eval-commercial   # évaluer le comportement commercial (ton, objections)
+scripts\run_all.bat
 ```
+Ce script lance simultanément :
+- Le Backend FastAPI sur **http://localhost:8000** (Documentation Swagger sur `/docs`)
+- Le Portail React sur **http://localhost:3000**
 
-### Interface web (chat simple)
+### Lancement manuel
 
-```bash
-streamlit run app/app.py
-```
-
-### Portail complet (API + UI)
-
-```bash
-python scripts/seed_portal.py    # admin + 200 contrats + 400 transactions + modèles
-scripts\run_api.bat              # ou : python -m uvicorn src.api.main:app --port 8000
-scripts\run_portal.bat           # ou : streamlit run src/ui/portal.py --server.port 8502
-```
+- **Backend FastAPI** :
+  ```bash
+  python scripts/seed_portal.py    # création admin + données synthétiques
+  scripts\run_api.bat              # démarre FastAPI sur http://localhost:8000
+  ```
+- **Portail React Utilisateur** :
+  ```bash
+  scripts\run_portal.bat           # démarre React sur http://localhost:3000
+  ```
 
 Se connecter avec `admin@sunubank.tg` / `admin1234` (créé par le seed).
 

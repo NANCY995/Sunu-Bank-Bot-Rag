@@ -41,6 +41,18 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Global Exception Handler pour éviter les fuites d'informations sensibles
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request, exc):
+        import logging
+
+        logging.getLogger("uvicorn.error").error(
+            f"Erreur non gérée sur {request.url.path}: {exc}", exc_info=settings.debug
+        )
+        if settings.debug:
+            return {"error": "InternalServerError", "detail": str(exc)}
+        return {"error": "InternalServerError", "detail": "Une erreur inattendue est survenue."}
+
     # Routers
     app.include_router(auth.router, prefix="/api")
     app.include_router(dashboard.router, prefix="/api")

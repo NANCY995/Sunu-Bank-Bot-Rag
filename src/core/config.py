@@ -1,10 +1,16 @@
 """Pydantic settings for SUNU BANK application."""
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+        case_sensitive=False,
+    )
 
     # Database
     database_url: str = "postgresql://sunuuser:sunupass@localhost:5432/sunubank_db"
@@ -55,11 +61,6 @@ class Settings(BaseSettings):
     enable_provisioning: bool = True
     enable_churn_prediction: bool = True
     enable_fraud_detection: bool = False
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
-        case_sensitive = False
 
 
 settings = Settings()

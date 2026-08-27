@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <!-- Left horizontal line -->
+  <line x1="0" y1="30" x2="35" y2="30" stroke="#e63946" stroke-width="4" />
+  
+  <!-- Diamond shape -->
+  <polygon points="60,5 100,30 60,55 20,30" fill="#e63946" stroke="#ffffff" stroke-width="3" />
+  
+  <!-- SUNU text inside diamond -->
+  <text x="60" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">SUNU</text>
+  
+  <!-- Assurances text below SUNU -->
+  <text x="60" y="45" font-family="Arial, sans-serif" font-size="9" font-weight="normal" fill="#ffffff" text-anchor="middle">Assurances</text>
+  
+  <!-- Right horizontal line -->
+  <line x1="85" y1="30" x2="120" y2="30" stroke="#e63946" stroke-width="4" />
+  
+  <!-- SUNU Bank Togo text on the right -->
+  <text x="130" y="35" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#201d1d">SUNU Bank Togo</text>
+</svg>

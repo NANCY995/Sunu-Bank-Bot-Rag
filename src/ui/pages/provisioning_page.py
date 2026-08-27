@@ -48,11 +48,11 @@ def render(client) -> None:
         else:
             amount = data["provisioning_amount"]
             st.markdown(
-                '<div class="sunu-card" style="border-left:3px solid #30d158;">'
+                '<div class="sunu-card" style="border-left:4px solid #34C759;">'
                 '<span class="sunu-badge sunu-badge-success">RESULTAT</span><br><br>'
-                f'<span style="font-size:2rem;font-weight:700;color:#201d1d;">{amount:,.0f} FCFA</span>'
+                f'<span style="font-family:\'Outfit\',sans-serif;font-size:2.5rem;font-weight:700;color:#1A1A1A;">{amount:,.0f} FCFA</span>'
                 "<br>"
-                '<span style="font-size:0.75rem;color:#646262;">Modèle : GradientBoostingRegressor — R² ≈ 0,86</span>'
+                '<span style="font-size:0.875rem;color:#8C92A4;font-weight:500;">Modèle : GradientBoostingRegressor — R² ≈ 0,86</span>'
                 "</div>",
                 unsafe_allow_html=True,
             )

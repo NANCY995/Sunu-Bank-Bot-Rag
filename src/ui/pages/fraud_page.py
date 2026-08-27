@@ -36,24 +36,24 @@ def render(client) -> None:
         else:
             if data["is_fraud"]:
                 st.markdown(
-                    f'<div class="sunu-card" style="border-left:3px solid #ff3b30;">'
+                    f'<div class="sunu-card" style="border-left:4px solid #FF3B30;">'
                     f'<span class="sunu-badge sunu-badge-danger">[!!] SUSPECT</span>'
                     f"<br><br>"
-                    f'<span style="font-size:0.875rem;color:#424245;">'
-                    f"Score d'anomalie : <strong>{data['fraud_score']}</strong></span>"
+                    f'<span style="font-size:0.9375rem;color:#4A505C;font-weight:500;">'
+                    f"Score d'anomalie : <strong style='font-family:Outfit,sans-serif;font-size:1.1rem;color:#1A1A1A;'>{data['fraud_score']}</strong></span>"
                     f"<br><br>"
-                    f'<span style="font-size:0.875rem;color:#424245;">'
+                    f'<span style="font-size:0.9375rem;color:#4A505C;font-weight:500;">'
                     f"Bloquer et transmettre au service de conformite.</span>"
                     f"</div>",
                     unsafe_allow_html=True,
                 )
             else:
                 st.markdown(
-                    f'<div class="sunu-card" style="border-left:3px solid #30d158;">'
+                    f'<div class="sunu-card" style="border-left:4px solid #34C759;">'
                     f'<span class="sunu-badge sunu-badge-success">[OK] NORMAL</span>'
                     f"<br><br>"
-                    f'<span style="font-size:0.875rem;color:#424245;">'
-                    f"Score d'anomalie : <strong>{data['fraud_score']}</strong></span>"
+                    f'<span style="font-size:0.9375rem;color:#4A505C;font-weight:500;">'
+                    f"Score d'anomalie : <strong style='font-family:Outfit,sans-serif;font-size:1.1rem;color:#1A1A1A;'>{data['fraud_score']}</strong></span>"
                     f"</div>",
                     unsafe_allow_html=True,
                 )
