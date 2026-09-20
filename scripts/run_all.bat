@@ -8,7 +8,7 @@ echo.
 cd /d "%~dp0.."
 
 echo [1/2] Lancement du Backend FastAPI sur http://localhost:8000 ...
-start "SUNU Bank - API FastAPI" cmd /k "..\.venv\Scripts\activate && python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload"
+start "SUNU Bank - API FastAPI" cmd /k "python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload"
 
 echo [2/2] Lancement du Portail React sur http://localhost:3000 ...
 start "SUNU Bank - Portail React" cmd /k "cd frontend && bun run dev"

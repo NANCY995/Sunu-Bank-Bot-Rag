@@ -23,16 +23,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;
+    const body = document.body;
     if (newTheme === 'dark') {
       root.classList.add('dark');
       root.classList.remove('light');
-      document.body.style.backgroundColor = '#131313';
-      document.body.style.color = '#e2e2e2';
+      if (body) {
+        body.classList.add('dark');
+        body.classList.remove('light');
+        body.style.backgroundColor = '#131313';
+        body.style.color = '#e2e2e2';
+      }
     } else {
       root.classList.remove('dark');
       root.classList.add('light');
-      document.body.style.backgroundColor = '#f8fafc';
-      document.body.style.color = '#0f172a';
+      if (body) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        body.style.backgroundColor = '#f8fafc';
+        body.style.color = '#0f172a';
+      }
     }
   };
 
