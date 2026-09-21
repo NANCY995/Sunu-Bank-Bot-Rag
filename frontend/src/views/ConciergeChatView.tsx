@@ -866,6 +866,7 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
       ];
     }
     return [
+      { label: '🚗 Crédit Auto (Taux & Conditions)', query: "Quelles sont les conditions et le taux d'intérêt pour obtenir un crédit auto chez SUNU Bank Togo ?" },
       { label: '🏖️ Horizon Retraite (Bonus 92%)', query: 'Simule Horizon Retraite avec 25 000 FCFA par mois sur 15 ans' },
       { label: '🎓 Visa Études (15 000 F)', query: 'Simule Visa Études avec 15 000 FCFA par mois pendant 10 ans pour mon enfant' },
       { label: '⚖️ Rachat CIMA (Art. 74 & 76)', query: 'Quelles sont les conditions de rachat et pénalités selon les Articles 74 et 76 du Code CIMA ?' },
@@ -1048,6 +1049,85 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
 
       let fallbackContent = "Pour toute souscription ou information complémentaire sur les produits SUNU Bank Togo (Visa Études, Horizon Retraite, Épargne Bonus, Protect Plus), nos conseillers vous accueillent dans nos 28 agences avec le respect rigoureux des dispositions du Code CIMA.";
       
+      const hasCreditAuto =
+        (cleanQ.includes("auto") || cleanQ.includes("voiture") || cleanQ.includes("véhicule") || cleanQ.includes("vehicule")) &&
+        (cleanQ.includes("crédit") || cleanQ.includes("credit") || cleanQ.includes("prêt") || cleanQ.includes("pret") ||
+         cleanQ.includes("taux") || cleanQ.includes("condition") || cleanQ.includes("financement") || cleanQ.includes("acheter") ||
+         cleanQ.includes("achat") || cleanQ.includes("emprunt") || cleanQ.includes("banque"));
+
+      const isDirectAutoCredit =
+        cleanQ.includes("crédit auto") || cleanQ.includes("credit auto") ||
+        cleanQ.includes("prêt auto") || cleanQ.includes("pret auto") ||
+        cleanQ.includes("crédit automobile") || cleanQ.includes("credit automobile") ||
+        cleanQ.includes("prêt automobile") || cleanQ.includes("pret automobile") ||
+        cleanQ.includes("clic@uto") || cleanQ.includes("clicauto");
+
+      if (hasCreditAuto || isDirectAutoCredit) {
+        fallbackContent = `## 🚗 Crédit Automobile & Bancassurance Intégrée — SUNU Bank Togo
+
+Chez **SUNU Bank Togo**, le **Crédit Automobile** s'inscrit dans notre modèle de **bancassurance intégrée** : il associe un financement bancaire souple et compétitif accordé par la Banque et une double protection d'assurance (Assurance Emprunteur SUNU Assurances Vie + Assurance Tous Risques Clic@uto SUNU Assurances IARD) pour sécuriser l'emprunteur et son véhicule.
+
+---
+
+### 1. 📊 Taux d'Intérêt & Conditions Financières
+
+| Paramètre Financier | Conditions Officielles SUNU Bank Togo |
+| :--- | :--- |
+| **Taux d'intérêt débiteur** | **7,5 % à 9,5 % l'an hors taxes (HT)** *(taux indicatif selon le profil du client, la convention employeur et la nature du véhicule)* |
+| **Durée de remboursement** | • **12 à 60 mois (jusqu'à 5 ans)** pour un véhicule **neuf**<br>• **12 à 36 mois (jusqu'à 3 ans)** pour un véhicule **d'occasion récente** (< 5 ans) |
+| **Quotité de financement** | Jusqu'à **80 % à 90 %** du prix d'achat proforma *(jusqu'à 100 % pour le personnel des entreprises sous convention)* |
+| **Apport personnel** | **10 % à 20 %** du montant TTC du véhicule |
+| **Frais de dossier** | **1 % HT** du montant emprunté (minimum 50 000 FCFA HT) |
+| **Mode de remboursement** | Mensualités constantes prélevées à la source sur votre compte salaire SUNU Bank Togo |
+
+---
+
+### 2. 📋 Conditions d'Éligibilité (Normes Prudentielles BCEAO / UMOA)
+
+Pour prétendre au Crédit Auto chez SUNU Bank Togo, vous devez satisfaire aux critères d'octroi réglementaires :
+1. **Domiciliation irrévocable du salaire ou des revenus** : engagement formel de domiciliation sur votre compte courant chez **SUNU Bank Togo**.
+2. **Capacité d'endettement (Quotité cessible)** : la mensualité globale de remboursement ne doit pas dépasser **33 % à 40 % de votre revenu mensuel net** (normes prudentielles de la BCEAO pour préserver votre reste à vivre).
+3. **Statut professionnel et ancienneté** :
+   - *Salariés (secteur public ou privé)* : être sous contrat à durée indéterminée (CDI) confirmé avec une ancienneté minimale de **12 mois**.
+   - *Professions libérales, commerçants & entrepreneurs* : justification d'au moins **24 mois d'exercice régulier** avec bilans comptables ou relevés bancaires probants.
+4. **Condition d'âge** : être âgé d'au moins **21 ans** à la demande de prêt, et ne pas dépasser **60 ans** (âge légal de départ à la retraite) à la dernière mensualité.
+
+---
+
+### 3. 🛡️ Package Bancassurance Obligatoire (Synergie SUNU Bank + SUNU Assurances)
+
+Conformément au Code CIMA et aux garanties de crédit, le financement automobile est obligatoirement assorti d'une double couverture en guichet unique :
+* **Assurance Emprunteur (ADI - Assurance Décès & Invalidité)** — *SUNU Assurances Vie Togo* :
+  - Prend en charge le remboursement intégral du capital restant dû en cas de décès ou d'invalidité absolue et définitive (IAD) de l'emprunteur.
+  - Évite la saisie du véhicule et protège vos héritiers et ayants droit contre toute dette résiduelle.
+* **Assurance Automobile Tous Risques (Clic@uto)** — *SUNU Assurances IARD Togo* :
+  - Première assurance auto 100% digitale au Togo : Dommages tous accidents, Vol, Incendie, Bris de glaces et Responsabilité Civile.
+  - Fait l'objet d'un **gage sur la carte grise** et d'une **délégation d'indemnité** au profit de SUNU Bank Togo jusqu'au remboursement complet du prêt.
+
+---
+
+### 4. 📑 Pièces Justificatives à Fournir (Constitution du Dossier)
+
+Pour instruire votre dossier en agence, veuillez réunir les documents suivants :
+* [x] **Facture proforma** récente du véhicule délivrée par un concessionnaire agréé ou un vendeur certifié.
+* [x] **3 derniers bulletins de paie** (salariés) ou 3 derniers bilans / relevés des 6 derniers mois (indépendants).
+* [x] **Attestation de travail** récente et **lettre d'engagement irrévocable de domiciliation de salaire** signée par votre employeur.
+* [x] **Relevé d'Identité Bancaire (RIB)** de votre compte SUNU Bank Togo.
+* [x] **Pièce d'identité officielle en cours de validité** (Carte Nationale d'Identité togolaise, Passeport ou Carte de Séjour).
+* [x] **Justificatif de domicile récent** (quittance CEET, facture TdE ou certificat de résidence légalisé).
+
+---
+
+### 5. 💡 Exemple Chiffré de Simulation
+
+*Pour l'acquisition d'un véhicule de **10 000 000 FCFA TTC** :*\n* **Apport personnel requis (20 %)** : 2 000 000 FCFA.\n* **Montant financé par SUNU Bank (80 %)** : 8 000 000 FCFA.\n* **Durée de remboursement** : 48 mois (4 ans).\n* **Taux débiteur indicatif** : 8,5 % l'an HT.\n* **Mensualité estimée (hors assurance emprunteur)** : environ **197 100 FCFA / mois**.\n* *Revenu mensuel net recommandé : au moins **500 000 à 600 000 FCFA** pour respecter la quotité cessible maximale de 33% à 40%.*
+
+---
+
+📍 **Comment finaliser votre demande ?**
+Présentez-vous dans l'une de nos **28 agences SUNU Bank Togo** réparties à Lomé et à l'intérieur du pays, ou contactez notre Centre de Relation Client au **8444** (appel direct) pour une prise en charge rapide et un accord de principe sous 48 à 72 heures.`;
+      }
+
       const isComp = cleanQ.includes("compar") || cleanQ.includes("versus") || cleanQ.includes("vs ") || cleanQ.includes(" vs") || cleanQ.includes("différen") || cleanQ.includes("differen") || cleanQ.includes("entre") || cleanQ.includes("choisir") || cleanQ.includes("lequel") || cleanQ.includes("meilleur");
 
       if (isComp) {

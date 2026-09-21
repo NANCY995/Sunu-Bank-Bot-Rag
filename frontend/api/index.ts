@@ -259,6 +259,67 @@ export const SUNU_KNOWLEDGE_DOCUMENTS = [
       "Procédure de Réclamation Client : Traitement amiable interne à SUNU Bank Togo sous 30 jours, puis recours auprès de la CRCA en cas de contestation persistante",
       "Articulation Régionale : Coopération institutionnelle étroite avec la BCEAO et la Commission Bancaire de l'UMOA"
     ]
+  },
+  {
+    id: "PROD-BK-CREDIT-AUTO",
+    title: "Crédit Automobile & Prêt Véhicule SUNU Bank Togo",
+    category: "Crédits & Financements Bancaires (Bancassurance Intégrée)",
+    startingPrice: "Financement jusqu'à 80% à 90% du montant du véhicule (apport personnel de 10% à 20%)",
+    duration: "12 à 60 mois (neuf) • 12 à 36 mois (occasion récente < 5 ans)",
+    yield: "Taux débiteur indicatif de 7,5% à 9,5% l'an hors taxes (HT)",
+    benefits: [
+      "Taux d'intérêt débiteur compétitif de 7,5% à 9,5% l'an HT négocié selon profil et conventions employeur",
+      "Durée de remboursement adaptée : jusqu'à 60 mois (5 ans) pour un véhicule neuf, et jusqu'à 36 mois pour un véhicule d'occasion",
+      "Quotité cessible maximale de 33% à 40% du salaire net conformément aux normes prudentielles de la BCEAO",
+      "Package Bancassurance Intégrée obligatoire : Assurance Emprunteur (ADI) SUNU Assurances Vie + Assurance Tous Risques Clic@uto SUNU Assurances IARD",
+      "Gage sur carte grise et délégation de bénéfice au profit de SUNU Bank Togo jusqu'au remboursement intégral",
+      "Formalités rapides avec accord de principe sous 48 à 72 heures dans les 28 agences SUNU Bank Togo"
+    ],
+    cima: "Adossement obligatoire à l'Assurance Emprunteur (Livre I CIMA) et à l'Assurance IARD Automobile avec délégation d'indemnité conforme au Code CIMA Livre V et aux conventions bancaires UMOA."
+  },
+  {
+    id: "PROD-BK-CREDIT-CONSO",
+    title: "Crédit Consommation & Prêt Équipement SUNU Bank Togo",
+    category: "Crédits & Financements Bancaires",
+    startingPrice: "Financement des besoins personnels et biens d'équipement",
+    duration: "6 à 36 mois",
+    yield: "Taux débiteur indicatif de 8,0% à 10,5% l'an HT",
+    benefits: [
+      "Financement souple de l'équipement ménager, travaux, scolarité ou événements familiaux",
+      "Taux débiteur de 8,0% à 10,5% HT avec mensualités constantes",
+      "Condition de domiciliation de salaire sur compte courant SUNU Bank Togo",
+      "Couverture par l'Assurance Emprunteur (décès/invalidité) SUNU Assurances Vie Togo"
+    ],
+    cima: "Garantie par contrat de prévoyance emprunteur régi par le Code CIMA."
+  },
+  {
+    id: "PROD-BK-CREDIT-IMMO",
+    title: "Crédit Immobilier & Prêt Habitat SUNU Bank Togo",
+    category: "Crédits Immobiliers & Patrimoine",
+    startingPrice: "Financement acquisition de terrain, construction ou rénovation immobilière",
+    duration: "7 à 15 ans (jusqu'à 20 ans sous convention)",
+    yield: "Taux débiteur indicatif de 7,0% à 8,5% l'an HT",
+    benefits: [
+      "Financement jusqu'à 80% du coût du projet immobilier (apport de 10% à 20%)",
+      "Taux avantageux de 7,0% à 8,5% l'an HT amortissable à long terme",
+      "Garantie hypothécaire de 1er rang sur le titre foncier + domiciliation irrévocable de salaire",
+      "Double couverture bancassurance : Assurance Emprunteur SUNU Vie + Multirisque Habitation (MRH) SUNU IARD"
+    ],
+    cima: "Protection de l'emprunteur et du bien selon les normes CIMA et la législation foncière togolaise."
+  },
+  {
+    id: "PROD-BK-CLICAUTO",
+    title: "Clic@uto (Assurance Automobile Tous Risques 100% Digitale)",
+    category: "Assurance IARD Automobile",
+    startingPrice: "Tarification personnalisée selon la puissance fiscale et la valeur vénale du véhicule",
+    duration: "1 an renouvelable (adossée au prêt)",
+    benefits: [
+      "Première assurance automobile 100% digitale au Togo émise par SUNU Assurances IARD Togo",
+      "Garanties complètes : Responsabilité Civile, Dommages Tous Accidents, Vol, Incendie, Bris de Glaces, Défense et Recours",
+      "Délégation de bénéfice au profit de SUNU Bank Togo pour les véhicules sous financement bancaire",
+      "Assistance 24/7 et constat dématérialisé en cas d'accident de la circulation à Lomé et sur tout le territoire togolais"
+    ],
+    cima: "Code CIMA Livre II (Assurance Automobile Obligatoire et Garanties Annexes)."
   }
 ];
 
@@ -360,7 +421,7 @@ export const CIMA_LEXICON_DATABASE: LexiconEntry[] = [
     id: "LEX-REG-ART21",
     term: "Déclaration de sinistre (Article 21)",
     category: "Réglementation",
-    aliases: ["declaration de sinistre", "déclaration de sinistre", "article 21", "art 21", "art. 21", "delai sinistre", "délai sinistre", "5 jours"],
+    aliases: ["declaration de sinistre", "déclaration de sinistre", "declarer un sinistre", "déclarer un sinistre", "article 21", "art 21", "art. 21", "delai sinistre", "délai sinistre", "5 jours", "sinistre deces", "sinistre décès", "delais de paiement", "délais de paiement", "delai paiement", "délai paiement", "paiement legal", "paiement légal"],
     definition: "Obligation légale incombant à l'assuré ou aux bénéficiaires d'aviser l'assureur de tout sinistre (décès, accident, hospitalisation) dès qu'ils en ont connaissance, et au plus tard dans un délai légal de 5 jours ouvrés.",
     legalBasis: "Article 21 du Code CIMA.",
     bankApplication: "Pour les garanties de prévoyance SUNU Bank (Protect Plus, Secure Compte, Sérénité), la déclaration rapide en agence permet d'activer le versement des fonds sous 48 à 72 heures.",
@@ -636,8 +697,169 @@ export const CIMA_LEXICON_DATABASE: LexiconEntry[] = [
     bankApplication: "Vos informations médicales (questionnaire de santé) et bancaires sont strictement protégées par le secret bancaire et médical et ne sont jamais transmises à des tiers non autorisés.",
     concreteExample: "Les questionnaires de santé remplis pour Secure Compte ou Protect Plus sont scellés et traités uniquement par le médecin-conseil de la compagnie d'assurance.",
     relatedProducts: ["Tous les contrats de bancassurance SUNU Bank Togo"]
+  },
+  {
+    id: "LEX-BAN-CREDIT-AUTO",
+    term: "Crédit Automobile Bancassurance",
+    category: "Bancassurance",
+    aliases: ["crédit auto", "credit auto", "pret auto", "prêt auto", "crédit automobile", "credit automobile", "pret automobile", "prêt automobile", "clic@uto", "clicauto"],
+    definition: "Financement bancaire accordé par SUNU Bank Togo pour l'acquisition de véhicules neufs ou d'occasion récente, couplé obligatoirement à une Assurance Emprunteur (ADI SUNU Vie) et une Assurance Tous Risques (Clic@uto SUNU IARD) avec délégation de bénéfice et gage sur carte grise.",
+    legalBasis: "Réglementation bancaire UMOA / BCEAO & Code CIMA Livre V (Intermédiation en assurance).",
+    bankApplication: "Taux débiteur indicatif de 7,5% à 9,5% HT sur 12 à 60 mois, apport personnel de 10% à 20%, quotité cessible plafonnée à 33%-40% avec domiciliation irrévocable du salaire.",
+    concreteExample: "Un client empruntant 8 000 000 FCFA sur 4 ans bénéficie du remboursement automatique de son prêt en cas d'invalidité grâce à l'ADI, et d'un véhicule de remplacement via Clic@uto en cas de vol.",
+    relatedProducts: ["Crédit Automobile SUNU Bank Togo", "Clic@uto SUNU IARD", "Assurance Emprunteur SUNU Vie"]
+  },
+  {
+    id: "LEX-BAN-ADI",
+    term: "Assurance Emprunteur (ADI)",
+    category: "Bancassurance",
+    aliases: ["assurance emprunteur", "adi", "assurance pret", "assurance prêt", "assurance décès invalidité", "assurance deces invalidite"],
+    definition: "Garantie de prévoyance obligatoire souscrite auprès de SUNU Assurances Vie Togo couvrant le remboursement du capital restant dû d'un crédit bancaire en cas de décès ou d'invalidité absolue et définitive (IAD) de l'emprunteur.",
+    legalBasis: "Code CIMA Livre I (Assurance de Personnes) & Directives Prudentielles BCEAO.",
+    bankApplication: "Intégrée automatiquement dans toute offre de crédit (auto, consommation, immobilier) chez SUNU Bank Togo pour protéger la famille contre les dettes héréditaires.",
+    concreteExample: "En cas de disparition de l'emprunteur, SUNU Assurances Vie règle le solde du prêt à la banque : le véhicule ou le logement reste la propriété des héritiers sans aucune dette résiduelle.",
+    relatedProducts: ["Crédit Automobile SUNU Bank Togo", "Crédit Consommation", "Crédit Immobilier"]
   }
 ];
+
+export function findCreditAnswer(query: string): string | null {
+  const norm = query.toLowerCase().trim();
+
+  const hasCreditAuto =
+    (norm.includes("auto") || norm.includes("voiture") || norm.includes("véhicule") || norm.includes("vehicule")) &&
+    (norm.includes("crédit") || norm.includes("credit") || norm.includes("prêt") || norm.includes("pret") ||
+     norm.includes("taux") || norm.includes("condition") || norm.includes("financement") || norm.includes("acheter") ||
+     norm.includes("achat") || norm.includes("emprunt") || norm.includes("banque"));
+
+  const isDirectAutoCredit =
+    norm.includes("crédit auto") || norm.includes("credit auto") ||
+    norm.includes("prêt auto") || norm.includes("pret auto") ||
+    norm.includes("crédit automobile") || norm.includes("credit automobile") ||
+    norm.includes("prêt automobile") || norm.includes("pret automobile") ||
+    norm.includes("clic@uto") || norm.includes("clicauto");
+
+  if (hasCreditAuto || isDirectAutoCredit) {
+    return (
+`## 🚗 Crédit Automobile & Bancassurance Intégrée — SUNU Bank Togo\n\n` +
+`Chez **SUNU Bank Togo**, le **Crédit Automobile** s'inscrit dans notre modèle de **bancassurance intégrée** : il associe un financement bancaire souple et compétitif accordé par la Banque et une double protection d'assurance (Assurance Emprunteur SUNU Assurances Vie + Assurance Tous Risques Clic@uto SUNU Assurances IARD) pour sécuriser l'emprunteur et son véhicule.\n\n` +
+`---\n\n` +
+`### 1. 📊 Taux d'Intérêt & Conditions Financières\n\n` +
+`| Paramètre Financier | Conditions Officielles SUNU Bank Togo |\n` +
+`| :--- | :--- |\n` +
+`| **Taux d'intérêt débiteur** | **7,5 % à 9,5 % l'an hors taxes (HT)** *(taux indicatif selon le profil du client, la convention employeur et la nature du véhicule)* |\n` +
+`| **Durée de remboursement** | • **12 à 60 mois (jusqu'à 5 ans)** pour un véhicule **neuf**<br>• **12 à 36 mois (jusqu'à 3 ans)** pour un véhicule **d'occasion récente** (< 5 ans) |\n` +
+`| **Quotité de financement** | Jusqu'à **80 % à 90 %** du prix d'achat proforma *(jusqu'à 100 % pour le personnel des entreprises sous convention)* |\n` +
+`| **Apport personnel** | **10 % à 20 %** du montant TTC du véhicule |\n` +
+`| **Frais de dossier** | **1 % HT** du montant emprunté (minimum 50 000 FCFA HT) |\n` +
+`| **Mode de remboursement** | Mensualités constantes prélevées à la source sur votre compte salaire SUNU Bank Togo |\n\n` +
+`---\n\n` +
+`### 2. 📋 Conditions d'Éligibilité (Normes Prudentielles BCEAO / UMOA)\n\n` +
+`Pour prétendre au Crédit Auto chez SUNU Bank Togo, vous devez satisfaire aux critères d'octroi réglementaires :\n` +
+`1. **Domiciliation irrévocable du salaire ou des revenus** : engagement formel de domiciliation sur votre compte courant chez **SUNU Bank Togo**.\n` +
+`2. **Capacité d'endettement (Quotité cessible)** : la mensualité globale de remboursement ne doit pas dépasser **33 % à 40 % de votre revenu mensuel net** (normes prudentielles de la BCEAO pour préserver votre reste à vivre).\n` +
+`3. **Statut professionnel et ancienneté** :\n` +
+`   - *Salariés (secteur public ou privé)* : être sous contrat à durée indéterminée (CDI) confirmé avec une ancienneté minimale de **12 mois**.\n` +
+`   - *Professions libérales, commerçants & entrepreneurs* : justification d'au moins **24 mois d'exercice régulier** avec bilans comptables ou relevés bancaires probants.\n` +
+`4. **Condition d'âge** : être âgé d'au moins **21 ans** à la demande de prêt, et ne pas dépasser **60 ans** (âge légal de départ à la retraite) à la dernière mensualité.\n\n` +
+`---\n\n` +
+`### 3. 🛡️ Package Bancassurance Obligatoire (Synergie SUNU Bank + SUNU Assurances)\n\n` +
+`Conformément au Code CIMA et aux garanties de crédit, le financement automobile est obligatoirement assorti d'une double couverture en guichet unique :\n` +
+`* **Assurance Emprunteur (ADI - Assurance Décès & Invalidité)** — *SUNU Assurances Vie Togo* :\n` +
+`  - Prend en charge le remboursement intégral du capital restant dû en cas de décès ou d'invalidité absolue et définitive (IAD) de l'emprunteur.\n` +
+`  - Évite la saisie du véhicule et protège vos héritiers et ayants droit contre toute dette résiduelle.\n` +
+`* **Assurance Automobile Tous Risques (Clic@uto)** — *SUNU Assurances IARD Togo* :\n` +
+`  - Première assurance auto 100% digitale au Togo : Dommages tous accidents, Vol, Incendie, Bris de glaces et Responsabilité Civile.\n` +
+`  - Fait l'objet d'un **gage sur la carte grise** et d'une **délégation d'indemnité** au profit de SUNU Bank Togo jusqu'au remboursement complet du prêt.\n\n` +
+`---\n\n` +
+`### 4. 📑 Pièces Justificatives à Fournir (Constitution du Dossier)\n\n` +
+`Pour instruire votre dossier en agence, veuillez réunir les documents suivants :\n` +
+`* [x] **Facture proforma** récente du véhicule délivrée par un concessionnaire agréé ou un vendeur certifié.\n` +
+`* [x] **3 derniers bulletins de paie** (salariés) ou 3 derniers bilans / relevés des 6 derniers mois (indépendants).\n` +
+`* [x] **Attestation de travail** récente et **lettre d'engagement irrévocable de domiciliation de salaire** signée par votre employeur.\n` +
+`* [x] **Relevé d'Identité Bancaire (RIB)** de votre compte SUNU Bank Togo.\n` +
+`* [x] **Pièce d'identité officielle en cours de validité** (Carte Nationale d'Identité togolaise, Passeport ou Carte de Séjour).\n` +
+`* [x] **Justificatif de domicile récent** (quittance CEET, facture TdE ou certificat de résidence légalisé).\n\n` +
+`---\n\n` +
+`### 5. 💡 Exemple Chiffré de Simulation\n\n` +
+`*Pour l'acquisition d'un véhicule de **10 000 000 FCFA TTC** :*\n` +
+`* **Apport personnel requis (20 %)** : 2 000 000 FCFA.\n` +
+`* **Montant financé par SUNU Bank (80 %)** : 8 000 000 FCFA.\n` +
+`* **Durée de remboursement** : 48 mois (4 ans).\n` +
+`* **Taux débiteur indicatif** : 8,5 % l'an HT.\n` +
+`* **Mensualité estimée (hors assurance emprunteur)** : environ **197 100 FCFA / mois**.\n` +
+`* *Revenu mensuel net recommandé : au moins **500 000 à 600 000 FCFA** pour respecter la quotité cessible maximale de 33% à 40%.*\n\n` +
+`---\n\n` +
+`📍 **Comment finaliser votre demande ?**\n` +
+`Présentez-vous dans l'une de nos **28 agences SUNU Bank Togo** réparties à Lomé et à l'intérieur du pays, ou contactez notre Centre de Relation Client au **8444** (appel direct) pour une prise en charge rapide et un accord de principe sous 48 à 72 heures.`
+    );
+  }
+
+  // Crédit Consommation / Équipement
+  const isCreditConso =
+    norm.includes("crédit consommation") || norm.includes("credit consommation") ||
+    norm.includes("crédit conso") || norm.includes("credit conso") ||
+    norm.includes("prêt équipement") || norm.includes("pret equipement") ||
+    norm.includes("prêt consommation") || norm.includes("pret consommation") ||
+    norm.includes("prêt personnel") || norm.includes("pret personnel");
+
+  if (isCreditConso) {
+    return (
+`## 💳 Crédit Consommation & Prêt Équipement — SUNU Bank Togo\n\n` +
+`Chez **SUNU Bank Togo**, le **Crédit Consommation** permet de financer tous vos projets personnels, l'achat d'équipements électroménagers, l'aménagement de votre logement ou des dépenses imprévues.\n\n` +
+`* **Taux débiteur indicatif** : **8,0 % à 10,5 % l'an hors taxes (HT)**.\n` +
+`* **Durée de remboursement** : **6 à 36 mois** (jusqu'à 3 ans).\n` +
+`* **Conditions d'éligibilité** : Domiciliation irrévocable du salaire chez SUNU Bank Togo, quotité cessible ≤ 33 % à 40 % du revenu net, contrat CDI avec au moins 1 an d'ancienneté.\n` +
+`* **Package Bancassurance** : Couverture obligatoire par l'**Assurance Emprunteur (ADI)** de **SUNU Assurances Vie Togo** garantissant le remboursement du solde en cas de décès ou d'invalidité.\n` +
+`* **Pièces requises** : 3 derniers bulletins de paie, attestation de travail, lettre d'engagement de domiciliation, pièce d'identité et facture proforma des biens à acquérir.\n\n` +
+`Nos conseillers vous accueillent dans nos 28 agences pour une étude immédiate de votre dossier.`
+    );
+  }
+
+  // Crédit Immobilier / Habitat
+  const isCreditImmo =
+    norm.includes("crédit immobilier") || norm.includes("credit immobilier") ||
+    norm.includes("crédit immo") || norm.includes("credit immo") ||
+    norm.includes("prêt immobilier") || norm.includes("pret immobilier") ||
+    norm.includes("crédit habitat") || norm.includes("credit habitat") ||
+    norm.includes("financement immobilier") || norm.includes("acheter maison") ||
+    norm.includes("terrain") || norm.includes("construction");
+
+  if (isCreditImmo) {
+    return (
+`## 🏡 Crédit Immobilier & Prêt Habitat — SUNU Bank Togo\n\n` +
+`Le **Crédit Immobilier SUNU Bank Togo** vous accompagne dans l'acquisition de terrain avec titre foncier, la construction ou la rénovation de votre résidence principale au Togo.\n\n` +
+`* **Taux débiteur indicatif** : **7,0 % à 8,5 % l'an hors taxes (HT)**.\n` +
+`* **Durée de remboursement** : **7 à 15 ans** (jusqu'à 20 ans sous conventions spécifiques).\n` +
+`* **Financement bancaire** : Jusqu'à 80 % du coût du projet (apport personnel de 10 % à 20 % requis).\n` +
+`* **Garanties exigées** : Hypothèque de 1er rang sur le Titre Foncier (TF) + domiciliation irrévocable des revenus.\n` +
+`* **Bancassurance Intégrée Obligatoire** : Assurance Emprunteur (ADI) chez **SUNU Assurances Vie Togo** + Assurance Multirisque Habitation (MRH Incendie) chez **SUNU Assurances IARD Togo**.\n\n` +
+`Rapprochez-vous de votre agence SUNU Bank Togo pour monter votre plan de financement sur mesure.`
+    );
+  }
+
+  // Question générale sur les crédits / conditions de prêt
+  const isGeneralCredit =
+    (norm.includes("crédit") || norm.includes("credit") || norm.includes("prêt") || norm.includes("pret") || norm.includes("emprunt")) &&
+    (norm.includes("taux") || norm.includes("condition") || norm.includes("comment obtenir") || norm.includes("obtenir un prêt") || norm.includes("demander un") || norm.includes("financement"));
+
+  if (isGeneralCredit) {
+    return (
+`## 🏛️ Offres de Crédits & Financements Bancaires — SUNU Bank Togo\n\n` +
+`**SUNU Bank Togo** propose une gamme complète de financements bancaires adossés à des garanties de bancassurance intégrée (Code CIMA et règles BCEAO) :\n\n` +
+`1. 🚗 **Crédit Automobile** : Taux indicatif de **7,5 % à 9,5 % HT**, durée de 12 à 60 mois, adossé à l'Assurance Emprunteur (SUNU Vie) et à l'assurance tous risques Clic@uto (SUNU IARD) avec gage carte grise.\n` +
+`2. 💳 **Crédit Consommation & Équipement** : Taux indicatif de **8,0 % à 10,5 % HT**, durée de 6 à 36 mois, pour vos besoins personnels et biens d'équipement.\n` +
+`3. 🏡 **Crédit Immobilier & Habitat** : Taux indicatif de **7,0 % à 8,5 % HT**, durée de 7 à 15-20 ans, pour l'achat de terrain avec titre foncier ou la construction.\n\n` +
+`### 📋 Conditions communes à tous nos financements :\n` +
+`* Domiciliation irrévocable de salaire ou de revenus d'activité chez **SUNU Bank Togo**.\n` +
+`* Respect du ratio d'endettement réglementaire BCEAO : mensualités plafonnées à **33 % à 40 % du salaire net**.\n` +
+`* Contrat CDI confirmé (1 an d'ancienneté min) ou 2 ans de bilans probants pour les indépendants.\n` +
+`* Couverture obligatoire par l'**Assurance Emprunteur (ADI)** de SUNU Assurances Vie Togo.\n\n` +
+`Souhaitez-vous des précisions sur le **Crédit Automobile**, le **Crédit Consommation** ou le **Crédit Immobilier** ?`
+    );
+  }
+
+  return null;
+}
 
 export function findLexiconAnswer(query: string): string | null {
   const norm = query.toLowerCase().trim();
@@ -1350,6 +1572,7 @@ Instructions strictes :
           sources: SUNU_KNOWLEDGE_DOCUMENTS.filter(d => {
             const q = query.toLowerCase();
             return (
+              (q.includes("auto") || q.includes("voiture") || q.includes("véhicule") || q.includes("vehicule") || q.includes("credit") || q.includes("crédit") || q.includes("prêt") || q.includes("pret") ? d.id.includes("CREDIT") || d.id.includes("CLICAUTO") : false) ||
               (q.includes("etude") || q.includes("étude") || q.includes("scolaire") ? d.id.includes("EDUCATION") || d.id.includes("EDUPRO") : false) ||
               (q.includes("retraite") ? d.id.includes("RETRAITE") || d.id.includes("RET5") : false) ||
               (q.includes("bonus") ? d.id.includes("BONUS") : false) ||
@@ -1368,7 +1591,9 @@ Instructions strictes :
     // Fallback déterministe
     const normalized = query.toLowerCase();
     let matchedDoc = SUNU_KNOWLEDGE_DOCUMENTS[0];
-    if (normalized.includes("retraite")) {
+    if (normalized.includes("auto") || normalized.includes("voiture") || normalized.includes("véhicule") || normalized.includes("vehicule") || ((normalized.includes("crédit") || normalized.includes("credit") || normalized.includes("prêt") || normalized.includes("pret")) && (normalized.includes("taux") || normalized.includes("condition")))) {
+      matchedDoc = SUNU_KNOWLEDGE_DOCUMENTS.find(d => d.id === "PROD-BK-CREDIT-AUTO") || SUNU_KNOWLEDGE_DOCUMENTS[0];
+    } else if (normalized.includes("retraite")) {
       matchedDoc = SUNU_KNOWLEDGE_DOCUMENTS[2];
     } else if (normalized.includes("bonus")) {
       matchedDoc = SUNU_KNOWLEDGE_DOCUMENTS[4];
@@ -1429,9 +1654,9 @@ app.post("/api/concierge/chat", async (req: Request, res: Response) => {
     if (ai) {
       try {
         const systemInstruction = `Tu es le Conseiller Bancassurance Senior et Concierge Financier officiel de SUNU Bank Togo.
-Ton rôle est d'accompagner les clients et chargés de clientèle avec expertise, amabilité, rigueur juridique et clarté sur l'ensemble du portefeuille de bancassurance vie conforme au Code CIMA.
+Ton rôle est d'accompagner les clients et chargés de clientèle avec expertise, amabilité, rigueur juridique et clarté sur l'ensemble du portefeuille de bancassurance (épargne-vie, prévoyance CIMA, crédits bancaires et assurances associées).
 
-Base documentaire certifiée SUNU Bank Togo (Produits officiels et Glossaire CIMA des 32 termes) :
+Base documentaire certifiée SUNU Bank Togo (Produits officiels, Financements et Glossaire CIMA des 34 termes) :
 ${docsContext}
 
 ${simulationData ? `DONNÉES ACTUARIELLES OFFICIELLES CALCULÉES POUR CETTE SIMULATION :
@@ -1440,7 +1665,7 @@ ${JSON.stringify(simulationData, null, 2)}
 
 Directives strictes :
 1. TON : Haut de gamme, courtois, pédagogue, digne d'un conseiller bancassurance de référence à Lomé.
-2. CONFORMITÉ CODE CIMA : Rappelle toujours l'Article 6 (information précontractuelle loyale), le droit de renonciation de 30 jours (Art. 76) et le fait que la simulation précontractuelle est indicative et finalisée avec le conseiller en agence.
+2. CONFORMITÉ CODE CIMA & NORMES BCEAO : Rappelle toujours l'Article 6 (information précontractuelle loyale), le droit de renonciation de 30 jours (Art. 76) et le respect des normes d'endettement prudentielles UMOA.
 3. SI LE CLIENT DEMANDE UNE SIMULATION OU DES CHIFFRES : Détaille le total cotisé, le capital garanti au terme avec le taux technique garanti de 3,5% l'an (Code CIMA), les spécificités (Bonus de fidélité 92% pour Horizon Retraite, rentes trimestrielles d'éducation pour Visa Études, tirages au sort pour Épargne Bonus/Moov, capitaux pour Protect Plus/Secure Compte).
 4. CITE LES ARTICLES DU CODE CIMA (Art. 6, 74, 76, 84, 21, 28, etc.).
 5. GLOSSAIRE & RÉGLEMENTATION CIMA : Si le client pose une question sur un article du Code CIMA ou un terme du glossaire (ex: Article 6, Article 74, Article 76, Article 84, TMG, Provision Mathématique, Rente d'orphelinat, CRCA, Avance, Réduction, etc.), réponds de manière approfondie, pédagogique et structurée en donnant la définition, le fondement légal, l'application concrète chez SUNU Bank Togo et un exemple.
@@ -1448,28 +1673,39 @@ Directives strictes :
 - Compare-les réellement sur tous les critères CIMA (objectifs, cotisations minimales, durées, rendements 3,5% TMG, capitaux garantis avec bonus, garanties prévoyance orphelinat/décès/accident, règles de rachat Art. 74 et 76).
 - Calcule ou intègre les chiffres exacts (total cotisé, capital garanti à terme, rentes éventuelles).
 - ANALYSE LE BESOIN EXPRIMÉ DU CLIENT (financer les études, retraite long terme vs courte, protection immédiate de la famille, micro-épargne, tirages au sort, budget modeste).
-- CONSEILLE FORMELLEMENT LE CLIENT POUR QU'IL CHOISISSE CE QUI EST MIEUX POUR LUI :
-  * Désigne clairement le produit recommandé n°1 et explique POURQUOI ce contrat est objectivement supérieur pour son besoin.
-  * Précise l'alternative : dans quel cas ou pour quel type de client l'autre contrat est plus pertinent.
-  * Formule une règle de décision limpide pour trancher immédiatement.
-  * Rappelle les garanties légales CIMA (Art. 6 information précontractuelle, Art. 76 renonciation 30 jours, Art. 74 rachat après 2 ans).`;
+- CONSEILLE FORMELLEMENT LE CLIENT POUR QU'IL CHOISISSE CE QUI EST MIEUX POUR LUI.
+7. CRÉDIT AUTOMOBILE & FINANCEMENTS BANCAIRES SUNU BANK TOGO : Si le client interroge sur le crédit auto ou les crédits bancaires chez SUNU Bank Togo :
+- Détaille avec clarté le taux d'intérêt débiteur indicatif de 7,5 % à 9,5 % l'an hors taxes (HT) selon le profil de l'emprunteur, la négociation employeur et l'état du véhicule (neuf vs occasion).
+- Durée de remboursement : 12 à 60 mois (jusqu'à 5 ans pour véhicule neuf) et 12 à 36 mois (occasion récente < 5 ans).
+- Conditions d'éligibilité : Domiciliation obligatoire et irrévocable du salaire chez SUNU Bank Togo, quotité cessible maximale de 33% à 40% (norme prudentielle BCEAO), statut CDI avec 1 an d'ancienneté (ou 2 ans de bilans pour indépendants), âge 21 à 60 ans.
+- Financement : 80% à 90% du véhicule (apport personnel de 10% à 20%).
+- Package Bancassurance Intégrée Obligatoire : Assurance Emprunteur (ADI) de SUNU Assurances Vie Togo + Assurance Tous Risques Clic@uto de SUNU Assurances IARD Togo avec gage sur carte grise et délégation d'indemnité à la banque.
+- Pièces à fournir : Facture proforma, 3 derniers bulletins de paie, attestation de travail + engagement de domiciliation, RIB SUNU Bank, CNI/Passeport et justificatif CEET/domicile.
+- Présente une simulation d'exemple claire et oriente vers les 28 agences ou le numéro direct 8444.`;
 
-        let modelName = process.env.GOOGLE_LLM_MODEL || "gemini-3.6-flash";
-        if (modelName.includes("2.0") || modelName.includes("2.5")) modelName = "gemini-3.6-flash";
+        let modelName = process.env.GOOGLE_LLM_MODEL || "gemini-2.5-flash";
+        if (modelName.includes("3.6")) modelName = "gemini-2.5-flash";
 
-        const response = await ai.models.generateContent({
-          model: modelName,
-          config: {
-            systemInstruction: systemInstruction,
-          },
-          contents: [
-            ...(conversationHistory || []).map((msg: any) => ({
-              role: msg.role === 'user' ? 'user' : 'model',
-              parts: [{ text: msg.content }]
-            })),
-            { role: 'user', parts: [{ text: message }] }
-          ]
-        });
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Gemini timeout after 2500ms")), 2500)
+        );
+
+        const response: any = await Promise.race([
+          ai.models.generateContent({
+            model: modelName,
+            config: {
+              systemInstruction: systemInstruction,
+            },
+            contents: [
+              ...(conversationHistory || []).map((msg: any) => ({
+                role: msg.role === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.content }]
+              })),
+              { role: 'user', parts: [{ text: message }] }
+            ]
+          }),
+          timeoutPromise
+        ]);
 
         return res.json({
           reply: response.text,
@@ -1480,7 +1716,16 @@ Directives strictes :
       }
     }
 
-    // ── Fallback Déterministe Certifié CIMA ───────────────────────────────────────
+    // ── Fallback Déterministe Certifié CIMA & Bancassurance ───────────────────────
+
+    // 0. Détection Crédits Bancaires, Crédit Automobile & Financements (Prioritaire)
+    const creditAnswer = findCreditAnswer(message);
+    if (creditAnswer) {
+      return res.json({
+        reply: creditAnswer,
+        structuredData: null
+      });
+    }
 
     // 1. Comparaison universelle multi-produits & Conseil Personnalisé (Prioritaire absolu sur le comparateur)
     const normalized = message.toLowerCase();
