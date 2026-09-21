@@ -590,7 +590,14 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
   const [feedbackScores, setFeedbackScores] = useState<{ [msgId: string]: 'positive' | 'negative' }>({});
   const [feedbackToast, setFeedbackToast] = useState<string | null>(null);
 
-  // RAG Inspector (Techniques Mémoire) State
+  // RAG Inspector (Techniques Mémoire) State - Masqué par défaut pour les clients
+  const [showRagAuditMode, setShowRagAuditMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('sunu_rag_audit_mode') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
   const [expandedRagMsgId, setExpandedRagMsgId] = useState<string | null>(null);
   const [ragActiveTab, setRagActiveTab] = useState<{ [msgId: string]: 'transform' | 'fusion' | 'compliance' }>({});
 
@@ -1521,6 +1528,39 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
               <span className="sm:hidden">Simuler</span>
             </button>
 
+            {/* Interrupteur Mode Audit / Soutenance Mémoire (Masqué par défaut pour les clients) */}
+            <button
+              id="btn-toggle-rag-audit"
+              data-testid="rag-audit-mode-toggle"
+              onClick={() => {
+                setShowRagAuditMode(prev => {
+                  const next = !prev;
+                  try {
+                    localStorage.setItem('sunu_rag_audit_mode', String(next));
+                  } catch (e) {}
+                  return next;
+                });
+              }}
+              className={`flex items-center gap-1 text-xs px-2 sm:px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer shrink-0 font-medium ${
+                showRagAuditMode
+                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/50 shadow-xs ring-1 ring-amber-500/30 font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border-slate-200 dark:border-[#2D2D2D]'
+              }`}
+              title={
+                showRagAuditMode
+                  ? "Mode Audit RAG (Soutenance Mémoire) ACTIF : Inspecteur visible. Cliquez pour masquer aux clients."
+                  : "Activer le Mode Audit RAG (Réservé Soutenance Mémoire & Démonstration Jury)"
+              }
+            >
+              <span className="text-xs">🔬</span>
+              <span className="hidden sm:inline">
+                {showRagAuditMode ? 'Audit RAG : ON' : 'Audit RAG : OFF'}
+              </span>
+              <span className="sm:hidden">
+                {showRagAuditMode ? 'Audit:ON' : 'Audit:OFF'}
+              </span>
+            </button>
+
             <button
               onClick={onNavigateHome}
               className="text-slate-600 dark:text-[#e5e2e1] hover:text-[#E21E26] transition-colors p-1 cursor-pointer shrink-0"
@@ -1691,8 +1731,8 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
                     </div>
                   )}
 
-                  {/* INSPECTEUR RAG AVANCÉ (INSPIRÉ DE RAG_Techniques-main : Techniques 6, 15, 25, 3 & 30) */}
-                  {msg.structuredData?.ragInspector && (
+                  {/* INSPECTEUR RAG AVANCÉ (MASQUÉ PAR DÉFAUT POUR LES CLIENTS - VISIBLE UNIQUEMENT EN MODE AUDIT JURY) */}
+                  {showRagAuditMode && msg.structuredData?.ragInspector && (
                     <div className="mt-3 border border-slate-200 dark:border-[#2f2f2f] rounded-xl overflow-hidden bg-slate-50/70 dark:bg-[#181818] shadow-2xs transition-all">
                       {/* Toggle Bar */}
                       <button
