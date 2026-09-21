@@ -15,18 +15,37 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading]   = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // ── Identifiants démo (vérifiés AVANT l'appel réseau) ─────────────────────
+  const DEMO_ADMIN_EMAIL    = 'admin@sunubank.tg';
+  const DEMO_ADMIN_PASSWORD = 'admin1234';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setErrorMessage('Veuillez renseigner votre email et votre mot de passe.');
       return;
     }
-
     setIsLoading(true);
     setErrorMessage('');
 
+    // ── 1. Vérification démo instantanée (sans réseau) ──────────────────────
+    if (email === DEMO_ADMIN_EMAIL && password === DEMO_ADMIN_PASSWORD) {
+      localStorage.setItem('sunu_admin_token', 'demo-admin-token');
+      localStorage.setItem('sunu_admin_role', 'admin');
+      setIsLoading(false);
+      onLoginSuccess('admin');
+      return;
+    }
+    if ((email.endsWith('@sunubank.tg') || email.endsWith('@sunubank.com')) && password.length >= 4) {
+      localStorage.setItem('sunu_admin_token', 'demo-agent-token');
+      localStorage.setItem('sunu_admin_role', 'agent');
+      setIsLoading(false);
+      onLoginSuccess('agent');
+      return;
+    }
+
+    // ── 2. Tentative API réelle (backend FastAPI) ────────────────────────────
     try {
-      // Attempt real API login
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,30 +70,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
         setErrorMessage('Compte désactivé. Contactez un administrateur.');
         return;
       }
-      // API unavailable — fallback demo admin
-      throw new Error('API unavailable');
-
+      setErrorMessage('Identifiants incorrects. Utilisez les identifiants démo : admin@sunubank.tg / admin1234');
     } catch {
-      // Fallback: offline demo mode (backend not running)
-      // Admin demo credentials: admin@sunubank.tg / admin1234
-      const DEMO_ADMIN_EMAIL    = 'admin@sunubank.tg';
-      const DEMO_ADMIN_PASSWORD = 'admin1234';
-
-      if (email === DEMO_ADMIN_EMAIL && password === DEMO_ADMIN_PASSWORD) {
-        localStorage.setItem('sunu_admin_token', 'demo-admin-token');
-        localStorage.setItem('sunu_admin_role', 'admin');
-        onLoginSuccess('admin');
-      } else if (email.endsWith('@sunubank.tg') || email.endsWith('@sunubank.com')) {
-        // Any @sunubank email → agent in demo mode
-        localStorage.setItem('sunu_admin_token', 'demo-agent-token');
-        localStorage.setItem('sunu_admin_role', 'agent');
-        onLoginSuccess('agent');
-      } else {
-        setErrorMessage(
-          'Connexion au serveur impossible. En mode démo, utilisez :\n' +
-          'admin@sunubank.tg / admin1234'
-        );
-      }
+      setErrorMessage('Identifiants incorrects. En mode démo : admin@sunubank.tg / admin1234');
     } finally {
       setIsLoading(false);
     }

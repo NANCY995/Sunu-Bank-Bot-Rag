@@ -47,7 +47,8 @@ function AppContent() {
       localStorage.setItem('sunu_admin_role', role);
       setIsAdmin(role === 'admin');
     }
-    navigateTo('concierge-home');
+    // Admins vont directement au panneau admin
+    navigateTo(role === 'admin' ? 'admin' : 'concierge-home');
   };
 
   const handleLogout = () => {
