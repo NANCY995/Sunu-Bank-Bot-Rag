@@ -30,7 +30,9 @@ import {
   ThumbsDown,
   Compass,
   CheckCircle2,
-  ArrowLeftRight
+  ArrowLeftRight,
+  Star,
+  Target
 } from 'lucide-react';
 import { FormattedMessage } from '../components/FormattedMessage';
 import logoSunu from '../../assets/LOGO-SUNU.png';
@@ -292,6 +294,253 @@ const CIMA_LEXICON: LexiconItem[] = [
   { term: 'Protection des Données (IPDCP Togo)', category: 'Bancassurance', definition: 'Conformité à la loi togolaise n° 2019-014 encadrant la collecte, le traitement et la confidentialité des données personnelles et financières des souscripteurs en agence.' }
 ];
 
+export interface ComparisonNeed {
+  id: string;
+  label: string;
+  icon: string;
+  desc: string;
+  targetProductIds: string[];
+}
+
+export const COMPARISON_NEEDS: ComparisonNeed[] = [
+  { 
+    id: 'education', 
+    label: 'Études des enfants & Sécurisation Avenir', 
+    icon: '🎓', 
+    desc: 'Financer les études supérieures et garantir les bourses même en cas de décès du parent',
+    targetProductIds: ['visa_etudes', 'visa_etudes_plus']
+  },
+  { 
+    id: 'retraite', 
+    label: 'Retraite Confortable (10 à 25 ans)', 
+    icon: '🏖️', 
+    desc: 'Constituer un capital retraite avec le bonus de fidélité de 92% et option de rente viagère',
+    targetProductIds: ['horizon_retraite', 'horizon_retraite_5']
+  },
+  { 
+    id: 'retraite_courte', 
+    label: 'Retraite Accélérée Senior (5 ans)', 
+    icon: '⚡', 
+    desc: 'Capitalisation courte de 5 ans ferme pour cadres proches de la cessation d\'activité',
+    targetProductIds: ['horizon_retraite_5', 'horizon_retraite']
+  },
+  { 
+    id: 'sante_accident', 
+    label: 'Santé, Accident & Hospitalisation', 
+    icon: '🏥', 
+    desc: 'Bouclier financier d\'urgence avec forfait hospitalisation et capital décès accidentel',
+    targetProductIds: ['protect_plus', 'secure_compte']
+  },
+  { 
+    id: 'epargne_tirages', 
+    label: 'Épargne & Tirages au Sort Trimestriels', 
+    icon: '🎲', 
+    desc: 'Capitaliser à 3,5% tout en tentant de remporter immédiatement le capital complet',
+    targetProductIds: ['epargne_bonus', 'epargne_moov']
+  },
+  { 
+    id: 'compte_bancaire', 
+    label: 'Sécurité Compte Bancaire & Découverts', 
+    icon: '🏦', 
+    desc: 'Adosser un capital prévoyance immédiat (jusqu\'à 5M) directement à son compte bancaire',
+    targetProductIds: ['secure_compte', 'protect_plus']
+  },
+  { 
+    id: 'mobile_money', 
+    label: 'Micro-Épargne 100% Mobile Money', 
+    icon: '📱', 
+    desc: 'Souscription et versements sur smartphone via Moov Money sans compte bancaire classique',
+    targetProductIds: ['epargne_moov', 'protect_plus']
+  },
+  { 
+    id: 'obseques', 
+    label: 'Frais Funéraires & Obsèques sous 48h', 
+    icon: '⚰️', 
+    desc: 'Déblocage prioritaire garanti des fonds nécessaires pour des funérailles dignes',
+    targetProductIds: ['serenite', 'secure_compte']
+  },
+];
+
+export function evaluateComparisonAdvice(
+  pA: PortfolioProduct,
+  pB: PortfolioProduct,
+  amount: number,
+  duration: number,
+  needId: string
+) {
+  const currentNeed = COMPARISON_NEEDS.find(n => n.id === needId) || COMPARISON_NEEDS[0];
+  const isEpargneA = pA.isEpargne;
+
+  let winner = pA;
+  let other = pB;
+  let matchScore = '98%';
+  let winnerReasons: string[] = [];
+  let otherReasons: string[] = [];
+  let goldenRule = '';
+
+  // 1. Les deux produits sont Visa Études vs Visa Études Plus
+  if ((pA.id === 'visa_etudes' || pA.id === 'visa_etudes_plus') && (pB.id === 'visa_etudes' || pB.id === 'visa_etudes_plus')) {
+    const isPlusA = pA.id === 'visa_etudes_plus';
+    const plus = isPlusA ? pA : pB;
+    const classic = isPlusA ? pB : pA;
+
+    if (amount >= 10000) {
+      winner = plus;
+      other = classic;
+      matchScore = '99% d\'adéquation';
+      winnerReasons = [
+        "Rente d'orphelinat immédiate : Dès le décès éventuel du parent, une allocation régulière est versée à l'enfant pour son quotidien sans attendre ses études supérieures.",
+        "Doublement du capital garanti en cas de décès consécutif à un accident corporel.",
+        "Exonération totale des cotisations restantes prise en charge par SUNU Assurances.",
+        "Versement échelonné des bourses scolaires sur 4 ans (16 trimestres) pour sécuriser le cursus complet."
+      ];
+      otherReasons = [
+        "Privilégiez Visa Études classique si votre budget mensuel est modeste (accessible dès 4 250 FCFA/mois)."
+      ];
+      goldenRule = `Pour votre budget de ${amount.toLocaleString('fr-FR')} FCFA/mois (≥ 10 000 F), ${plus.name} est le choix d'excellence : la rente d'orphelinat immédiate met votre enfant à l'abri de toute déscolarisation.`;
+    } else {
+      winner = classic;
+      other = plus;
+      matchScore = '97% d\'adéquation';
+      winnerReasons = [
+        "Cotisation d'entrée ultra-accessible dès 4 250 FCFA/mois, idéale pour épargner sans pression.",
+        "Exonération totale des cotisations par l'assureur si le parent souscripteur venait à décéder ou à être invalide (IAD).",
+        "Rendement garanti au Taux Minimum Garanti CIMA de 3,5% net/an + participation aux bénéfices (Art. 84).",
+        "Souplesse de sortie : Choix entre un capital unique en une seule fois ou des rentes trimestrielles scolaires."
+      ];
+      otherReasons = [
+        "Choisissez Visa Études Plus si vous pouvez augmenter votre effort d'épargne à au moins 10 000 FCFA/mois pour activer la rente d'orphelinat immédiate."
+      ];
+      goldenRule = `Avec un budget inférieur à 10 000 FCFA/mois, ${classic.name} est la formule la plus réaliste et sécurisante pour démarrer immédiatement.`;
+    }
+  }
+  // 2. Horizon Retraite vs Horizon Retraite 5
+  else if ((pA.id === 'horizon_retraite' || pA.id === 'horizon_retraite_5') && (pB.id === 'horizon_retraite' || pB.id === 'horizon_retraite_5')) {
+    const isRet5A = pA.id === 'horizon_retraite_5';
+    const ret5 = isRet5A ? pA : pB;
+    const long = isRet5A ? pB : pA;
+
+    if (duration <= 5 || needId === 'retraite_courte') {
+      winner = ret5;
+      other = long;
+      matchScore = '98% d\'adéquation';
+      winnerReasons = [
+        "Horizon court de 5 ans ferme conçu spécialement pour les seniors et cadres proches de la retraite.",
+        "Capitalisation rapide sans engagement contraignant sur 10 ou 15 ans.",
+        "Rendement garanti CIMA de 3,5% net/an avec restitution du capital à échéance."
+      ];
+      otherReasons = [
+        "Privilégiez Horizon Retraite si vous avez 10 ans ou plus devant vous pour toucher le bonus de fidélité de 92%."
+      ];
+      goldenRule = `À moins de 5 ans de votre départ à la retraite, ${ret5.name} vous évite tout blocage sur le long terme tout en garantissant vos intérêts.`;
+    } else {
+      winner = long;
+      other = ret5;
+      matchScore = '99% d\'adéquation';
+      winnerReasons = [
+        "Bonus de fidélité exceptionnel de 92% de la 1ère annuité versé à l'échéance (pour tout contrat ≥ 10 ans sans rachat).",
+        "Option de rente viagère réversible à vie (60% ou 100%) au conjoint survivant.",
+        "Effet puissant des intérêts composés à 3,5% et de la participation aux bénéfices de l'Article 84."
+      ];
+      otherReasons = [
+        "Choisissez Horizon Retraite 5 uniquement si vous devez récupérer votre capital d'ici 5 ans sans attendre."
+      ];
+      goldenRule = `Sur 10 ans ou plus, ${long.name} est imbattable : le bonus de fidélité de 92% amplifie votre épargne de manière unique.`;
+    }
+  }
+  // 3. Protect Plus vs Secure Compte
+  else if ((pA.id === 'protect_plus' || pA.id === 'secure_compte') && (pB.id === 'protect_plus' || pB.id === 'secure_compte')) {
+    const isProtA = pA.id === 'protect_plus';
+    const prot = isProtA ? pA : pB;
+    const sec = isProtA ? pB : pA;
+
+    if (needId === 'sante_accident' || amount <= 1500) {
+      winner = prot;
+      other = sec;
+      matchScore = '97% d\'adéquation';
+      winnerReasons = [
+        "Prise en charge forfaitaire des frais d'hospitalisation accidentelle dès 5 jours consécutifs (150 000 à 250 000 FCFA).",
+        "Capital décès et invalidité accidentels de 500 000 à 1 000 000 FCFA.",
+        "Accessibilité record dès 500 FCFA/mois sans formalité médicale lourde (Livre VII CIMA)."
+      ];
+      otherReasons = [
+        "Privilégiez Secure Compte si vous avez un compte bancaire SUNU Bank et visez un capital décès plus important (jusqu'à 5 000 000 FCFA)."
+      ];
+      goldenRule = `Pour vous protéger contre les frais d'hospitalisation et accidents quotidiens avec une prime minime, ${prot.name} est le bouclier indispensable.`;
+    } else {
+      winner = sec;
+      other = prot;
+      matchScore = '96% d\'adéquation';
+      winnerReasons = [
+        "Capital de prévoyance substantiel jusqu'à 5 000 000 FCFA versé sous 48h aux ayants droit.",
+        "Protection automatique des découverts bancaires et des engagements.",
+        "Prélèvement simple et automatisé directement sur le compte bancaire."
+      ];
+      otherReasons = [
+        "Complétez avec Protect Plus si vous souhaitez également une couverture spécifique pour les séjours à l'hôpital."
+      ];
+      goldenRule = `Pour les clients bancarisés voulant sécuriser un capital conséquent pour leur famille, ${sec.name} est le premier choix.`;
+    }
+  }
+  // 4. Cas général selon le besoin sélectionné
+  else {
+    const matchesA = currentNeed.targetProductIds.includes(pA.id);
+    const matchesB = currentNeed.targetProductIds.includes(pB.id);
+
+    if (matchesA && !matchesB) {
+      winner = pA;
+      other = pB;
+      matchScore = '98% d\'adéquation';
+      winnerReasons = [
+        `Spécifiquement conçu pour « ${currentNeed.label} ».`,
+        `${pA.pointFort}`,
+        `Prestations clés : ${pA.payout}.`
+      ];
+      otherReasons = [
+        `${pB.name} répond principalement à un autre objectif (${pB.category}) : ${pB.pointFort}.`
+      ];
+      goldenRule = `Pour votre priorité (${currentNeed.label}), ${pA.name} correspond exactement à vos attentes.`;
+    } else if (matchesB && !matchesA) {
+      winner = pB;
+      other = pA;
+      matchScore = '98% d\'adéquation';
+      winnerReasons = [
+        `Spécifiquement conçu pour « ${currentNeed.label} ».`,
+        `${pB.pointFort}`,
+        `Prestations clés : ${pB.payout}.`
+      ];
+      otherReasons = [
+        `${pA.name} répond principalement à un autre objectif (${pA.category}) : ${pA.pointFort}.`
+      ];
+      goldenRule = `Pour votre priorité (${currentNeed.label}), ${pB.name} correspond exactement à vos attentes.`;
+    } else {
+      winner = isEpargneA ? pA : pB;
+      other = winner.id === pA.id ? pB : pA;
+      matchScore = '94% d\'adéquation';
+      winnerReasons = [
+        `Atout majeur : ${winner.pointFort}`,
+        `Garanties de sortie : ${winner.payout}.`
+      ];
+      otherReasons = [
+        `Alternative : ${other.name} pour ${other.pointFort}.`
+      ];
+      goldenRule = `Comparez vos priorités : préférez ${winner.name} pour sa flexibilité de sortie, ou ${other.name} pour ses garanties spécifiques.`;
+    }
+  }
+
+  return {
+    winner,
+    other,
+    matchScore,
+    winnerReasons,
+    otherReasons,
+    goldenRule,
+    isWinnerA: winner.id === pA.id,
+    isWinnerB: winner.id === pB.id,
+    currentNeed
+  };
+}
+
 export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
   initialMessage,
   onNavigateHome,
@@ -320,6 +569,7 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
   const [compareProdB, setCompareProdB] = useState<PortfolioProduct>(PORTFOLIO_PRODUCTS[1]); // Visa Études Plus
   const [compareMonthlyAmount, setCompareMonthlyAmount] = useState<number>(20000);
   const [compareDurationYears, setCompareDurationYears] = useState<number>(10);
+  const [compareUserNeed, setCompareUserNeed] = useState<string>('education');
 
   // Lexicon Search State
   const [lexiconSearch, setLexiconSearch] = useState('');
@@ -798,7 +1048,57 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
 
       let fallbackContent = "Pour toute souscription ou information complémentaire sur les produits SUNU Bank Togo (Visa Études, Horizon Retraite, Épargne Bonus, Protect Plus), nos conseillers vous accueillent dans nos 28 agences avec le respect rigoureux des dispositions du Code CIMA.";
       
-      if (matchedLex) {
+      const isComp = cleanQ.includes("compar") || cleanQ.includes("versus") || cleanQ.includes("vs ") || cleanQ.includes(" vs") || cleanQ.includes("différen") || cleanQ.includes("differen") || cleanQ.includes("entre") || cleanQ.includes("choisir") || cleanQ.includes("lequel") || cleanQ.includes("meilleur");
+
+      if (isComp) {
+        let pA = PORTFOLIO_PRODUCTS[0];
+        let pB = PORTFOLIO_PRODUCTS[1];
+        if (cleanQ.includes("plus") && (cleanQ.includes("visa") || cleanQ.includes("etude") || cleanQ.includes("étude"))) {
+          pA = PORTFOLIO_PRODUCTS[0];
+          pB = PORTFOLIO_PRODUCTS[1];
+        } else if (cleanQ.includes("retraite") || cleanQ.includes("horizon")) {
+          pA = PORTFOLIO_PRODUCTS[2];
+          pB = PORTFOLIO_PRODUCTS[3];
+        } else if (cleanQ.includes("protect") || cleanQ.includes("sante") || cleanQ.includes("santé")) {
+          pA = PORTFOLIO_PRODUCTS[5];
+          pB = PORTFOLIO_PRODUCTS[6];
+        } else if (cleanQ.includes("bonus") || cleanQ.includes("tirage")) {
+          pA = PORTFOLIO_PRODUCTS[4];
+          pB = PORTFOLIO_PRODUCTS[7];
+        }
+
+        let compAmt = 20000;
+        const matchAmt = cleanQ.match(/(\d[\d\s]*\d|\d+)\s*(?:fcfa|f\b|francs?)/i);
+        if (matchAmt) {
+          const parsed = parseInt(matchAmt[1].replace(/\s+/g, ''), 10);
+          if (!isNaN(parsed) && parsed >= 500) compAmt = parsed;
+        }
+
+        let compDur = 10;
+        const matchDur = cleanQ.match(/(\d+)\s*(?:ans?|années?)/i);
+        if (matchDur) {
+          const parsed = parseInt(matchDur[1], 10);
+          if (!isNaN(parsed) && parsed >= 1 && parsed <= 30) compDur = parsed;
+        }
+
+        const advice = evaluateComparisonAdvice(pA, pB, compAmt, compDur, 'education');
+        fallbackContent = 
+`## ⚖️ Analyse Comparative & Conseil CIMA : ${pA.name} vs ${pB.name}\n\n` +
+`> 🎯 **Conseil Personnalisé SUNU Bank Togo** • **Simulation :** ${compAmt.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} an(s)\n\n` +
+`### ⭐ CONTRAT RECOMMANDÉ : **${advice.winner.name}** (${advice.matchScore})\n\n` +
+`**Pourquoi choisir ${advice.winner.name} pour votre projet ?**\n` +
+advice.winnerReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
+`**Dans quel cas préférer plutôt ${advice.other.name} ?**\n` +
+advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
+`💡 **La Règle d'Or pour décider :**\n` +
+`> *${advice.goldenRule}*\n\n` +
+`---\n\n` +
+`### 📜 Rappels Légaux CIMA (Livre I)\n` +
+`- **Droit de renonciation de 30 jours (Art. 76)** : Remboursement intégral sans frais.\n` +
+`- **Valeur de rachat (Art. 74 & 76)** : Rachat possible après 2 ans, plafonné à 5% max de la provision mathématique.\n` +
+`- **Participation aux bénéfices (Art. 84)** : Redistribution légale minimale de 85% des bénéfices financiers.\n\n` +
+`*Conformément à l'Article 6 du Code CIMA, ce comparatif précontractuel loyal a pour but de vous éclairer. Nos conseillers en agence sont à votre disposition pour concrétiser votre adhésion.*`;
+      } else if (matchedLex) {
         fallbackContent = `## 📜 Fiche CIMA : ${matchedLex.term}\n\n` +
           `> **Catégorie :** ${matchedLex.category} • **Cadre :** Code des Assurances CIMA\n\n` +
           `### Définition Réglementaire :\n${matchedLex.definition}\n\n` +
@@ -941,11 +1241,12 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
     handleSendMessage(`Fais-moi une simulation complète pour ${modalSimResult.productName} avec ${modalSimResult.monthlyAmount.toLocaleString('fr-FR')} FCFA par mois pendant ${modalSimResult.durationYears} ans.`);
   };
 
-  const handleInsertComparison = (pA: PortfolioProduct, pB: PortfolioProduct, amount?: number, duration?: number) => {
+  const handleInsertComparison = (pA: PortfolioProduct, pB: PortfolioProduct, amount?: number, duration?: number, needLabel?: string) => {
     setShowCompareModal(false);
     const amtStr = amount ? ` avec une cotisation de ${amount.toLocaleString('fr-FR')} FCFA par mois` : '';
     const durStr = duration ? ` sur ${duration} ans` : '';
-    handleSendMessage(`Compare en détail ${pA.name} et ${pB.name}${amtStr}${durStr} selon leurs objectifs, cotisations, durées, garanties et conditions de sortie CIMA.`);
+    const needStr = needLabel ? ` pour mon besoin prioritaire : « ${needLabel} »` : '';
+    handleSendMessage(`En tant que Conseiller Bancassurance SUNU Bank Togo, aide-moi à choisir entre ${pA.name} et ${pB.name}${needStr}${amtStr}${durStr}. Compare-les en détail selon leurs objectifs, cotisations, durées, garanties et conditions de sortie CIMA, et conseille-moi pour que je choisisse ce qui est le mieux pour moi.`);
   };
 
   const filteredLexicon = CIMA_LEXICON.filter(item => {
@@ -1568,25 +1869,27 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
           setCompareProdB(temp);
         };
 
+        const advice = evaluateComparisonAdvice(compareProdA, compareProdB, compareMonthlyAmount, compareDurationYears, compareUserNeed);
+
         return (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
             <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-4xl w-full p-4 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[92vh] flex flex-col">
               
               {/* Header */}
-              <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-[#2D2D2D] pb-3 flex-shrink-0">
+              <div className="flex items-center justify-between mb-3 border-b border-slate-200 dark:border-[#2D2D2D] pb-3 flex-shrink-0">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900/50 flex items-center justify-center text-[#E21E26]">
                     <Scale className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                      Comparateur Côte-à-Côte de Produits CIMA
+                      Comparateur & Conseil Décisionnel CIMA
                       <span className="text-[10px] uppercase font-mono-code font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
-                        Analyse Certifiée
+                        Arbitrage Certifié
                       </span>
                     </h3>
                     <p className="text-[11px] text-slate-500 dark:text-[#888]">
-                      Comparez les garanties, l'effort d'épargne et les règles de rachat selon le Code CIMA (Art. 6, 74 & 76).
+                      Comparez réellement deux contrats selon votre besoin et recevez la recommandation personnalisée d'un actuaire.
                     </p>
                   </div>
                 </div>
@@ -1599,9 +1902,41 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
               </div>
 
               {/* Scrollable Body */}
-              <div className="overflow-y-auto pr-1 space-y-4 text-xs flex-1">
+              <div className="overflow-y-auto pr-1 space-y-3.5 text-xs flex-1">
                 
-                {/* Product Selectors with Swap */}
+                {/* 1. Étape 1 : Quel est votre besoin ou objectif prioritaire ? */}
+                <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-200 dark:border-[#282828] space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-1 border-b border-slate-200 dark:border-[#252525] pb-1.5">
+                    <span className="font-bold text-[11px] uppercase font-mono-code text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-[#E21E26]" />
+                      1. Votre besoin ou objectif prioritaire
+                    </span>
+                    <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium">
+                      🎯 {advice.currentNeed.desc}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    {COMPARISON_NEEDS.map((need) => (
+                      <button
+                        key={need.id}
+                        type="button"
+                        onClick={() => setCompareUserNeed(need.id)}
+                        className={`p-2 rounded-lg text-left transition-all cursor-pointer flex flex-col justify-between border ${
+                          compareUserNeed === need.id
+                            ? 'bg-red-50 dark:bg-red-950/40 border-[#E21E26] ring-1 ring-[#E21E26] text-slate-900 dark:text-white shadow-xs'
+                            : 'bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-[#2c2c2c] text-slate-600 dark:text-slate-400 hover:border-slate-400'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1 font-bold text-xs">
+                          <span>{need.icon}</span>
+                          <span className="truncate">{need.label}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. Étape 2 : Product Selectors with Swap */}
                 <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-2.5 items-end bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-200 dark:border-[#282828]">
                   <div>
                     <label className="block font-bold text-[11px] uppercase font-mono-code text-[#E21E26] mb-1">
@@ -1649,7 +1984,7 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
                   </div>
                 )}
 
-                {/* Simulation Parameters Bar */}
+                {/* 3. Étape 3 : Simulation Parameters Bar */}
                 <div className="bg-slate-50 dark:bg-[#161616] p-3 rounded-xl border border-slate-200 dark:border-[#262626] space-y-2.5">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-[#262626] pb-2">
                     <span className="font-bold text-[11px] uppercase font-mono-code text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
@@ -1738,15 +2073,81 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
                   </div>
                 </div>
 
-                {/* Side-by-Side Simulation Results Cards */}
+                {/* 4. VERDICT & CONSEIL PERSONNALISÉ DU CONSEILLER SUNU BANK */}
+                <div className="bg-gradient-to-br from-red-50/80 via-white to-emerald-50/80 dark:from-[#1e1414] dark:via-[#181818] dark:to-[#121c17] p-4 rounded-xl border-2 border-red-200 dark:border-red-900/60 shadow-md space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-red-200/60 dark:border-red-900/40 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="p-1.5 rounded-lg bg-[#E21E26] text-white shadow-xs">
+                        <Award className="w-4 h-4" />
+                      </span>
+                      <div>
+                        <div className="font-heading font-extrabold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
+                          <span>Verdict du Conseiller :</span>
+                          <span className="text-[#E21E26] font-black underline decoration-red-400">
+                            {advice.winner.name}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                          Recommandation personnalisée pour votre projet : <strong>« {advice.currentNeed.label} »</strong>
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-mono-code font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-300 dark:border-emerald-800 flex items-center gap-1 shadow-xs">
+                      <Star className="w-3 h-3 fill-emerald-600 text-emerald-600" />
+                      {advice.matchScore}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div className="bg-white/90 dark:bg-[#1f1f1f]/90 p-3 rounded-lg border border-emerald-200 dark:border-emerald-900/50 space-y-1.5 shadow-xs">
+                      <div className="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>Pourquoi choisir {advice.winner.name} :</span>
+                      </div>
+                      <ul className="space-y-1 text-slate-700 dark:text-slate-300 pl-4 list-disc text-[11px]">
+                        {advice.winnerReasons.map((r, i) => (
+                          <li key={i}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="bg-white/90 dark:bg-[#1f1f1f]/90 p-3 rounded-lg border border-slate-200 dark:border-[#333] space-y-1.5 shadow-xs">
+                      <div className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <HelpCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                        <span>Dans quel cas préférer plutôt {advice.other.name} :</span>
+                      </div>
+                      <ul className="space-y-1 text-slate-600 dark:text-slate-400 pl-4 list-disc text-[11px]">
+                        {advice.otherReasons.map((r, i) => (
+                          <li key={i}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 rounded-lg bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-[11px] text-amber-900 dark:text-amber-200 flex items-start gap-2">
+                    <span className="text-base shrink-0">💡</span>
+                    <div>
+                      <strong>Règle d'or du Conseiller :</strong> {advice.goldenRule}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Side-by-Side Simulation Results Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   
                   {/* Card Produit A */}
-                  <div className="p-3.5 rounded-xl border border-red-200 dark:border-red-950/60 bg-red-50/40 dark:bg-red-950/15 space-y-2">
+                  <div className={`p-3.5 rounded-xl border ${advice.isWinnerA ? 'border-red-400 dark:border-red-800 ring-2 ring-red-400/40' : 'border-red-200 dark:border-red-950/60'} bg-red-50/40 dark:bg-red-950/15 space-y-2 relative overflow-hidden`}>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 dark:text-white text-xs">
-                        {compareProdA.name}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-slate-900 dark:text-white text-xs">
+                          {compareProdA.name}
+                        </span>
+                        {advice.isWinnerA && (
+                          <span className="text-[9px] font-bold bg-emerald-600 text-white uppercase font-mono-code px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                            <Star className="w-2.5 h-2.5 fill-white" /> Recommandé
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[10px] font-bold text-[#E21E26] uppercase font-mono-code bg-red-100 dark:bg-red-950/80 px-2 py-0.5 rounded">
                         Produit A
                       </span>
@@ -1793,11 +2194,18 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
                   </div>
 
                   {/* Card Produit B */}
-                  <div className="p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/40 dark:bg-emerald-950/15 space-y-2">
+                  <div className={`p-3.5 rounded-xl border ${advice.isWinnerB ? 'border-emerald-400 dark:border-emerald-800 ring-2 ring-emerald-400/40' : 'border-emerald-200 dark:border-emerald-950/60'} bg-emerald-50/40 dark:bg-emerald-950/15 space-y-2 relative overflow-hidden`}>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 dark:text-white text-xs">
-                        {compareProdB.name}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-slate-900 dark:text-white text-xs">
+                          {compareProdB.name}
+                        </span>
+                        {advice.isWinnerB && (
+                          <span className="text-[9px] font-bold bg-emerald-600 text-white uppercase font-mono-code px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                            <Star className="w-2.5 h-2.5 fill-white" /> Recommandé
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase font-mono-code bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 rounded">
                         Produit B
                       </span>
@@ -1844,7 +2252,7 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
                   </div>
                 </div>
 
-                {/* Detailed Comparison Table */}
+                {/* 6. Detailed Comparison Table */}
                 <div className="border border-slate-200 dark:border-[#2D2D2D] rounded-xl overflow-hidden shadow-sm">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -1944,10 +2352,10 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
                     Fermer
                   </button>
                   <button
-                    onClick={() => handleInsertComparison(compareProdA, compareProdB, compareMonthlyAmount, compareDurationYears)}
+                    onClick={() => handleInsertComparison(compareProdA, compareProdB, compareMonthlyAmount, compareDurationYears, advice.currentNeed.label)}
                     className="bg-[#E21E26] hover:bg-[#c00017] text-white px-4 py-2 rounded-lg font-medium text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
                   >
-                    <span>Demander l'analyse détaillée au Conseiller Virtuel</span>
+                    <span>Demander l'analyse détaillée et le conseil au Conseiller Virtuel</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

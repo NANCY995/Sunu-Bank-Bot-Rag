@@ -938,6 +938,275 @@ export function detectSimulationIntent(text: string) {
   return { isSimulation, productKey, amount, duration };
 }
 
+export function doesProductMatchNeed(docId: string, need: string): boolean {
+  if (need === "education") return docId.includes("EDUCATION") || docId.includes("EDUPRO");
+  if (need === "retraite") return docId.includes("RETRAITE") || docId.includes("RET5");
+  if (need === "retraite_courte") return docId.includes("RET5");
+  if (need === "sante_accident") return docId.includes("PROTPLUS") || docId.includes("SECCOMPTE");
+  if (need === "epargne_tirages") return docId.includes("BONUS") || docId.includes("DIGMOOV");
+  if (need === "compte_bancaire") return docId.includes("SECCOMPTE");
+  if (need === "mobile_money") return docId.includes("DIGMOOV");
+  if (need === "obseques") return docId.includes("SERENITE");
+  return false;
+}
+
+export function buildComparativeAdvice(
+  prodA: any,
+  prodB: any,
+  compAmount: number,
+  compDur: number,
+  userQuery: string
+): string {
+  const norm = (userQuery || "").toLowerCase();
+
+  const mapKey = (docId: string) => {
+    if (docId.includes("EDUCATION")) return "visa_etudes";
+    if (docId.includes("EDUPRO")) return "visa_etudes_plus";
+    if (docId.includes("RET5")) return "horizon_retraite_5";
+    if (docId.includes("RETRAITE")) return "horizon_retraite";
+    if (docId.includes("BONUS")) return "epargne_bonus";
+    if (docId.includes("PROTPLUS")) return "protect_plus";
+    if (docId.includes("SECCOMPTE")) return "secure_compte";
+    if (docId.includes("DIGMOOV")) return "epargne_moov";
+    return "serenite";
+  };
+
+  const simA = computeActuarialSimulation(mapKey(prodA.id), compAmount, compDur);
+  const simB = computeActuarialSimulation(mapKey(prodB.id), compAmount, compDur);
+
+  // Détection du besoin prioritaire
+  let detectedNeed = "general";
+  let needTitle = "Votre Projet d'Assurance Vie";
+
+  if (norm.includes("etude") || norm.includes("étude") || norm.includes("enfant") || norm.includes("scolaire") || norm.includes("education") || norm.includes("université") || norm.includes("bourse")) {
+    detectedNeed = "education";
+    needTitle = "Financement des études et protection de l'avenir de vos enfants";
+  } else if (norm.includes("retraite 5") || norm.includes("ret5") || norm.includes("court") || norm.includes("senior")) {
+    detectedNeed = "retraite_courte";
+    needTitle = "Retraite accélérée sur 5 ans pour cadre / senior";
+  } else if (norm.includes("retraite") || norm.includes("horizon") || norm.includes("pension") || norm.includes("vieux jour") || norm.includes("viagere") || norm.includes("viagère")) {
+    detectedNeed = "retraite";
+    needTitle = "Préparation de votre retraite et maintien du niveau de vie";
+  } else if (norm.includes("santé") || norm.includes("sante") || norm.includes("accident") || norm.includes("hospital") || norm.includes("maladie") || norm.includes("protect")) {
+    detectedNeed = "sante_accident";
+    needTitle = "Couverture santé, accident et frais d'hospitalisation";
+  } else if (norm.includes("bonus") || norm.includes("tirage") || norm.includes("loterie")) {
+    detectedNeed = "epargne_tirages";
+    needTitle = "Constitution d'épargne avec opportunité de gains immédiats au tirage";
+  } else if (norm.includes("compte") || norm.includes("banque") || norm.includes("decouvert")) {
+    detectedNeed = "compte_bancaire";
+    needTitle = "Sécurisation de votre compte bancaire et couverture familiale";
+  } else if (norm.includes("moov") || norm.includes("mobile") || norm.includes("informel")) {
+    detectedNeed = "mobile_money";
+    needTitle = "Micro-épargne digitale sans compte bancaire classique";
+  } else if (norm.includes("obseque") || norm.includes("obsèque") || norm.includes("deuil") || norm.includes("serenite") || norm.includes("sérénité") || norm.includes("funeraire") || norm.includes("funéraire")) {
+    detectedNeed = "obseques";
+    needTitle = "Prise en charge digne et urgente des frais d'obsèques (48h)";
+  }
+
+  // Arbitrage et Conseil Personnalisé
+  let winner = prodA;
+  let alternative = prodB;
+  let matchScore = "98%";
+  let whyWinner: string[] = [];
+  let whyAlternative: string[] = [];
+  let goldenRule = "";
+
+  const idA = prodA.id;
+  const idB = prodB.id;
+
+  // Cas 1 : Visa Études vs Visa Études Plus
+  if ((idA.includes("EDUCATION") || idA.includes("EDUPRO")) && (idB.includes("EDUCATION") || idB.includes("EDUPRO"))) {
+    const isPlusA = idA.includes("EDUPRO");
+    const plusProd = isPlusA ? prodA : prodB;
+    const classicProd = isPlusA ? prodB : prodA;
+
+    if (compAmount >= 10000) {
+      winner = plusProd;
+      alternative = classicProd;
+      matchScore = "99% d'adéquation";
+      whyWinner = [
+        "**Rente d'orphelinat immédiate** : Dès le décès éventuel du parent souscripteur, l'enfant perçoit immédiatement une allocation régulière pour son quotidien, *sans attendre ses 18 ans ni le début de ses études universitaires*.",
+        "**Doublement du capital en cas de décès accidentel** : Si le décès fait suite à un accident corporel, le capital garanti au terme pour les études de l'enfant est automatiquement doublé !",
+        "**Exonération totale des cotisations restantes** : SUNU Assurances Vie prend en charge 100% des primes jusqu'au terme prévu.",
+        "**Bourses trimestrielles d'études sécurisées** : Versement échelonné sur 4 ans (16 trimestres) pour payer les frais universitaires sans risque de dilapidation."
+      ];
+      whyAlternative = [
+        `Si votre capacité d'épargne mensuelle est inférieure à 10 000 FCFA : **${classicProd.title}** est accessible dès **4 250 FCFA/mois** et garantit déjà l'exonération des cotisations en cas d'accident avec un capital garanti au TMG 3,5%.`
+      ];
+      goldenRule = `Pour votre budget de ${compAmount.toLocaleString('fr-FR')} FCFA/mois (≥ 10 000 FCFA), **${plusProd.title}** est le meilleur choix absolu : la rente d'orphelinat immédiate assure que votre enfant poursuivra sa scolarité même en cas de disparition brutale.`;
+    } else {
+      winner = classicProd;
+      alternative = plusProd;
+      matchScore = "97% d'adéquation";
+      whyWinner = [
+        "**Accessibilité maximale** : Cotisation plancher dès **4 250 FCFA/mois**, idéale pour un effort d'épargne régulier et soutenable sans peser sur le budget familial.",
+        "**Protection prévoyance incluse** : Exonération intégrale des cotisations restantes par l'assureur en cas de décès ou d'Invalidité Absolue et Définitive (IAD) du parent.",
+        "**Taux Minimum Garanti CIMA de 3,5% net/an** majoré de la participation aux bénéfices de l'Article 84.",
+        "**Souplesse de sortie** : Choix entre un capital unique en une seule fois ou des rentes trimestrielles scolaires."
+      ];
+      whyAlternative = [
+        `Si vous pouvez porter votre effort d'épargne à au moins 10 000 FCFA/mois : **${plusProd.title}** vous fera bénéficier en plus de la rente d'orphelinat immédiate et du doublement accidentel.`
+      ];
+      goldenRule = `Avec une capacité d'épargne inférieure à 10 000 FCFA/mois, **${classicProd.title}** est le contrat rationnel pour sécuriser l'avenir scolaire de votre enfant sans compromettre votre équilibre financier.`;
+    }
+  }
+  // Cas 2 : Horizon Retraite vs Horizon Retraite 5
+  else if ((idA.includes("RETRAITE") || idA.includes("RET5")) && (idB.includes("RETRAITE") || idB.includes("RET5"))) {
+    const isRet5A = idA.includes("RET5");
+    const ret5Prod = isRet5A ? prodA : prodB;
+    const longProd = isRet5A ? prodB : prodA;
+
+    if (compDur <= 5 || detectedNeed === "retraite_courte") {
+      winner = ret5Prod;
+      alternative = longProd;
+      matchScore = "98% d'adéquation";
+      whyWinner = [
+        "**Horizon court et ferme de 5 ans** : Conçu sur mesure pour les cadres et seniors à 5 ans de la retraite, évitant un engagement contraignant sur 10 ou 15 ans.",
+        "**Capitalisation accélérée garantie** au TMG CIMA de 3,5% net l'an.",
+        "**Transmission intégrale** du capital constitué aux bénéficiaires désignés en cas de décès avant l'échéance des 5 ans."
+      ];
+      whyAlternative = [
+        `Si vous avez 10 ans ou plus devant vous : **${longProd.title}** est nettement plus rémunérateur grâce à son bonus de fidélité de 92% de la 1ère annuité et son option de rente viagère réversible à vie.`
+      ];
+      goldenRule = `À moins de 5 ans de votre départ à la retraite, choisissez **${ret5Prod.title}** pour faire fructifier vos disponibilités rapidement sans pénalité de rachat.`;
+    } else {
+      winner = longProd;
+      alternative = ret5Prod;
+      matchScore = "99% d'adéquation";
+      whyWinner = [
+        "**Bonus de fidélité exceptionnel de 92%** : Pour toute durée ≥ 10 ans sans rachat, SUNU Bank vous octroie un bonus de 92% de l'intégralité de vos cotisations de la 1ère année !",
+        "**Rente viagère réversible à vie** : Sécurité absolue jusqu'au dernier jour, avec option de réversion (à 60% ou 100%) sur votre conjoint en cas de décès.",
+        "**Intérêts composés au TMG 3,5%** + distribution obligatoire d'au moins 85% des bénéfices financiers (Art. 84 Code CIMA)."
+      ];
+      whyAlternative = [
+        `Si vous devez impérativement récupérer votre capital dans 5 ans : orientez-vous vers **${ret5Prod.title}**.`
+      ];
+      goldenRule = `Sur un horizon de 10 ans ou plus, **${longProd.title}** est imbattable : le bonus de fidélité de 92% amplifie votre épargne de manière unique sur le marché togolais.`;
+    }
+  }
+  // Cas 3 : Protect Plus vs Secure Compte
+  else if ((idA.includes("PROTPLUS") || idA.includes("SECCOMPTE")) && (idB.includes("PROTPLUS") || idB.includes("SECCOMPTE"))) {
+    const isProtA = idA.includes("PROTPLUS");
+    const protProd = isProtA ? prodA : prodB;
+    const secProd = isProtA ? prodB : prodA;
+
+    if (detectedNeed === "sante_accident" || compAmount <= 1500) {
+      winner = protProd;
+      alternative = secProd;
+      matchScore = "97% d'adéquation";
+      whyWinner = [
+        "**Indemnité d'hospitalisation accidentelle** : Prise en charge forfaitaire de 150 000 à 250 000 FCFA dès 5 jours consécutifs d'hospitalisation.",
+        "**Capital décès / accident immédiat** de 500 000 à 1 000 000 FCFA versé aux proches.",
+        "**Tarif ultra-accessible** dès 500 FCFA/mois sans formalité médicale lourde (Livre VII CIMA)."
+      ];
+      whyAlternative = [
+        `Si vous avez un compte bancaire SUNU Bank et recherchez un capital décès plus important (jusqu'à 5 000 000 FCFA) : **${secProd.title}** est plus approprié.`
+      ];
+      goldenRule = `Pour vous protéger contre les frais d'hospitalisation et accidents quotidiens avec une prime minime, **${protProd.title}** est le bouclier indispensable.`;
+    } else {
+      winner = secProd;
+      alternative = protProd;
+      matchScore = "96% d'adéquation";
+      whyWinner = [
+        "**Capital de prévoyance élevé** (jusqu'à 5 000 000 FCFA) versé immédiatement aux proches en cas de décès ou d'invalidité.",
+        "**Sécurisation directe du compte bancaire** et des engagements en agence SUNU Bank Togo.",
+        "**Prélèvement automatisé** simplifié adossé à la gestion de compte."
+      ];
+      whyAlternative = [
+        `Si vous voulez en plus une indemnité hospitalière en cas d'accident corporel : complétez avec **${protProd.title}**.`
+      ];
+      goldenRule = `Pour les clients bancarisés voulant laisser un capital substantiel à leur famille, **${secProd.title}** est le choix de référence.`;
+    }
+  }
+  // Cas 4 : Cas Général selon le besoin détecté
+  else {
+    const matchA = doesProductMatchNeed(idA, detectedNeed);
+    const matchB = doesProductMatchNeed(idB, detectedNeed);
+
+    if (matchA && !matchB) {
+      winner = prodA;
+      alternative = prodB;
+      matchScore = "98% d'adéquation";
+      whyWinner = [
+        `**Spécifiquement conçu pour ${needTitle}** : ${prodA.benefits[0] || prodA.title}.`,
+        `**Prestations adaptées** : ${prodA.benefits[1] || prodA.category}.`,
+        `**Garanties CIMA** : ${prodA.yield || "Taux technique garanti 3,5% net/an"}.`
+      ];
+      whyAlternative = [
+        `**${prodB.title}** est un contrat de catégorie ${prodB.category}, conçu pour ${prodB.target}.`
+      ];
+      goldenRule = `Pour votre objectif prioritaire (${needTitle}), **${prodA.title}** répond exactement au cahier des charges, tandis que **${prodB.title}** répond à une finalité différente.`;
+    } else if (matchB && !matchA) {
+      winner = prodB;
+      alternative = prodA;
+      matchScore = "98% d'adéquation";
+      whyWinner = [
+        `**Spécifiquement conçu pour ${needTitle}** : ${prodB.benefits[0] || prodB.title}.`,
+        `**Prestations adaptées** : ${prodB.benefits[1] || prodB.category}.`,
+        `**Garanties CIMA** : ${prodB.yield || "Taux technique garanti 3,5% net/an"}.`
+      ];
+      whyAlternative = [
+        `**${prodA.title}** est un contrat de catégorie ${prodA.category}, conçu pour ${prodA.target}.`
+      ];
+      goldenRule = `Pour votre objectif prioritaire (${needTitle}), **${prodB.title}** répond exactement au cahier des charges, tandis que **${prodA.title}** est axé sur un autre besoin.`;
+    } else {
+      if (simA.guaranteedCapital >= simB.guaranteedCapital) {
+        winner = prodA;
+        alternative = prodB;
+      } else {
+        winner = prodB;
+        alternative = prodA;
+      }
+      matchScore = "95% d'adéquation";
+      whyWinner = [
+        `**Performance actuarielle** : Offre une prestation / capital garanti estimé plus élevé pour les paramètres choisis.`,
+        `**Atout clé** : ${winner.benefits[0]}.`
+      ];
+      whyAlternative = [
+        `**${alternative.title}** se distingue par : ${alternative.benefits[1] || alternative.benefits[0]}.`
+      ];
+      goldenRule = `Arbitrez selon votre préférence de sortie : privilégiez **${winner.title}** si vous visez le capital maximal garanti, ou **${alternative.title}** si vous préférez ses garanties annexes.`;
+    }
+  }
+
+  // Formatage de la réponse officielle
+  return (
+`## ⚖️ Analyse Comparative & Conseil CIMA : ${prodA.title} vs ${prodB.title}\n\n` +
+`> 🎯 **Objectif analysé :** ${needTitle} • **Simulation retenue :** ${compAmount.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} an(s)\n\n` +
+`### 📊 1. Tableau Comparatif Synthétique\n\n` +
+`| Critère d'évaluation | **${prodA.title}** | **${prodB.title}** |\n` +
+`|---|---|---|\n` +
+`| **Catégorie de contrat** | ${prodA.category} | ${prodB.category} |\n` +
+`| **Cotisation d'entrée** | ${prodA.startingPrice} | ${prodB.startingPrice} |\n` +
+`| **Durée contractuelle** | ${prodA.duration} | ${prodB.duration} |\n` +
+`| **Rendement Garanti CIMA** | ${prodA.yield || "Tarif garanti Livre VII"} | ${prodB.yield || "Tarif garanti Livre VII"} |\n` +
+`| **Prestations garanties** | ${prodA.benefits[0]} | ${prodB.benefits[0]} |\n` +
+`| **Couverture Prévoyance** | ${prodA.benefits[2] || prodA.benefits[1]} | ${prodB.benefits[2] || prodB.benefits[1]} |\n` +
+`| **Spécificité exclusive** | ${prodA.benefits[1] || prodA.benefits[0]} | ${prodB.benefits[1] || prodB.benefits[0]} |\n\n` +
+`---\n\n` +
+`### 💰 2. Simulation Chiffrée en Direct (Base : ${compAmount.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} ans)\n\n` +
+`- **${prodA.title}** : Total cotisé de **${simA.totalContributed.toLocaleString('fr-FR')} FCFA** ➔ Prestation / Capital garanti à terme : **${simA.guaranteedCapital.toLocaleString('fr-FR')} FCFA** ${simA.fidelityBonus ? `*(dont bonus fidélité 92% : +${simA.fidelityBonus.toLocaleString('fr-FR')} FCFA)*` : ""}.\n` +
+`- **${prodB.title}** : Total cotisé de **${simB.totalContributed.toLocaleString('fr-FR')} FCFA** ➔ Prestation / Capital garanti à terme : **${simB.guaranteedCapital.toLocaleString('fr-FR')} FCFA** ${simB.fidelityBonus ? `*(dont bonus fidélité 92% : +${simB.fidelityBonus.toLocaleString('fr-FR')} FCFA)*` : ""}.\n\n` +
+`---\n\n` +
+`### 🎯 3. VERDICT DU CONSEILLER SUNU BANK (Pour bien choisir selon votre besoin)\n\n` +
+`#### ⭐ NOTRE RECOMMANDATION OFFICIELLE : **${winner.title}** (${matchScore})\n\n` +
+`**Pourquoi choisir ${winner.title} pour votre projet ?**\n` +
+whyWinner.map(r => `- ${r}`).join('\n') + `\n\n` +
+`**Dans quel cas préférer plutôt ${alternative.title} ?**\n` +
+whyAlternative.map(r => `- ${r}`).join('\n') + `\n\n` +
+`💡 **La Règle d'Or pour décider :**\n` +
+`> *${goldenRule}*\n\n` +
+`---\n\n` +
+`### 📜 4. Vos Garanties Légales selon le Code CIMA\n\n` +
+`- **Droit de renonciation de 30 jours (Art. 76)** : Vous pouvez renoncer au contrat par lettre recommandée sous 30 jours calendaires après signature avec remboursement intégral à 100% sans frais.\n` +
+`- **Valeur de rachat (Art. 74)** : Le rachat est interdit avant 2 ans de cotisations effectives (ou 15% des primes prévues) pour les contrats de capitalisation.\n` +
+`- **Plafonnement des frais de rachat (Art. 76)** : Indemnité plafonnée à un maximum strict de 5% de la provision mathématique, et 0% au-delà de 10 ans.\n` +
+`- **Participation aux bénéfices (Art. 84)** : Redistribution légale minimale obligatoire d'au moins 85% des bénéfices financiers réalisés par l'assureur.\n\n` +
+`*Conformément à l'Article 6 du Code CIMA, ce comparatif précontractuel loyal et transparent a pour but de vous éclairer. Votre conseiller SUNU Bank Togo est à votre entière disposition dans l'une de nos 28 agences pour éditer votre proposition d'assurance définitive.*`
+  );
+}
+
 // API Health Endpoint
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({
@@ -1080,7 +1349,16 @@ Directives strictes :
 2. CONFORMITÉ CODE CIMA : Rappelle toujours l'Article 6 (information précontractuelle loyale), le droit de renonciation de 30 jours (Art. 76) et le fait que la simulation précontractuelle est indicative et finalisée avec le conseiller en agence.
 3. SI LE CLIENT DEMANDE UNE SIMULATION OU DES CHIFFRES : Détaille le total cotisé, le capital garanti au terme avec le taux technique garanti de 3,5% l'an (Code CIMA), les spécificités (Bonus de fidélité 92% pour Horizon Retraite, rentes trimestrielles d'éducation pour Visa Études, tirages au sort pour Épargne Bonus/Moov, capitaux pour Protect Plus/Secure Compte).
 4. CITE LES ARTICLES DU CODE CIMA (Art. 6, 74, 76, 84, 21, 28, etc.).
-5. GLOSSAIRE & RÉGLEMENTATION CIMA : Si le client pose une question sur un article du Code CIMA ou un terme du glossaire (ex: Article 6, Article 74, Article 76, Article 84, TMG, Provision Mathématique, Rente d'orphelinat, CRCA, Avance, Réduction, etc.), réponds de manière approfondie, pédagogique et structurée en donnant la définition, le fondement légal, l'application concrète chez SUNU Bank Togo et un exemple.`;
+5. GLOSSAIRE & RÉGLEMENTATION CIMA : Si le client pose une question sur un article du Code CIMA ou un terme du glossaire (ex: Article 6, Article 74, Article 76, Article 84, TMG, Provision Mathématique, Rente d'orphelinat, CRCA, Avance, Réduction, etc.), réponds de manière approfondie, pédagogique et structurée en donnant la définition, le fondement légal, l'application concrète chez SUNU Bank Togo et un exemple.
+6. COMPARAISONS ET AIDE À LA DÉCISION / CONSEIL PERSONNALISÉ : Si le client demande de comparer deux produits (ex: « Compare Visa Études et Visa Études Plus » ou « Aide-moi à choisir selon mon besoin ») :
+- Compare-les réellement sur tous les critères CIMA (objectifs, cotisations minimales, durées, rendements 3,5% TMG, capitaux garantis avec bonus, garanties prévoyance orphelinat/décès/accident, règles de rachat Art. 74 et 76).
+- Calcule ou intègre les chiffres exacts (total cotisé, capital garanti à terme, rentes éventuelles).
+- ANALYSE LE BESOIN EXPRIMÉ DU CLIENT (financer les études, retraite long terme vs courte, protection immédiate de la famille, micro-épargne, tirages au sort, budget modeste).
+- CONSEILLE FORMELLEMENT LE CLIENT POUR QU'IL CHOISISSE CE QUI EST MIEUX POUR LUI :
+  * Désigne clairement le produit recommandé n°1 et explique POURQUOI ce contrat est objectivement supérieur pour son besoin.
+  * Précise l'alternative : dans quel cas ou pour quel type de client l'autre contrat est plus pertinent.
+  * Formule une règle de décision limpide pour trancher immédiatement.
+  * Rappelle les garanties légales CIMA (Art. 6 information précontractuelle, Art. 76 renonciation 30 jours, Art. 74 rachat après 2 ans).`;
 
         const response = await ai.models.generateContent({
           model: "gemini-2.0-flash",
@@ -1132,11 +1410,13 @@ Directives strictes :
       });
     }
 
-    // Comparaison universelle multi-produits (Visa Études vs Plus, Retraite, Protect Plus, etc.)
+    // 3. Comparaison universelle multi-produits & Conseil Personnalisé (Visa Études vs Plus, Retraite, Protect Plus, etc.)
     const normalized = message.toLowerCase();
     const isComparison = normalized.includes("compar") || normalized.includes("versus") ||
       normalized.includes("vs ") || normalized.includes(" vs") || normalized.includes("différen") ||
-      normalized.includes("differen") || normalized.includes("entre");
+      normalized.includes("differen") || normalized.includes("entre") || normalized.includes("choisir") ||
+      normalized.includes("lequel") || normalized.includes("meilleur") ||
+      (normalized.includes("conseil") && (normalized.includes("visa") || normalized.includes("horizon") || normalized.includes("retraite") || normalized.includes("protect") || normalized.includes("bonus") || normalized.includes("etude") || normalized.includes("étude")));
 
     if (isComparison) {
       // Détection de tous les produits mentionnés
@@ -1196,46 +1476,10 @@ Directives strictes :
         if (!isNaN(parsed) && parsed >= 1 && parsed <= 30) compDur = parsed;
       }
 
-      const mapKey = (docId: string) => {
-        if (docId.includes("EDUCATION")) return "visa_etudes";
-        if (docId.includes("EDUPRO")) return "visa_etudes_plus";
-        if (docId.includes("RET5")) return "horizon_retraite_5";
-        if (docId.includes("RETRAITE")) return "horizon_retraite";
-        if (docId.includes("BONUS")) return "epargne_bonus";
-        if (docId.includes("PROTPLUS")) return "protect_plus";
-        if (docId.includes("SECCOMPTE")) return "secure_compte";
-        if (docId.includes("DIGMOOV")) return "epargne_moov";
-        return "serenite";
-      };
-
-      const simA = computeActuarialSimulation(mapKey(prodA.id), compAmount, compDur);
-      const simB = computeActuarialSimulation(mapKey(prodB.id), compAmount, compDur);
+      const comparativeAnswer = buildComparativeAdvice(prodA, prodB, compAmount, compDur, message);
 
       return res.json({
-        reply:
-`## Comparatif officiel CIMA : ${prodA.title} vs ${prodB.title}\n\n` +
-`| Critère d'évaluation | **${prodA.title}** | **${prodB.title}** |\n` +
-`|---|---|---|\n` +
-`| **Catégorie de contrat** | ${prodA.category} | ${prodB.category} |\n` +
-`| **Cotisation d'entrée** | ${prodA.startingPrice} | ${prodB.startingPrice} |\n` +
-`| **Durée contractuelle** | ${prodA.duration} | ${prodB.duration} |\n` +
-`| **Rendement garanti (TMG)** | ${prodA.yield || "Tarif garanti Livre VII"} | ${prodB.yield || "Tarif garanti Livre VII"} |\n` +
-`| **Prestations garanties** | ${prodA.benefits[0]} | ${prodB.benefits[0]} |\n` +
-`| **Couverture Prévoyance** | ${prodA.benefits[2] || prodA.benefits[1]} | ${prodB.benefits[2] || prodB.benefits[1]} |\n` +
-`| **Spécificité exclusive** | ${prodA.benefits[1] || prodA.benefits[0]} | ${prodB.benefits[1] || prodB.benefits[0]} |\n` +
-`\n---\n\n` +
-`### 📊 Simulation comparative chiffrée (Base : ${compAmount.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} ans)\n\n` +
-`- **${prodA.title}** : Total cotisé de **${simA.totalContributed.toLocaleString('fr-FR')} FCFA** ➔ Prestation / Capital garanti à terme : **${simA.guaranteedCapital.toLocaleString('fr-FR')} FCFA**.\n` +
-`- **${prodB.title}** : Total cotisé de **${simB.totalContributed.toLocaleString('fr-FR')} FCFA** ➔ Prestation / Capital garanti à terme : **${simB.guaranteedCapital.toLocaleString('fr-FR')} FCFA**.\n\n` +
-`### 📌 Dispositions communes du Code CIMA (Livre I)\n\n` +
-`- **Droit de renonciation (Art. 76)** : 30 jours calendaires après signature avec restitution intégrale des primes sans pénalité.\n` +
-`- **Valeur de rachat (Art. 74)** : Interdit avant 2 ans de cotisations effectives (ou 15% des primes prévues) pour les contrats de capitalisation.\n` +
-`- **Plafonnement des pénalités (Art. 76)** : Frais de rachat limités à 5% max de la provision mathématique, et 0% au-delà de 10 ans.\n` +
-`- **Participation aux bénéfices (Art. 84)** : Redistribution légale minimale de 85% des bénéfices financiers réalisés aux assurés.\n\n` +
-`### 🏆 Recommandation patrimoniale\n\n` +
-`- **Choisissez ${prodA.title}** pour : ${prodA.benefits[3] || prodA.benefits[0]}.\n` +
-`- **Choisissez ${prodB.title}** pour : ${prodB.benefits[3] || prodB.benefits[0]}.\n\n` +
-`*Conformément à l'Article 6 du Code CIMA, ce comparatif précontractuel est indicatif. Votre conseiller SUNU Bank Togo est à votre disposition en agence pour éditer votre proposition d'assurance officielle.*`,
+        reply: comparativeAnswer,
         structuredData: null
       });
     }
