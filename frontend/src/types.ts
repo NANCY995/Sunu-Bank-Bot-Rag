@@ -1,7 +1,8 @@
 export type ScreenType = 
   | 'login'
   | 'concierge-home' 
-  | 'concierge-chat';
+  | 'concierge-chat'
+  | 'admin';
 
 export interface SimulationData {
   productId: string;

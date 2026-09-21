@@ -4,12 +4,16 @@ import { NavigationHeader } from './components/NavigationHeader';
 import { ConciergeHomeView } from './views/ConciergeHomeView';
 import { ConciergeChatView } from './views/ConciergeChatView';
 import { LoginView } from './views/LoginView';
+import { AdminView } from './views/AdminView';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
 function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('concierge-home');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem('sunu_auth') === 'true';
+  });
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    return localStorage.getItem('sunu_admin_role') === 'admin';
   });
   const [activeChatQuery, setActiveChatQuery] = useState<string>('I need some information about student insurance for studying abroad. Specifically Visa Études.');
   const { theme } = useTheme();
@@ -18,7 +22,7 @@ function AppContent() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '') as ScreenType;
-      if (['login', 'concierge-home', 'concierge-chat'].includes(hash)) {
+      if (['login', 'concierge-home', 'concierge-chat', 'admin'].includes(hash)) {
         setCurrentScreen(hash);
       }
     };
@@ -36,15 +40,22 @@ function AppContent() {
     window.location.hash = screen;
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (role?: string) => {
     setIsAuthenticated(true);
     localStorage.setItem('sunu_auth', 'true');
+    if (role) {
+      localStorage.setItem('sunu_admin_role', role);
+      setIsAdmin(role === 'admin');
+    }
     navigateTo('concierge-home');
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setIsAdmin(false);
     localStorage.removeItem('sunu_auth');
+    localStorage.removeItem('sunu_admin_token');
+    localStorage.removeItem('sunu_admin_role');
     navigateTo('login');
   };
 
@@ -62,6 +73,7 @@ function AppContent() {
         currentScreen={currentScreen}
         onNavigate={navigateTo}
         isAuthenticated={isAuthenticated}
+        isAdmin={isAdmin}
         onLogout={handleLogout}
       />
 
@@ -84,6 +96,10 @@ function AppContent() {
             initialMessage={activeChatQuery}
             onNavigateHome={() => navigateTo('concierge-home')}
           />
+        )}
+
+        {currentScreen === 'admin' && (
+          <AdminView onLogout={handleLogout} />
         )}
       </div>
     </div>

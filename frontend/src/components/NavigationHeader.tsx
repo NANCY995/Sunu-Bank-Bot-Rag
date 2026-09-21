@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScreenType } from '../types';
-import { Sparkles, MessageSquare, Sun, Moon, LogIn, LogOut, ShieldCheck } from 'lucide-react';
+import { Sparkles, MessageSquare, Sun, Moon, LogIn, LogOut, ShieldCheck, LayoutDashboard } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 import logoSunu from '../../assets/LOGO-SUNU.png';
@@ -9,6 +9,7 @@ interface NavigationHeaderProps {
   currentScreen: ScreenType;
   onNavigate: (screen: ScreenType) => void;
   isAuthenticated: boolean;
+  isAdmin?: boolean;
   onLogout: () => void;
 }
 
@@ -16,6 +17,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   currentScreen,
   onNavigate,
   isAuthenticated,
+  isAdmin = false,
   onLogout,
 }) => {
   const { theme, toggleTheme } = useTheme();
@@ -76,6 +78,22 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span>Discussion IA</span>
         </button>
+
+        {isAdmin && (
+          <button
+            id="nav-admin-btn"
+            onClick={() => onNavigate('admin')}
+            className={`px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 sm:gap-2 transition-all whitespace-nowrap cursor-pointer ${
+              currentScreen === 'admin'
+                ? 'bg-[#E21E26] text-white shadow-sm'
+                : 'text-slate-600 dark:text-[#A3A3A3] hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#252525]'
+            }`}
+            title="Administration"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>Admin</span>
+          </button>
+        )}
       </nav>
 
       {/* Right Controls: Dark/Light Mode + Auth State */}
