@@ -29,7 +29,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   Compass,
-  CheckCircle2
+  CheckCircle2,
+  ArrowLeftRight
 } from 'lucide-react';
 import { FormattedMessage } from '../components/FormattedMessage';
 import logoSunu from '../../assets/LOGO-SUNU.png';
@@ -39,16 +40,208 @@ interface ConciergeChatViewProps {
   onNavigateHome: () => void;
 }
 
-const PORTFOLIO_PRODUCTS = [
-  { id: 'visa_etudes', name: 'Visa Études', category: 'Épargne-Éducation', minAmount: 4250, defaultAmount: 15000, defaultDuration: 10, minDur: 3, maxDur: 15, target: 'Parents et tuteurs d\'enfants de 0 à 18 ans', payout: 'Capital unique ou bourses trimestrielles sur 3 à 5 ans', prevoyance: 'Exonération totale des primes si décès/IAD du parent' },
-  { id: 'visa_etudes_plus', name: 'Visa Études Plus', category: 'Éducation Renforcée', minAmount: 10000, defaultAmount: 20000, defaultDuration: 10, minDur: 5, maxDur: 15, target: 'Familles souhaitant une couverture prévoyance renforcée', payout: 'Rentes trimestrielles éducation', prevoyance: 'Rente d\'orphelinat immédiate + Doublement capital accident' },
-  { id: 'horizon_retraite', name: 'Horizon Retraite', category: 'Capitalisation Retraite', minAmount: 10000, defaultAmount: 25000, defaultDuration: 15, minDur: 5, maxDur: 25, target: 'Actifs et salariés préparant leur retraite', payout: 'Capital unique ou rente viagère mensuelle réversible', prevoyance: 'Bonus fidélité 92% annuité 1 + reversement épargne' },
-  { id: 'horizon_retraite_5', name: 'Horizon Retraite 5', category: 'Retraite 5 ans ferme', minAmount: 25000, defaultAmount: 50000, defaultDuration: 5, minDur: 5, maxDur: 5, target: 'Cadres et seniors à 5 ans de la cessation d\'activité', payout: 'Capitalisation accélérée en 5 ans', prevoyance: 'Transmission intégrale du capital constitué' },
-  { id: 'epargne_bonus', name: 'Épargne Bonus SUNU', category: 'Épargne Bonifiée Tirages', minAmount: 5000, defaultAmount: 10000, defaultDuration: 10, minDur: 10, maxDur: 15, target: 'Épargnants cherchant un effet de levier par loterie', payout: 'Capital à terme ou anticipé si tirage gagnant', prevoyance: 'Versement immédiat du capital intégral si tiré au sort' },
-  { id: 'protect_plus', name: 'Protect Plus', category: 'Micro-assurance Santé/Décès', minAmount: 500, defaultAmount: 1000, defaultDuration: 1, minDur: 1, maxDur: 1, target: 'Artisans, commerçants et ménages modestes', payout: 'Forfait hospitalisation dès 5j (150 000 à 250 000 F)', prevoyance: 'Capital décès accidentel 500 000 ou 1 000 000 F' },
-  { id: 'secure_compte', name: 'Secure Compte', category: 'Prévoyance Compte Bancaire', minAmount: 1000, defaultAmount: 2500, defaultDuration: 1, minDur: 1, maxDur: 1, target: 'Titulaires de compte bancaire SUNU Bank (18-70 ans)', payout: 'Capital décès adossé au compte (400 000 à 5 000 000 F)', prevoyance: 'Paiement immédiat aux ayants droit en cas de coup dur' },
-  { id: 'epargne_moov', name: 'Épargne Moov', category: 'Épargne Mobile Money', minAmount: 500, defaultAmount: 2000, defaultDuration: 15, minDur: 15, maxDur: 15, target: 'Tout détenteur de compte Moov Money sans compte bancaire', payout: 'Capitalisation 15 ans avec tirages trimestriels', prevoyance: 'Capital libéré par anticipation si gagnant au tirage' },
-  { id: 'serenite', name: 'Sérénité', category: 'Épargne & Obsèques', minAmount: 5000, defaultAmount: 15000, defaultDuration: 10, minDur: 5, maxDur: 20, target: 'Personnes prévoyantes pour soulager leurs proches', payout: 'Prise en charge d\'urgence des frais funéraires', prevoyance: 'Capital décès et obsèques dignes' },
+export interface PortfolioProduct {
+  id: string;
+  name: string;
+  category: string;
+  minAmount: number;
+  defaultAmount: number;
+  defaultDuration: number;
+  minDur: number;
+  maxDur: number;
+  target: string;
+  payout: string;
+  prevoyance: string;
+  isEpargne: boolean;
+  tauxGaranti: string;
+  rachatCima: string;
+  renonciation: string;
+  participationBenefices: string;
+  pointFort: string;
+  quiDevraitChoisir: string;
+}
+
+const PORTFOLIO_PRODUCTS: PortfolioProduct[] = [
+  {
+    id: 'visa_etudes',
+    name: 'Visa Études',
+    category: 'Épargne-Éducation',
+    minAmount: 4250,
+    defaultAmount: 15000,
+    defaultDuration: 10,
+    minDur: 3,
+    maxDur: 15,
+    target: "Parents et tuteurs d'enfants de 0 à 18 ans",
+    payout: 'Capital unique ou rentes trimestrielles sur 3 à 5 ans',
+    prevoyance: 'Exonération totale des cotisations restantes si décès/IAD du parent souscripteur',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an (TMG Code CIMA)',
+    rachatCima: 'Autorisé après 2 ans (Art. 74) • Pénalité max 5% (Art. 76) • 0% après 10 ans',
+    renonciation: '30 jours calendaires (Art. 76 CIMA) avec remboursement intégral sans frais',
+    participationBenefices: 'Oui (Art. 84 CIMA) — redistribution d\'au moins 85% des bénéfices financiers',
+    pointFort: 'Idéal budget modéré (dès 4 250 F/mois) : garantit les bourses scolaires de l\'enfant même en cas de décès du parent.',
+    quiDevraitChoisir: 'Parents souhaitant constituer pas à pas une réserve scolaire garantie pour l\'avenir de leur enfant.'
+  },
+  {
+    id: 'visa_etudes_plus',
+    name: 'Visa Études Plus',
+    category: 'Éducation Renforcée & Prévoyance Famille',
+    minAmount: 10000,
+    defaultAmount: 20000,
+    defaultDuration: 10,
+    minDur: 5,
+    maxDur: 15,
+    target: 'Familles souhaitant une couverture prévoyance maximale pour les études supérieures',
+    payout: 'Rentes trimestrielles éducation échelonnées',
+    prevoyance: 'Rente d\'orphelinat immédiate + Doublement du capital en cas de décès accidentel',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an (TMG Code CIMA)',
+    rachatCima: 'Autorisé après 2 ans (Art. 74) • Pénalité max 5% (Art. 76) • 0% après 10 ans',
+    renonciation: '30 jours calendaires (Art. 76 CIMA) avec remboursement intégral sans frais',
+    participationBenefices: 'Oui (Art. 84 CIMA) — redistribution d\'au moins 85% des bénéfices financiers',
+    pointFort: 'Couverture d\'élite : versement immédiat d\'une rente d\'orphelinat à l\'enfant dès le décès + doublement du capital si accident.',
+    quiDevraitChoisir: 'Familles voulant garantir un revenu d\'orphelinat immédiat et une prise en charge complète jusqu\'au diplôme.'
+  },
+  {
+    id: 'horizon_retraite',
+    name: 'Horizon Retraite',
+    category: 'Capitalisation Retraite Individuelle',
+    minAmount: 10000,
+    defaultAmount: 25000,
+    defaultDuration: 15,
+    minDur: 5,
+    maxDur: 25,
+    target: 'Salariés, fonctionnaires et professions libérales préparant leur retraite',
+    payout: 'Capital unique en une fois ou rente viagère mensuelle réversible',
+    prevoyance: 'Bonus de fidélité 92% annuité 1 + reversement épargne aux ayants droit',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an (TMG Code CIMA)',
+    rachatCima: 'Autorisé après 2 ans (Art. 74) • Pénalité max 5% (Art. 76) • 0% après 10 ans',
+    renonciation: '30 jours calendaires (Art. 76 CIMA) avec remboursement intégral sans frais',
+    participationBenefices: 'Oui (Art. 84 CIMA) — redistribution annuelle des gains financiers',
+    pointFort: 'Bonus de fidélité de 92% de la 1ère annuité pour toute durée ≥ 10 ans + rente viagère réversible au conjoint.',
+    quiDevraitChoisir: 'Actifs de 25 à 55 ans désireux de maintenir leur niveau de vie à la retraite avec un bonus garanti exceptionnel.'
+  },
+  {
+    id: 'horizon_retraite_5',
+    name: 'Horizon Retraite 5',
+    category: 'Retraite Accélérée 5 ans ferme',
+    minAmount: 25000,
+    defaultAmount: 50000,
+    defaultDuration: 5,
+    minDur: 5,
+    maxDur: 5,
+    target: 'Cadres et seniors à 5 ans de la cessation d\'activité',
+    payout: 'Capitalisation accélérée restituée en capital unique au terme de 5 ans',
+    prevoyance: 'Transmission intégrale du capital constitué aux bénéficiaires désignés',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an (TMG Code CIMA)',
+    rachatCima: 'Autorisé après 2 ans de cotisations (Art. 74 CIMA) • Pénalité max 5%',
+    renonciation: '30 jours calendaires (Art. 76 CIMA)',
+    participationBenefices: 'Oui (Art. 84 CIMA)',
+    pointFort: 'Horizon ultra-court de 5 ans pour rentabiliser rapidement une épargne avant le départ à la retraite.',
+    quiDevraitChoisir: 'Professionnels seniors proches de la retraite disposant d\'une capacité d\'épargne mensuelle d\'au moins 25 000 FCFA.'
+  },
+  {
+    id: 'epargne_bonus',
+    name: 'Épargne Bonus SUNU',
+    category: 'Épargne Bonifiée avec Tirages au Sort',
+    minAmount: 5000,
+    defaultAmount: 10000,
+    defaultDuration: 10,
+    minDur: 10,
+    maxDur: 15,
+    target: 'Épargnants cherchant une rentabilité sécurisée doublée d\'opportunités de gains anticipés',
+    payout: 'Capital garanti à terme ou versement anticipé de l\'intégralité si tirage gagnant',
+    prevoyance: 'Gain au tirage = versement immédiat du capital total prévu + dispense des primes futures',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an + Participation aux bénéfices',
+    rachatCima: 'Autorisé après 2 ans (Art. 74) • Encadré par les règles des contrats à tirages CIMA',
+    renonciation: '30 jours calendaires (Art. 76 CIMA)',
+    participationBenefices: 'Oui (Art. 84 CIMA)',
+    pointFort: 'Double opportunité : votre capital fructifie à 3,5% et vous pouvez gagner le capital complet dès les premiers trimestres !',
+    quiDevraitChoisir: 'Épargnants dynamiques voulant valoriser leur argent tout en tentant leur chance à chaque tirage trimestriel.'
+  },
+  {
+    id: 'protect_plus',
+    name: 'Protect Plus',
+    category: 'Micro-assurance Santé & Prévoyance',
+    minAmount: 500,
+    defaultAmount: 1000,
+    defaultDuration: 1,
+    minDur: 1,
+    maxDur: 1,
+    target: 'Artisans, commerçants, travailleurs indépendants et ménages modestes',
+    payout: 'Forfait hospitalisation dès 5j (150 000 à 250 000 FCFA)',
+    prevoyance: 'Capital décès / invalidité accidentel de 500 000 à 1 000 000 FCFA',
+    isEpargne: false,
+    tauxGaranti: 'Tarif forfaitaire garanti (Livre VII Code CIMA)',
+    rachatCima: 'Prévoyance annuelle à fonds perdus — Pas de valeur de rachat (Art. 74 non applicable)',
+    renonciation: '30 jours calendaires (Art. 76 CIMA)',
+    participationBenefices: 'Non applicable (assurance de risque)',
+    pointFort: 'Ultra-accessible (dès 500 F/mois) sans bilan médical : protège en cas de blessure grave ou d\'hospitalisation prolongée.',
+    quiDevraitChoisir: 'Artisans et familles recherchant un bouclier financier d\'urgence à prix minime contre les accidents.'
+  },
+  {
+    id: 'secure_compte',
+    name: 'Secure Compte',
+    category: 'Prévoyance Compte Bancaire',
+    minAmount: 1000,
+    defaultAmount: 2500,
+    defaultDuration: 1,
+    minDur: 1,
+    maxDur: 1,
+    target: 'Titulaires de compte bancaire SUNU Bank Togo (18 à 70 ans)',
+    payout: 'Capital décès ou invalidité adossé au compte (400 000 à 5 000 000 FCFA)',
+    prevoyance: 'Paiement prioritaire sous 48h aux ayants droit en cas de coup dur',
+    isEpargne: false,
+    tauxGaranti: 'Tarif annuel forfaitaire garanti',
+    rachatCima: 'Prévoyance annuelle à fonds perdus — Pas de valeur de rachat',
+    renonciation: '30 jours calendaires (Art. 76 CIMA)',
+    participationBenefices: 'Non applicable',
+    pointFort: 'Protection automatique des découverts et de la famille prélevée directement une fois par an sur le compte bancaire.',
+    quiDevraitChoisir: 'Tout client SUNU Bank souhaitant que ses proches soient protégés d\'un capital immédiat sans formalités.'
+  },
+  {
+    id: 'epargne_moov',
+    name: 'Épargne Moov',
+    category: 'Micro-assurance & Mobile Money',
+    minAmount: 500,
+    defaultAmount: 2000,
+    defaultDuration: 15,
+    minDur: 15,
+    maxDur: 15,
+    target: 'Tout détenteur d\'un compte Moov Money au Togo, sans compte bancaire obligatoire',
+    payout: 'Capitalisation 15 ans avec tirages au sort trimestriels nationaux',
+    prevoyance: 'Libération anticipée du capital complet sur wallet en cas de tirage gagnant',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an (TMG CIMA)',
+    rachatCima: 'Encadré par le Code CIMA Livre VII',
+    renonciation: '30 jours calendaires (Art. 76 CIMA)',
+    participationBenefices: 'Oui (Art. 84 CIMA)',
+    pointFort: '100% digital et mobile : souscription et cotisations par USSD/appli Moov Money avec tirages trimestriels.',
+    quiDevraitChoisir: 'Jeunes et populations du secteur informel cherchant une première épargne mobile sécurisée.'
+  },
+  {
+    id: 'serenite',
+    name: 'Sérénité',
+    category: 'Épargne & Prévoyance Fin de Vie',
+    minAmount: 5000,
+    defaultAmount: 15000,
+    defaultDuration: 10,
+    minDur: 5,
+    maxDur: 20,
+    target: 'Personnes soucieuses de soulager leurs proches lors des cérémonies d\'obsèques',
+    payout: 'Prise en charge d\'urgence des frais funéraires + capitalisation de l\'épargne restante',
+    prevoyance: 'Capital décès et obsèques versé sous 48h aux bénéficiaires désignés',
+    isEpargne: true,
+    tauxGaranti: '3,5% net l\'an (TMG CIMA)',
+    rachatCima: 'Autorisé après 2 ans (Art. 74) • Pénalité max 5% (Art. 76)',
+    renonciation: '30 jours calendaires (Art. 76 CIMA)',
+    participationBenefices: 'Oui (Art. 84 CIMA)',
+    pointFort: 'Déblocage garanti sous 48h des fonds d\'obsèques pour une inhumation digne, sans épuiser les économies familiales.',
+    quiDevraitChoisir: 'Toute personne prévoyante désirant éviter à ses proches la charge financière brutale d\'un deuil.'
+  },
 ];
 
 interface LexiconItem {
@@ -123,8 +316,10 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
   const [modalSimResult, setModalSimResult] = useState<SimulationData | null>(null);
 
   // Comparator State
-  const [compareProdA, setCompareProdA] = useState(PORTFOLIO_PRODUCTS[0]); // Visa Études
-  const [compareProdB, setCompareProdB] = useState(PORTFOLIO_PRODUCTS[2]); // Horizon Retraite
+  const [compareProdA, setCompareProdA] = useState<PortfolioProduct>(PORTFOLIO_PRODUCTS[0]); // Visa Études
+  const [compareProdB, setCompareProdB] = useState<PortfolioProduct>(PORTFOLIO_PRODUCTS[1]); // Visa Études Plus
+  const [compareMonthlyAmount, setCompareMonthlyAmount] = useState<number>(20000);
+  const [compareDurationYears, setCompareDurationYears] = useState<number>(10);
 
   // Lexicon Search State
   const [lexiconSearch, setLexiconSearch] = useState('');
@@ -730,9 +925,11 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
     handleSendMessage(`Fais-moi une simulation complète pour ${modalSimResult.productName} avec ${modalSimResult.monthlyAmount.toLocaleString('fr-FR')} FCFA par mois pendant ${modalSimResult.durationYears} ans.`);
   };
 
-  const handleInsertComparison = (pA: any, pB: any) => {
+  const handleInsertComparison = (pA: PortfolioProduct, pB: PortfolioProduct, amount?: number, duration?: number) => {
     setShowCompareModal(false);
-    handleSendMessage(`Compare en détail ${pA.name} et ${pB.name} selon leurs objectifs, cotisations, durées, garanties et conditions de sortie CIMA.`);
+    const amtStr = amount ? ` avec une cotisation de ${amount.toLocaleString('fr-FR')} FCFA par mois` : '';
+    const durStr = duration ? ` sur ${duration} ans` : '';
+    handleSendMessage(`Compare en détail ${pA.name} et ${pB.name}${amtStr}${durStr} selon leurs objectifs, cotisations, durées, garanties et conditions de sortie CIMA.`);
   };
 
   const filteredLexicon = CIMA_LEXICON.filter(item => {
@@ -1326,114 +1523,423 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
       )}
 
       {/* COMPARATEUR VISUEL DE PRODUITS MODAL */}
-      {showCompareModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-2xl w-full p-5 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto">
-            
-            <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-[#2D2D2D] pb-3">
-              <div className="flex items-center gap-2">
-                <Scale className="w-5 h-5 text-[#E21E26]" />
-                <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white">
-                  Comparateur Côte-à-Côte de Produits CIMA
-                </h3>
-              </div>
-              <button 
-                onClick={() => setShowCompareModal(false)} 
-                className="text-slate-400 hover:text-slate-700 dark:text-[#A3A3A3] dark:hover:text-white p-1 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
+      {showCompareModal && (() => {
+        // Paramètres réels et calculs actuariels CIMA côte-à-côte
+        const durA = Math.min(Math.max(compareDurationYears, compareProdA.minDur), compareProdA.maxDur);
+        const amtA = Math.max(compareMonthlyAmount, compareProdA.minAmount);
+        const totalPaidA = amtA * 12 * durA;
+        const r = 0.035;
+        const capitalA = compareProdA.isEpargne ? Math.round((amtA * 12) * (((Math.pow(1 + r, durA) - 1) / r)) * (1 + r / 2)) : 0;
+        const fidelityA = compareProdA.id === 'horizon_retraite' && durA >= 10 ? Math.round(0.92 * (amtA * 12)) : 0;
+        const totalCapA = compareProdA.id === 'protect_plus' 
+          ? (amtA >= 1000 ? 1000000 : 500000) 
+          : (compareProdA.id === 'secure_compte' ? 2000000 : capitalA + fidelityA);
 
-            <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold mb-1 uppercase font-mono-code text-slate-500">Produit A</label>
-                  <select
-                    value={compareProdA.id}
-                    onChange={(e) => setCompareProdA(PORTFOLIO_PRODUCTS.find(p => p.id === e.target.value) || PORTFOLIO_PRODUCTS[0])}
-                    className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-300 dark:border-[#333] rounded-lg p-2 text-xs"
-                  >
-                    {PORTFOLIO_PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+        const durB = Math.min(Math.max(compareDurationYears, compareProdB.minDur), compareProdB.maxDur);
+        const amtB = Math.max(compareMonthlyAmount, compareProdB.minAmount);
+        const totalPaidB = amtB * 12 * durB;
+        const capitalB = compareProdB.isEpargne ? Math.round((amtB * 12) * (((Math.pow(1 + r, durB) - 1) / r)) * (1 + r / 2)) : 0;
+        const fidelityB = compareProdB.id === 'horizon_retraite' && durB >= 10 ? Math.round(0.92 * (amtB * 12)) : 0;
+        const totalCapB = compareProdB.id === 'protect_plus' 
+          ? (amtB >= 1000 ? 1000000 : 500000) 
+          : (compareProdB.id === 'secure_compte' ? 2000000 : capitalB + fidelityB);
+
+        const isSame = compareProdA.id === compareProdB.id;
+
+        const handleSwapProducts = () => {
+          const temp = compareProdA;
+          setCompareProdA(compareProdB);
+          setCompareProdB(temp);
+        };
+
+        return (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+            <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-4xl w-full p-4 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[92vh] flex flex-col">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-[#2D2D2D] pb-3 flex-shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900/50 flex items-center justify-center text-[#E21E26]">
+                    <Scale className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                      Comparateur Côte-à-Côte de Produits CIMA
+                      <span className="text-[10px] uppercase font-mono-code font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
+                        Analyse Certifiée
+                      </span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500 dark:text-[#888]">
+                      Comparez les garanties, l'effort d'épargne et les règles de rachat selon le Code CIMA (Art. 6, 74 & 76).
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowCompareModal(false)} 
+                  className="text-slate-400 hover:text-slate-700 dark:text-[#A3A3A3] dark:hover:text-white p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#252525] cursor-pointer transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Scrollable Body */}
+              <div className="overflow-y-auto pr-1 space-y-4 text-xs flex-1">
+                
+                {/* Product Selectors with Swap */}
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-2.5 items-end bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-200 dark:border-[#282828]">
+                  <div>
+                    <label className="block font-bold text-[11px] uppercase font-mono-code text-[#E21E26] mb-1">
+                      Produit A (Référence)
+                    </label>
+                    <select
+                      value={compareProdA.id}
+                      onChange={(e) => setCompareProdA(PORTFOLIO_PRODUCTS.find(p => p.id === e.target.value) || PORTFOLIO_PRODUCTS[0])}
+                      className="w-full bg-white dark:bg-[#1f1f1f] border border-slate-300 dark:border-[#383838] rounded-lg p-2 font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-[#E21E26] outline-none"
+                    >
+                      {PORTFOLIO_PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.name} ({p.category})</option>)}
+                    </select>
+                  </div>
+
+                  <div className="flex justify-center sm:pb-1">
+                    <button
+                      type="button"
+                      onClick={handleSwapProducts}
+                      title="Intervertir Produit A et Produit B"
+                      className="p-2 rounded-lg bg-white dark:bg-[#222] border border-slate-300 dark:border-[#333] hover:border-[#E21E26] text-slate-600 dark:text-slate-300 hover:text-[#E21E26] transition-all cursor-pointer shadow-sm flex items-center gap-1 text-[11px] font-medium"
+                    >
+                      <ArrowLeftRight className="w-4 h-4" />
+                      <span className="sm:hidden">Intervertir</span>
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-[11px] uppercase font-mono-code text-emerald-600 dark:text-emerald-400 mb-1">
+                      Produit B (Comparé)
+                    </label>
+                    <select
+                      value={compareProdB.id}
+                      onChange={(e) => setCompareProdB(PORTFOLIO_PRODUCTS.find(p => p.id === e.target.value) || PORTFOLIO_PRODUCTS[1])}
+                      className="w-full bg-white dark:bg-[#1f1f1f] border border-slate-300 dark:border-[#383838] rounded-lg p-2 font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                    >
+                      {PORTFOLIO_PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.name} ({p.category})</option>)}
+                    </select>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block font-semibold mb-1 uppercase font-mono-code text-slate-500">Produit B</label>
-                  <select
-                    value={compareProdB.id}
-                    onChange={(e) => setCompareProdB(PORTFOLIO_PRODUCTS.find(p => p.id === e.target.value) || PORTFOLIO_PRODUCTS[2])}
-                    className="w-full bg-slate-50 dark:bg-[#121212] border border-slate-300 dark:border-[#333] rounded-lg p-2 text-xs"
-                  >
-                    {PORTFOLIO_PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                {isSame && (
+                  <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300 flex items-center gap-2 text-xs">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>Vous avez sélectionné le même produit des deux côtés. Choisissez deux contrats distincts pour visualiser les écarts.</span>
+                  </div>
+                )}
+
+                {/* Simulation Parameters Bar */}
+                <div className="bg-slate-50 dark:bg-[#161616] p-3 rounded-xl border border-slate-200 dark:border-[#262626] space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-[#262626] pb-2">
+                    <span className="font-bold text-[11px] uppercase font-mono-code text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                      <SlidersHorizontal className="w-3.5 h-3.5 text-[#E21E26]" />
+                      Paramètres de simulation comparative en direct
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      Taux Minimum Garanti (TMG) : <strong>3,5% net/an</strong>
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Monthly Amount Input & Presets */}
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="font-medium text-slate-700 dark:text-slate-300">
+                          Cotisation mensuelle simulée :
+                        </label>
+                        <span className="font-extrabold font-mono-code text-[#E21E26]">
+                          {compareMonthlyAmount.toLocaleString('fr-FR')} FCFA / mois
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={5000}
+                        max={100000}
+                        step={5000}
+                        value={compareMonthlyAmount}
+                        onChange={(e) => setCompareMonthlyAmount(Number(e.target.value))}
+                        className="w-full accent-[#E21E26] cursor-pointer"
+                      />
+                      <div className="flex gap-1.5 mt-1.5">
+                        {[10000, 20000, 25000, 50000].map((val) => (
+                          <button
+                            key={val}
+                            type="button"
+                            onClick={() => setCompareMonthlyAmount(val)}
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono-code font-medium transition-colors cursor-pointer ${
+                              compareMonthlyAmount === val
+                                ? 'bg-[#E21E26] text-white'
+                                : 'bg-slate-200 dark:bg-[#252525] text-slate-700 dark:text-slate-300 hover:bg-slate-300'
+                            }`}
+                          >
+                            {val >= 1000 ? `${val / 1000}k` : val} F
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Duration Input & Presets */}
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="font-medium text-slate-700 dark:text-slate-300">
+                          Durée de capitalisation :
+                        </label>
+                        <span className="font-extrabold font-mono-code text-emerald-600 dark:text-emerald-400">
+                          {compareDurationYears} an(s)
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={3}
+                        max={25}
+                        step={1}
+                        value={compareDurationYears}
+                        onChange={(e) => setCompareDurationYears(Number(e.target.value))}
+                        className="w-full accent-emerald-600 cursor-pointer"
+                      />
+                      <div className="flex gap-1.5 mt-1.5">
+                        {[5, 10, 15, 20].map((val) => (
+                          <button
+                            key={val}
+                            type="button"
+                            onClick={() => setCompareDurationYears(val)}
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono-code font-medium transition-colors cursor-pointer ${
+                              compareDurationYears === val
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-slate-200 dark:bg-[#252525] text-slate-700 dark:text-slate-300 hover:bg-slate-300'
+                            }`}
+                          >
+                            {val} ans
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Side-by-Side Simulation Results Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  
+                  {/* Card Produit A */}
+                  <div className="p-3.5 rounded-xl border border-red-200 dark:border-red-950/60 bg-red-50/40 dark:bg-red-950/15 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 dark:text-white text-xs">
+                        {compareProdA.name}
+                      </span>
+                      <span className="text-[10px] font-bold text-[#E21E26] uppercase font-mono-code bg-red-100 dark:bg-red-950/80 px-2 py-0.5 rounded">
+                        Produit A
+                      </span>
+                    </div>
+
+                    <div className="border-t border-red-200/60 dark:border-red-900/30 pt-2 space-y-1">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Cotisation retenue :</span>
+                        <strong className="text-slate-900 dark:text-white font-mono-code">
+                          {amtA.toLocaleString('fr-FR')} FCFA/mois
+                        </strong>
+                      </div>
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Durée effective :</span>
+                        <strong className="text-slate-900 dark:text-white font-mono-code">
+                          {durA} an(s) {durA !== compareDurationYears && `(max: ${compareProdA.maxDur}a)`}
+                        </strong>
+                      </div>
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Total cotisé :</span>
+                        <span className="font-mono-code font-bold text-slate-800 dark:text-slate-200">
+                          {totalPaidA.toLocaleString('fr-FR')} FCFA
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-[#1a1a1a] p-2.5 rounded-lg border border-red-200 dark:border-red-900/40">
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono-code">
+                        {compareProdA.isEpargne ? 'Capital Garanti Estimé au terme (TMG 3,5%)' : 'Prestation Prévoyance / Décès'}
+                      </div>
+                      <div className="text-lg font-extrabold text-[#E21E26] font-heading mt-0.5">
+                        {totalCapA.toLocaleString('fr-FR')} FCFA
+                      </div>
+                      {fidelityA > 0 && (
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
+                          ✓ Inclut le bonus fidélité de 92% (+{fidelityA.toLocaleString('fr-FR')} FCFA)
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 italic">
+                      🎯 {compareProdA.pointFort}
+                    </p>
+                  </div>
+
+                  {/* Card Produit B */}
+                  <div className="p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/40 dark:bg-emerald-950/15 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 dark:text-white text-xs">
+                        {compareProdB.name}
+                      </span>
+                      <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase font-mono-code bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 rounded">
+                        Produit B
+                      </span>
+                    </div>
+
+                    <div className="border-t border-emerald-200/60 dark:border-emerald-900/30 pt-2 space-y-1">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Cotisation retenue :</span>
+                        <strong className="text-slate-900 dark:text-white font-mono-code">
+                          {amtB.toLocaleString('fr-FR')} FCFA/mois
+                        </strong>
+                      </div>
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Durée effective :</span>
+                        <strong className="text-slate-900 dark:text-white font-mono-code">
+                          {durB} an(s) {durB !== compareDurationYears && `(max: ${compareProdB.maxDur}a)`}
+                        </strong>
+                      </div>
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Total cotisé :</span>
+                        <span className="font-mono-code font-bold text-slate-800 dark:text-slate-200">
+                          {totalPaidB.toLocaleString('fr-FR')} FCFA
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-[#1a1a1a] p-2.5 rounded-lg border border-emerald-200 dark:border-emerald-900/40">
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono-code">
+                        {compareProdB.isEpargne ? 'Capital Garanti Estimé au terme (TMG 3,5%)' : 'Prestation Prévoyance / Décès'}
+                      </div>
+                      <div className="text-lg font-extrabold text-emerald-700 dark:text-emerald-400 font-heading mt-0.5">
+                        {totalCapB.toLocaleString('fr-FR')} FCFA
+                      </div>
+                      {fidelityB > 0 && (
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
+                          ✓ Inclut le bonus fidélité de 92% (+{fidelityB.toLocaleString('fr-FR')} FCFA)
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 italic">
+                      🎯 {compareProdB.pointFort}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Detailed Comparison Table */}
+                <div className="border border-slate-200 dark:border-[#2D2D2D] rounded-xl overflow-hidden shadow-sm">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100 dark:bg-[#222] border-b border-slate-200 dark:border-[#2D2D2D]">
+                        <th className="p-2.5 font-bold text-slate-600 dark:text-slate-300 w-[28%]">
+                          Critères CIMA & Caractéristiques
+                        </th>
+                        <th className="p-2.5 font-bold text-[#E21E26] w-[36%] border-l border-slate-200 dark:border-[#2D2D2D]">
+                          {compareProdA.name}
+                        </th>
+                        <th className="p-2.5 font-bold text-emerald-600 dark:text-emerald-400 w-[36%] border-l border-slate-200 dark:border-[#2D2D2D]">
+                          {compareProdB.name}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-[#262626] text-[11px]">
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Catégorie</td>
+                        <td className="p-2.5 font-medium border-l border-slate-100 dark:border-[#262626]">{compareProdA.category}</td>
+                        <td className="p-2.5 font-medium border-l border-slate-100 dark:border-[#262626]">{compareProdB.category}</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Cotisation minimale</td>
+                        <td className="p-2.5 font-bold font-mono-code text-[#E21E26] border-l border-slate-100 dark:border-[#262626]">
+                          {compareProdA.minAmount.toLocaleString('fr-FR')} FCFA/mois
+                        </td>
+                        <td className="p-2.5 font-bold font-mono-code text-emerald-600 dark:text-emerald-400 border-l border-slate-100 dark:border-[#262626]">
+                          {compareProdB.minAmount.toLocaleString('fr-FR')} FCFA/mois
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Durée contractuelle</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">
+                          {compareProdA.minDur === compareProdA.maxDur ? `${compareProdA.minDur} an(s)` : `${compareProdA.minDur} à ${compareProdA.maxDur} ans`}
+                        </td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">
+                          {compareProdB.minDur === compareProdB.maxDur ? `${compareProdB.minDur} an(s)` : `${compareProdB.minDur} à ${compareProdB.maxDur} ans`}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Rendement garanti CIMA</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdA.tauxGaranti}</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdB.tauxGaranti}</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Prestation de sortie</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdA.payout}</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdB.payout}</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Garantie Prévoyance / Décès</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdA.prevoyance}</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdB.prevoyance}</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Rachat CIMA (Art. 74 & 76)</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdA.rachatCima}</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdB.rachatCima}</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Droit de renonciation (Art. 76)</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdA.renonciation}</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdB.renonciation}</td>
+                      </tr>
+                      <tr>
+                        <td className="p-2.5 font-semibold text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-[#161616]">Participation aux bénéfices (Art. 84)</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdA.participationBenefices}</td>
+                        <td className="p-2.5 border-l border-slate-100 dark:border-[#262626]">{compareProdB.participationBenefices}</td>
+                      </tr>
+                      <tr className="bg-amber-50/30 dark:bg-amber-950/10">
+                        <td className="p-2.5 font-semibold text-slate-800 dark:text-slate-200 bg-amber-100/40 dark:bg-amber-950/30">
+                          Profil & Recommandation
+                        </td>
+                        <td className="p-2.5 text-slate-700 dark:text-slate-300 border-l border-slate-100 dark:border-[#262626]">
+                          {compareProdA.quiDevraitChoisir}
+                        </td>
+                        <td className="p-2.5 text-slate-700 dark:text-slate-300 border-l border-slate-100 dark:border-[#262626]">
+                          {compareProdB.quiDevraitChoisir}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              {/* Tableau comparatif */}
-              <div className="border border-slate-200 dark:border-[#2D2D2D] rounded-xl overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-slate-100 dark:bg-[#222] border-b border-slate-200 dark:border-[#2D2D2D]">
-                      <th className="p-2.5 font-bold text-slate-600 dark:text-slate-300 w-1/3">Critère CIMA</th>
-                      <th className="p-2.5 font-bold text-[#E21E26] w-1/3">{compareProdA.name}</th>
-                      <th className="p-2.5 font-bold text-emerald-600 dark:text-emerald-400 w-1/3">{compareProdB.name}</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-[#262626]">
-                    <tr>
-                      <td className="p-2.5 font-medium text-slate-500">Catégorie</td>
-                      <td className="p-2.5">{compareProdA.category}</td>
-                      <td className="p-2.5">{compareProdB.category}</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-medium text-slate-500">Cotisation minimale</td>
-                      <td className="p-2.5 font-bold font-mono-code">{compareProdA.minAmount.toLocaleString('fr-FR')} FCFA/mois</td>
-                      <td className="p-2.5 font-bold font-mono-code">{compareProdB.minAmount.toLocaleString('fr-FR')} FCFA/mois</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-medium text-slate-500">Durée du contrat</td>
-                      <td className="p-2.5">{compareProdA.minDur === compareProdA.maxDur ? `${compareProdA.minDur} an(s)` : `${compareProdA.minDur} à ${compareProdA.maxDur} ans`}</td>
-                      <td className="p-2.5">{compareProdB.minDur === compareProdB.maxDur ? `${compareProdB.minDur} an(s)` : `${compareProdB.minDur} à ${compareProdB.maxDur} ans`}</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-medium text-slate-500">Public cible</td>
-                      <td className="p-2.5">{compareProdA.target}</td>
-                      <td className="p-2.5">{compareProdB.target}</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-medium text-slate-500">Prestation de sortie</td>
-                      <td className="p-2.5">{compareProdA.payout}</td>
-                      <td className="p-2.5">{compareProdB.payout}</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2.5 font-medium text-slate-500">Couverture prévoyance</td>
-                      <td className="p-2.5">{compareProdA.prevoyance}</td>
-                      <td className="p-2.5">{compareProdB.prevoyance}</td>
-                    </tr>
-                  </tbody>
-                </table>
+              {/* Footer Actions */}
+              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-[#2D2D2D] flex flex-wrap items-center justify-between gap-2 flex-shrink-0">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
+                  ⚖️ Conforme Articles 6, 65-1, 74, 76 & 84 du Code CIMA.
+                </span>
+                
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                  <button
+                    onClick={() => setShowCompareModal(false)}
+                    className="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252525] text-xs font-medium cursor-pointer transition-colors"
+                  >
+                    Fermer
+                  </button>
+                  <button
+                    onClick={() => handleInsertComparison(compareProdA, compareProdB, compareMonthlyAmount, compareDurationYears)}
+                    className="bg-[#E21E26] hover:bg-[#c00017] text-white px-4 py-2 rounded-lg font-medium text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+                  >
+                    <span>Demander l'analyse détaillée au Conseiller Virtuel</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div className="mt-5 flex items-center justify-end gap-2.5">
-              <button
-                onClick={() => setShowCompareModal(false)}
-                className="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252525] text-xs font-medium cursor-pointer"
-              >
-                Fermer
-              </button>
-              <button
-                onClick={() => handleInsertComparison(compareProdA, compareProdB)}
-                className="bg-[#E21E26] hover:bg-[#c00017] text-white px-4 py-2 rounded-lg font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <span>Demander l'analyse au bot</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* LEXIQUE INTERACTIF CIMA MODAL */}
       {showLexiconModal && (

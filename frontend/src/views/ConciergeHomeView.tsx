@@ -73,9 +73,6 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
           <p className="font-heading text-base md:text-lg text-slate-700 dark:text-[#e7bdb8] font-medium">
             Conseiller Bancassurance & Simulateur CIMA
           </p>
-          <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-300 text-xs font-mono-code font-semibold">
-            <span>Portefeuille 8 Produits • Articles 6, 74 & 76 Code CIMA</span>
-          </div>
         </div>
 
         {/* Primary Chat Interface Card */}

@@ -544,7 +544,7 @@ Instructions strictes :
 3. Si la question est une demande de calcul ou de simulation, donne le total cotisé et le capital garanti estimé.`;
 
         const response = await ai.models.generateContent({
-          model: "gemini-3.7-flash",
+          model: "gemini-2.0-flash",
           contents: prompt,
         });
 
@@ -683,69 +683,110 @@ Directives strictes :
       });
     }
 
-    // Fallback comparaison multi-produits (Visa Études vs Visa Études Plus, etc.)
+    // Comparaison universelle multi-produits (Visa Études vs Plus, Retraite, Protect Plus, etc.)
     const normalized = message.toLowerCase();
     const isComparison = normalized.includes("compar") || normalized.includes("versus") ||
       normalized.includes("vs ") || normalized.includes(" vs") || normalized.includes("différen") ||
       normalized.includes("differen") || normalized.includes("entre");
 
-    const mentionsVisaEtudes    = normalized.includes("visa études") || normalized.includes("visa etudes");
-    const mentionsVisaEtudesPlus = normalized.includes("plus") && (normalized.includes("visa") || normalized.includes("études") || normalized.includes("etudes"));
-    const mentionsRetraite      = normalized.includes("retraite");
-    const mentionsHorizon5      = normalized.includes("horizon 5") || normalized.includes("retraite 5");
+    if (isComparison) {
+      // Détection de tous les produits mentionnés
+      const recognizedProducts: any[] = [];
 
-    if (isComparison && (mentionsVisaEtudes || mentionsVisaEtudesPlus)) {
-      const visaEtudes     = SUNU_KNOWLEDGE_DOCUMENTS[0];
-      const visaEtudesPlus = SUNU_KNOWLEDGE_DOCUMENTS[1];
+      if (normalized.includes("plus") && (normalized.includes("visa") || normalized.includes("étude") || normalized.includes("etude") || normalized.includes("edupro"))) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[1]); // Visa Études Plus
+      }
+      if ((normalized.includes("visa études") || normalized.includes("visa etudes") || normalized.includes("études") || normalized.includes("etudes")) && !recognizedProducts.some(p => p.id === "PROD-EP-EDUPRO")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[0]); // Visa Études
+      }
+      if (normalized.includes("horizon 5") || normalized.includes("retraite 5") || normalized.includes("ret5")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[3]); // Horizon Retraite 5
+      }
+      if ((normalized.includes("horizon") || normalized.includes("retraite")) && !recognizedProducts.some(p => p.id === "PROD-EP-RET5") && !recognizedProducts.some(p => p.id === "PROD-EP-RETRAITE")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[2]); // Horizon Retraite
+      }
+      if (normalized.includes("bonus") || normalized.includes("tirage")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[4]); // Épargne Bonus
+      }
+      if (normalized.includes("protect") || normalized.includes("santé") || normalized.includes("sante") || normalized.includes("hospital")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[5]); // Protect Plus
+      }
+      if (normalized.includes("secure") || normalized.includes("compte")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[6]); // Secure Compte
+      }
+      if (normalized.includes("moov")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[7]); // Épargne Moov
+      }
+      if (normalized.includes("serenite") || normalized.includes("sérénité") || normalized.includes("obseque") || normalized.includes("obsèque")) {
+        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[9]); // Sérénité
+      }
+
+      // Sélection des 2 produits à comparer
+      let prodA = recognizedProducts[0] || SUNU_KNOWLEDGE_DOCUMENTS[0];
+      let prodB = recognizedProducts[1];
+      if (!prodB) {
+        if (prodA.id === "PROD-EP-EDUCATION") prodB = SUNU_KNOWLEDGE_DOCUMENTS[1];
+        else if (prodA.id === "PROD-EP-EDUPRO") prodB = SUNU_KNOWLEDGE_DOCUMENTS[0];
+        else if (prodA.id === "PROD-EP-RETRAITE") prodB = SUNU_KNOWLEDGE_DOCUMENTS[3];
+        else if (prodA.id === "PROD-EP-RET5") prodB = SUNU_KNOWLEDGE_DOCUMENTS[2];
+        else if (prodA.id === "PROD-PR-PROTPLUS") prodB = SUNU_KNOWLEDGE_DOCUMENTS[6];
+        else prodB = SUNU_KNOWLEDGE_DOCUMENTS[2];
+      }
+
+      // Extraction d'éventuels montants et durées demandés
+      let compAmount = 20000;
+      const matchAmt = normalized.match(/(\d[\d\s]*\d|\d+)\s*(?:fcfa|f\b|francs?)/i) || normalized.match(/(?:cotis\w*|montant|avec)\s*(?:de\s*)?(\d[\d\s]*\d|\d+)/i);
+      if (matchAmt) {
+        const parsed = parseInt(matchAmt[1].replace(/\s+/g, ""), 10);
+        if (!isNaN(parsed) && parsed >= 500) compAmount = parsed;
+      }
+      let compDur = 10;
+      const matchDur = normalized.match(/(\d+)\s*(?:ans?|années?)/i);
+      if (matchDur) {
+        const parsed = parseInt(matchDur[1], 10);
+        if (!isNaN(parsed) && parsed >= 1 && parsed <= 30) compDur = parsed;
+      }
+
+      const mapKey = (docId: string) => {
+        if (docId.includes("EDUCATION")) return "visa_etudes";
+        if (docId.includes("EDUPRO")) return "visa_etudes_plus";
+        if (docId.includes("RET5")) return "horizon_retraite_5";
+        if (docId.includes("RETRAITE")) return "horizon_retraite";
+        if (docId.includes("BONUS")) return "epargne_bonus";
+        if (docId.includes("PROTPLUS")) return "protect_plus";
+        if (docId.includes("SECCOMPTE")) return "secure_compte";
+        if (docId.includes("DIGMOOV")) return "epargne_moov";
+        return "serenite";
+      };
+
+      const simA = computeActuarialSimulation(mapKey(prodA.id), compAmount, compDur);
+      const simB = computeActuarialSimulation(mapKey(prodB.id), compAmount, compDur);
+
       return res.json({
         reply:
-`## Comparatif officiel : Visa Études vs Visa Études Plus\n\n` +
-`| Critère | **${visaEtudes.title}** | **${visaEtudesPlus.title}** |\n` +
+`## Comparatif officiel CIMA : ${prodA.title} vs ${prodB.title}\n\n` +
+`| Critère d'évaluation | **${prodA.title}** | **${prodB.title}** |\n` +
 `|---|---|---|\n` +
-`| **Objectif** | Épargne progressive pour les études supérieures de l'enfant | Couverture renforcée famille + bourses trimestrielles échelonnées |\n` +
-`| **Cotisation minimale** | ${visaEtudes.startingPrice} | ${visaEtudesPlus.startingPrice} |\n` +
-`| **Durée** | ${visaEtudes.duration} | ${visaEtudesPlus.duration} |\n` +
-`| **Rendement garanti** | ${visaEtudes.yield} | ${visaEtudesPlus.yield} |\n` +
-`| **Mode de versement** | Capital unique ou rentes trimestrielles d'études (3 à 5 ans) | Bourses trimestrielles d'études échelonnées à terme |\n` +
-`| **Décès du parent** | Exonération intégrale des cotisations + capital garanti maintenu à terme | **Rente d'orphelinat immédiate versée jusqu'au terme** + exonération des primes |\n` +
-`| **Décès accidentel** | Capital garanti maintenu | **Doublement du capital** en cas de décès accidentel |\n` +
-`| **Versements libres** | Non prévu | Oui — versements libres complémentaires possibles à tout moment |\n` +
-`| **Public cible** | Parents/tuteurs, enfant de 0 à 18 ans | Familles souhaitant une prévoyance renforcée et un suivi universitaire sécurisé |\n` +
+`| **Catégorie de contrat** | ${prodA.category} | ${prodB.category} |\n` +
+`| **Cotisation d'entrée** | ${prodA.startingPrice} | ${prodB.startingPrice} |\n` +
+`| **Durée contractuelle** | ${prodA.duration} | ${prodB.duration} |\n` +
+`| **Rendement garanti (TMG)** | ${prodA.yield || "Tarif garanti Livre VII"} | ${prodB.yield || "Tarif garanti Livre VII"} |\n` +
+`| **Prestations garanties** | ${prodA.benefits[0]} | ${prodB.benefits[0]} |\n` +
+`| **Couverture Prévoyance** | ${prodA.benefits[2] || prodA.benefits[1]} | ${prodB.benefits[2] || prodB.benefits[1]} |\n` +
+`| **Spécificité exclusive** | ${prodA.benefits[1] || prodA.benefits[0]} | ${prodB.benefits[1] || prodB.benefits[0]} |\n` +
 `\n---\n\n` +
-`### 📌 Conditions de sortie — Code CIMA\n\n` +
-`**Commun aux deux contrats :**\n` +
-`- **Droit de renonciation** : 30 jours calendaires après signature (Art. 76) — remboursement intégral, sans frais\n` +
-`- **Rachat anticipé** : Interdit avant **2 ans** de cotisations effectives (Art. 74)\n` +
-`- **Frais de rachat** : Plafonnés à **5%** de la provision mathématique (Art. 76)\n` +
-`- **Rachat après 10 ans** : Sans pénalité (0%)\n` +
-`- **Information précontractuelle** : Fiche synthétique obligatoire + encadré Art. 65-1 CIMA\n` +
-`- **Participation aux bénéfices** : Au moins 85% des bénéfices financiers redistribués (Art. 84)\n\n` +
-`### 🏆 Quel produit choisir ?\n\n` +
-`- Choisissez **Visa Études** si votre budget est limité (dès **4 250 FCFA/mois**) et que vous souhaitez constituer un capital éducation simple et sécurisé.\n` +
-`- Choisissez **Visa Études Plus** si vous souhaitez une **protection prévoyance maximale** (rente orphelinat + doublement accident) et avez la capacité de cotiser à partir de **10 000 FCFA/mois**.\n\n` +
-`*Simulation personnalisée disponible sur demande. Conformément à l'Article 6 du Code CIMA, cette information précontractuelle est indicative et sera finalisée avec votre conseiller SUNU Bank Togo en agence.*`,
-        structuredData: null
-      });
-    }
-
-    if (isComparison && mentionsRetraite) {
-      const hr  = SUNU_KNOWLEDGE_DOCUMENTS[2];
-      const hr5 = SUNU_KNOWLEDGE_DOCUMENTS[3];
-      return res.json({
-        reply:
-`## Comparatif : Horizon Retraite vs Horizon Retraite 5\n\n` +
-`| Critère | **${hr.title}** | **${hr5.title}** |\n` +
-`|---|---|---|\n` +
-`| **Objectif** | Capitalisation retraite long terme | Capitalisation accélérée sur 5 ans ferme |\n` +
-`| **Cotisation minimale** | ${hr.startingPrice} | ${hr5.startingPrice} |\n` +
-`| **Durée** | ${hr.duration} | ${hr5.duration} |\n` +
-`| **Rendement garanti** | ${hr.yield} | ${hr5.yield} |\n` +
-`| **Bonus fidélité** | **92% de la 1ère annuité** si durée ≥ 10 ans sans rachat | Non applicable |\n` +
-`| **Sortie à terme** | Capital unique ou rente viagère mensuelle réversible | Capital unique |\n` +
-`| **Public cible** | Actifs préparant leur retraite à long terme | Cadres/seniors à 5 ans de la cessation d'activité |\n\n` +
-`### 📌 Conditions CIMA communes\n` +
-`- Renonciation 30 jours (Art. 76) | Rachat dès 2 ans (Art. 74) | Frais max 5% PM | Participation bénéfices (Art. 84)\n\n` +
-`*Demandez une simulation personnalisée en précisant votre montant mensuel et durée souhaitée.*`,
+`### 📊 Simulation comparative chiffrée (Base : ${compAmount.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} ans)\n\n` +
+`- **${prodA.title}** : Total cotisé de **${simA.totalContributed.toLocaleString('fr-FR')} FCFA** ➔ Prestation / Capital garanti à terme : **${simA.guaranteedCapital.toLocaleString('fr-FR')} FCFA**.\n` +
+`- **${prodB.title}** : Total cotisé de **${simB.totalContributed.toLocaleString('fr-FR')} FCFA** ➔ Prestation / Capital garanti à terme : **${simB.guaranteedCapital.toLocaleString('fr-FR')} FCFA**.\n\n` +
+`### 📌 Dispositions communes du Code CIMA (Livre I)\n\n` +
+`- **Droit de renonciation (Art. 76)** : 30 jours calendaires après signature avec restitution intégrale des primes sans pénalité.\n` +
+`- **Valeur de rachat (Art. 74)** : Interdit avant 2 ans de cotisations effectives (ou 15% des primes prévues) pour les contrats de capitalisation.\n` +
+`- **Plafonnement des pénalités (Art. 76)** : Frais de rachat limités à 5% max de la provision mathématique, et 0% au-delà de 10 ans.\n` +
+`- **Participation aux bénéfices (Art. 84)** : Redistribution légale minimale de 85% des bénéfices financiers réalisés aux assurés.\n\n` +
+`### 🏆 Recommandation patrimoniale\n\n` +
+`- **Choisissez ${prodA.title}** pour : ${prodA.benefits[3] || prodA.benefits[0]}.\n` +
+`- **Choisissez ${prodB.title}** pour : ${prodB.benefits[3] || prodB.benefits[0]}.\n\n` +
+`*Conformément à l'Article 6 du Code CIMA, ce comparatif précontractuel est indicatif. Votre conseiller SUNU Bank Togo est à votre disposition en agence pour éditer votre proposition d'assurance officielle.*`,
         structuredData: null
       });
     }
