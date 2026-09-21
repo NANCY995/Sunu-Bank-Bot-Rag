@@ -645,13 +645,16 @@ Directives strictes :
 4. CITE LES ARTICLES DU CODE CIMA (Art. 6, 74, 76, 84).`;
 
         const response = await ai.models.generateContent({
-          model: "gemini-3.7-flash",
+          model: "gemini-2.0-flash",
+          config: {
+            systemInstruction: systemInstruction,
+          },
           contents: [
-            { text: `System Instruction: ${systemInstruction}` },
             ...(conversationHistory || []).map((msg: any) => ({
-              text: `${msg.role === 'user' ? 'Client' : 'Conseiller'}: ${msg.content}`
+              role: msg.role === 'user' ? 'user' : 'model',
+              parts: [{ text: msg.content }]
             })),
-            { text: `Client: ${message}` }
+            { role: 'user', parts: [{ text: message }] }
           ]
         });
 
@@ -680,10 +683,77 @@ Directives strictes :
       });
     }
 
+    // Fallback comparaison multi-produits (Visa Études vs Visa Études Plus, etc.)
+    const normalized = message.toLowerCase();
+    const isComparison = normalized.includes("compar") || normalized.includes("versus") ||
+      normalized.includes("vs ") || normalized.includes(" vs") || normalized.includes("différen") ||
+      normalized.includes("differen") || normalized.includes("entre");
+
+    const mentionsVisaEtudes    = normalized.includes("visa études") || normalized.includes("visa etudes");
+    const mentionsVisaEtudesPlus = normalized.includes("plus") && (normalized.includes("visa") || normalized.includes("études") || normalized.includes("etudes"));
+    const mentionsRetraite      = normalized.includes("retraite");
+    const mentionsHorizon5      = normalized.includes("horizon 5") || normalized.includes("retraite 5");
+
+    if (isComparison && (mentionsVisaEtudes || mentionsVisaEtudesPlus)) {
+      const visaEtudes     = SUNU_KNOWLEDGE_DOCUMENTS[0];
+      const visaEtudesPlus = SUNU_KNOWLEDGE_DOCUMENTS[1];
+      return res.json({
+        reply:
+`## Comparatif officiel : Visa Études vs Visa Études Plus\n\n` +
+`| Critère | **${visaEtudes.title}** | **${visaEtudesPlus.title}** |\n` +
+`|---|---|---|\n` +
+`| **Objectif** | Épargne progressive pour les études supérieures de l'enfant | Couverture renforcée famille + bourses trimestrielles échelonnées |\n` +
+`| **Cotisation minimale** | ${visaEtudes.startingPrice} | ${visaEtudesPlus.startingPrice} |\n` +
+`| **Durée** | ${visaEtudes.duration} | ${visaEtudesPlus.duration} |\n` +
+`| **Rendement garanti** | ${visaEtudes.yield} | ${visaEtudesPlus.yield} |\n` +
+`| **Mode de versement** | Capital unique ou rentes trimestrielles d'études (3 à 5 ans) | Bourses trimestrielles d'études échelonnées à terme |\n` +
+`| **Décès du parent** | Exonération intégrale des cotisations + capital garanti maintenu à terme | **Rente d'orphelinat immédiate versée jusqu'au terme** + exonération des primes |\n` +
+`| **Décès accidentel** | Capital garanti maintenu | **Doublement du capital** en cas de décès accidentel |\n` +
+`| **Versements libres** | Non prévu | Oui — versements libres complémentaires possibles à tout moment |\n` +
+`| **Public cible** | Parents/tuteurs, enfant de 0 à 18 ans | Familles souhaitant une prévoyance renforcée et un suivi universitaire sécurisé |\n` +
+`\n---\n\n` +
+`### 📌 Conditions de sortie — Code CIMA\n\n` +
+`**Commun aux deux contrats :**\n` +
+`- **Droit de renonciation** : 30 jours calendaires après signature (Art. 76) — remboursement intégral, sans frais\n` +
+`- **Rachat anticipé** : Interdit avant **2 ans** de cotisations effectives (Art. 74)\n` +
+`- **Frais de rachat** : Plafonnés à **5%** de la provision mathématique (Art. 76)\n` +
+`- **Rachat après 10 ans** : Sans pénalité (0%)\n` +
+`- **Information précontractuelle** : Fiche synthétique obligatoire + encadré Art. 65-1 CIMA\n` +
+`- **Participation aux bénéfices** : Au moins 85% des bénéfices financiers redistribués (Art. 84)\n\n` +
+`### 🏆 Quel produit choisir ?\n\n` +
+`- Choisissez **Visa Études** si votre budget est limité (dès **4 250 FCFA/mois**) et que vous souhaitez constituer un capital éducation simple et sécurisé.\n` +
+`- Choisissez **Visa Études Plus** si vous souhaitez une **protection prévoyance maximale** (rente orphelinat + doublement accident) et avez la capacité de cotiser à partir de **10 000 FCFA/mois**.\n\n` +
+`*Simulation personnalisée disponible sur demande. Conformément à l'Article 6 du Code CIMA, cette information précontractuelle est indicative et sera finalisée avec votre conseiller SUNU Bank Togo en agence.*`,
+        structuredData: null
+      });
+    }
+
+    if (isComparison && mentionsRetraite) {
+      const hr  = SUNU_KNOWLEDGE_DOCUMENTS[2];
+      const hr5 = SUNU_KNOWLEDGE_DOCUMENTS[3];
+      return res.json({
+        reply:
+`## Comparatif : Horizon Retraite vs Horizon Retraite 5\n\n` +
+`| Critère | **${hr.title}** | **${hr5.title}** |\n` +
+`|---|---|---|\n` +
+`| **Objectif** | Capitalisation retraite long terme | Capitalisation accélérée sur 5 ans ferme |\n` +
+`| **Cotisation minimale** | ${hr.startingPrice} | ${hr5.startingPrice} |\n` +
+`| **Durée** | ${hr.duration} | ${hr5.duration} |\n` +
+`| **Rendement garanti** | ${hr.yield} | ${hr5.yield} |\n` +
+`| **Bonus fidélité** | **92% de la 1ère annuité** si durée ≥ 10 ans sans rachat | Non applicable |\n` +
+`| **Sortie à terme** | Capital unique ou rente viagère mensuelle réversible | Capital unique |\n` +
+`| **Public cible** | Actifs préparant leur retraite à long terme | Cadres/seniors à 5 ans de la cessation d'activité |\n\n` +
+`### 📌 Conditions CIMA communes\n` +
+`- Renonciation 30 jours (Art. 76) | Rachat dès 2 ans (Art. 74) | Frais max 5% PM | Participation bénéfices (Art. 84)\n\n` +
+`*Demandez une simulation personnalisée en précisant votre montant mensuel et durée souhaitée.*`,
+        structuredData: null
+      });
+    }
+
     return res.json({
       reply: `Bienvenue chez SUNU Bank Togo. Je suis votre Concierge Bancassurance certifié CIMA.\n\n` +
         `Notre portefeuille d'assurance vie comprend des solutions d'épargne-études (**Visa Études**, **Visa Études Plus**), de retraite (**Horizon Retraite**, **Horizon Retraite 5**), d'épargne bonifiée (**Épargne Bonus**), et de micro-assurance prévoyance (**Protect Plus**, **Secure Compte**, **Épargne Moov**, **Sérénité**).\n\n` +
-        `Vous pouvez me demander à tout moment une simulation chiffrée (ex: *« Simule Horizon Retraite pour 25 000 FCFA/mois sur 15 ans »* ou *« Que rapporte Visa Études avec 15 000 F/mois ? »*). Comment puis-je vous guider aujourd'hui ?`,
+        `Vous pouvez me demander une comparaison (ex: *« Compare Visa Études et Visa Études Plus »*) ou une simulation chiffrée (ex: *« Simule Horizon Retraite pour 25 000 FCFA/mois sur 15 ans »*). Comment puis-je vous guider ?`,
       structuredData: null
     });
 
