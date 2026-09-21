@@ -1348,47 +1348,49 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
                 setKycStep(1);
                 setShowKycModal(true);
               }}
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-[#A3A3A3] hover:text-[#E21E26] dark:hover:text-white bg-slate-100 hover:bg-red-50 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border border-slate-200 hover:border-red-200 dark:border-[#2D2D2D] px-2.5 py-1.5 rounded-lg transition-all cursor-pointer shadow-xs"
+              className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-slate-700 dark:text-[#A3A3A3] hover:text-[#E21E26] dark:hover:text-white bg-slate-100 hover:bg-red-50 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border border-slate-200 hover:border-red-200 dark:border-[#2D2D2D] px-2 sm:px-2.5 py-1.5 rounded-lg transition-all cursor-pointer shadow-xs shrink-0"
               title="Assistant d'éligibilité et diagnostic KYC (Obligation de conseil CIMA Art. 6)"
             >
-              <Compass className="w-4 h-4 text-[#E21E26] shrink-0" />
-              <span>Diagnostic KYC</span>
+              <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E21E26] shrink-0" />
+              <span className="hidden sm:inline">Diagnostic KYC</span>
+              <span className="sm:hidden">KYC</span>
             </button>
 
             {/* Comparateur */}
             <button
               onClick={() => setShowCompareModal(true)}
-              className="flex items-center gap-1 text-xs text-slate-700 dark:text-[#A3A3A3] hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border border-slate-200 dark:border-[#2D2D2D] px-2 py-1.5 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1 text-xs text-slate-700 dark:text-[#A3A3A3] hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border border-slate-200 dark:border-[#2D2D2D] px-2 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0"
               title="Comparer deux produits"
             >
-              <Scale className="w-3.5 h-3.5 text-[#E21E26]" />
-              <span className="hidden md:inline">Comparer</span>
+              <Scale className="w-3.5 h-3.5 text-[#E21E26] shrink-0" />
+              <span className="hidden sm:inline">Comparer</span>
             </button>
 
             {/* Lexique CIMA */}
             <button
               onClick={() => setShowLexiconModal(true)}
-              className="flex items-center gap-1 text-xs text-slate-700 dark:text-[#A3A3A3] hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border border-slate-200 dark:border-[#2D2D2D] px-2 py-1.5 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1 text-xs text-slate-700 dark:text-[#A3A3A3] hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-[#1B1B1B] dark:hover:bg-[#252525] border border-slate-200 dark:border-[#2D2D2D] px-2 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0"
               title="Lexique juridique CIMA"
             >
-              <BookOpen className="w-3.5 h-3.5 text-[#E21E26]" />
-              <span className="hidden md:inline">Lexique CIMA</span>
+              <BookOpen className="w-3.5 h-3.5 text-[#E21E26] shrink-0" />
+              <span className="hidden sm:inline">Lexique</span>
             </button>
 
             {/* Simulator button */}
             <button
               id="btn-open-simulator"
               onClick={() => setShowSimulatorModal(true)}
-              className="flex items-center gap-1 text-xs text-white bg-[#E21E26] hover:bg-[#c00017] px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer font-medium shadow-sm"
+              className="flex items-center gap-1 text-xs text-white bg-[#E21E26] hover:bg-[#c00017] px-2 sm:px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer font-medium shadow-sm shrink-0"
               title="Ouvrir le simulateur multi-produits"
             >
-              <Calculator className="w-3.5 h-3.5 text-white" />
-              <span>Simulateur</span>
+              <Calculator className="w-3.5 h-3.5 text-white shrink-0" />
+              <span className="hidden sm:inline">Simulateur</span>
+              <span className="sm:hidden">Simuler</span>
             </button>
 
             <button
               onClick={onNavigateHome}
-              className="text-slate-600 dark:text-[#e5e2e1] hover:text-[#E21E26] transition-colors p-1 cursor-pointer"
+              className="text-slate-600 dark:text-[#e5e2e1] hover:text-[#E21E26] transition-colors p-1 cursor-pointer shrink-0"
               title="Réinitialiser la conversation"
             >
               <span className="material-symbols-outlined text-[18px]">refresh</span>
@@ -1737,8 +1739,8 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
 
       {/* MULTI-PRODUCT ACTUARIAL SIMULATOR MODAL */}
       {showSimulatorModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-lg w-full p-5 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-lg w-full p-4 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto">
             
             <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-[#2D2D2D] pb-3">
               <div className="flex items-center gap-2">
@@ -1902,22 +1904,22 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
 
         return (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-            <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-4xl w-full p-4 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[92vh] flex flex-col">
+            <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-4xl w-full p-3 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[94vh] sm:max-h-[92vh] flex flex-col">
               
               {/* Header */}
               <div className="flex items-center justify-between mb-3 border-b border-slate-200 dark:border-[#2D2D2D] pb-3 flex-shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900/50 flex items-center justify-center text-[#E21E26]">
-                    <Scale className="w-5 h-5" />
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900/50 flex items-center justify-center text-[#E21E26] shrink-0">
+                    <Scale className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                      Comparateur & Conseil Décisionnel CIMA
-                      <span className="text-[10px] uppercase font-mono-code font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
+                    <h3 className="font-heading font-bold text-sm sm:text-lg text-slate-900 dark:text-white flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                      <span>Comparateur & Conseil CIMA</span>
+                      <span className="text-[9px] sm:text-[10px] uppercase font-mono-code font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-1.5 sm:px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
                         Arbitrage Certifié
                       </span>
                     </h3>
-                    <p className="text-[11px] text-slate-500 dark:text-[#888]">
+                    <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-[#888]">
                       Comparez réellement deux contrats selon votre besoin et recevez la recommandation personnalisée d'un actuaire.
                     </p>
                   </div>
@@ -2282,8 +2284,8 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
                 </div>
 
                 {/* 6. Detailed Comparison Table */}
-                <div className="border border-slate-200 dark:border-[#2D2D2D] rounded-xl overflow-hidden shadow-sm">
-                  <table className="w-full text-left border-collapse">
+                <div className="border border-slate-200 dark:border-[#2D2D2D] rounded-xl overflow-x-auto shadow-sm">
+                  <table className="w-full min-w-[500px] text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-100 dark:bg-[#222] border-b border-slate-200 dark:border-[#2D2D2D]">
                         <th className="p-2.5 font-bold text-slate-600 dark:text-slate-300 w-[28%]">
@@ -2376,16 +2378,17 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                   <button
                     onClick={() => setShowCompareModal(false)}
-                    className="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252525] text-xs font-medium cursor-pointer transition-colors"
+                    className="px-3.5 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252525] text-xs font-medium cursor-pointer transition-colors"
                   >
                     Fermer
                   </button>
                   <button
                     onClick={() => handleInsertComparison(compareProdA, compareProdB, compareMonthlyAmount, compareDurationYears, advice.currentNeed.label)}
-                    className="bg-[#E21E26] hover:bg-[#c00017] text-white px-4 py-2 rounded-lg font-medium text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+                    className="bg-[#E21E26] hover:bg-[#c00017] text-white px-3.5 sm:px-4 py-2 rounded-lg font-medium text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
                   >
-                    <span>Demander l'analyse détaillée et le conseil au Conseiller Virtuel</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Demander l'analyse détaillée et le conseil au Conseiller Virtuel</span>
+                    <span className="sm:hidden">Demander le conseil au Bot</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                   </button>
                 </div>
               </div>
@@ -2396,8 +2399,8 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
 
       {/* LEXIQUE INTERACTIF CIMA MODAL */}
       {showLexiconModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-2xl w-full p-5 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-2xl w-full p-4 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[92vh] flex flex-col">
             
             <div className="flex items-center justify-between mb-3 border-b border-slate-200 dark:border-[#2D2D2D] pb-3">
               <div className="flex items-center gap-2">
@@ -2512,8 +2515,8 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
 
       {/* KYC ELIGIBILITY & RECOMMENDATION MODAL */}
       {showKycModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-lg w-full p-5 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-[#191919] border border-slate-200 dark:border-[#2D2D2D] rounded-2xl max-w-lg w-full p-4 sm:p-6 text-slate-800 dark:text-[#e2e2e2] shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto">
             
             <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-[#2D2D2D] pb-3">
               <div className="flex items-center gap-2">
