@@ -17,13 +17,13 @@ from docx.oxml.ns import nsdecls, qn
 DOC_OUTPUT = "MEMOIRE_MASTER_SUNU_BANK_TOGO_RAG_FINAL.docx"
 
 # Palette de couleurs officielles
-C_NAVY = RGBColor(0x00, 0x33, 0x66)       # Bleu Nuit Titres / En-têtes (#003366)
+C_NAVY = RGBColor(0xE2, 0x1E, 0x26)       # Bleu Nuit Titres / En-têtes (#003366)
 C_RED = RGBColor(0xE2, 0x1E, 0x26)        # Rouge Institutionnel SUNU (#E21E26)
 C_DARK = RGBColor(0x1A, 0x20, 0x2C)       # Texte principal (#1A202C)
 C_MUTED = RGBColor(0x4A, 0x55, 0x68)      # Gris sous-titres / sources (#4A5568)
 C_WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 
-HEX_NAVY = "003366"
+HEX_NAVY = "E21E26"
 HEX_RED = "E21E26"
 HEX_LIGHT_BG = "F8FAFC"
 HEX_BORDER = "CBD5E1"
@@ -58,7 +58,7 @@ def add_header_footer(section, is_preliminary=False):
     hp.text = ""
     hp.alignment = WD_ALIGN_PARAGRAPH.CENTER
     hrun = hp.add_run("CONCEPTION D'UN ASSISTANT CONVERSATIONNEL INTELLIGENT BASÉ SUR LE RAG POUR L'ACCOMPAGNEMENT PRÉCONTRACTUEL EN BANCASSURANCE : CAS DE SUNU BANK TOGO")
-    hrun.font.name = "Calibri"
+    hrun.font.name = "Times New Roman"
     hrun.font.size = Pt(8.5)
     hrun.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
     
@@ -83,8 +83,8 @@ def add_header_footer(section, is_preliminary=False):
     fpPr.append(fpBdr)
     
     # Run Auteur à gauche
-    run_left = fp.add_run("Rédigé et présenté par ADOGLI Jean-Paul")
-    run_left.font.name = "Calibri"
+    run_left = fp.add_run("Rédigé et présenté par JOHNSON Nancy")
+    run_left.font.name = "Times New Roman"
     run_left.font.size = Pt(9)
     run_left.font.color.rgb = RGBColor(0x4A, 0x55, 0x68)
     
@@ -93,7 +93,7 @@ def add_header_footer(section, is_preliminary=False):
     
     # Champ de numéro de page
     run_page = fp.add_run()
-    run_page.font.name = "Calibri"
+    run_page.font.name = "Times New Roman"
     run_page.font.size = Pt(9.5)
     run_page.font.bold = True
     run_page.font.color.rgb = RGBColor(0x1A, 0x20, 0x2C)
@@ -137,7 +137,7 @@ def create_cover_page(doc):
     p_theme_label.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_theme_label.paragraph_format.space_after = Pt(14)
     r_theme_label = p_theme_label.add_run("THEME DU MEMOIRE")
-    r_theme_label.font.name = "Calibri"
+    r_theme_label.font.name = "Times New Roman"
     r_theme_label.font.size = Pt(13)
     r_theme_label.font.bold = True
     r_theme_label.font.color.rgb = RGBColor(0x11, 0x18, 0x27)
@@ -150,7 +150,7 @@ def create_cover_page(doc):
     
     cell_box = tbl_box.cell(0, 0)
     set_cell_margins(cell_box, top=240, bottom=240, left=240, right=240)
-    set_cell_border(cell_box, top="single", bottom="single", left="single", right="single", color="003366", top_sz="16", bottom_sz="16", left_sz="16", right_sz="16")
+    set_cell_border(cell_box, top="single", bottom="single", left="single", right="single", color="E21E26", top_sz="16", bottom_sz="16", left_sz="16", right_sz="16")
     
     # Fond très légèrement teinté
     tcPr = cell_box._tc.get_or_add_tcPr()
@@ -161,7 +161,7 @@ def create_cover_page(doc):
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_title.paragraph_format.line_spacing = 1.25
     r_title = p_title.add_run("CONCEPTION ET IMPLÉMENTATION D'UN SYSTÈME RAG POUR L'AUTOMATISATION DE L'INFORMATION PRÉCONTRACTUELLE EN BANCASSURANCE VIE : CAS DE SUNU BANK TOGO")
-    r_title.font.name = "Calibri"
+    r_title.font.name = "Times New Roman"
     r_title.font.size = Pt(13)
     r_title.font.bold = True
     r_title.font.color.rgb = C_NAVY
@@ -176,7 +176,7 @@ def create_cover_page(doc):
     p_dip1.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_dip1.paragraph_format.space_after = Pt(4)
     r_dip1 = p_dip1.add_run("Rapport en vue de l’obtention du diplôme de :")
-    r_dip1.font.name = "Calibri"
+    r_dip1.font.name = "Times New Roman"
     r_dip1.font.size = Pt(11)
     r_dip1.font.bold = True
     
@@ -184,7 +184,7 @@ def create_cover_page(doc):
     p_dip2.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_dip2.paragraph_format.space_after = Pt(24)
     r_dip2 = p_dip2.add_run("Master en Intelligence Artificielle & Big Data")
-    r_dip2.font.name = "Calibri"
+    r_dip2.font.name = "Times New Roman"
     r_dip2.font.size = Pt(12)
     r_dip2.font.bold = True
     r_dip2.font.color.rgb = C_NAVY
@@ -194,15 +194,15 @@ def create_cover_page(doc):
     p_pres.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_pres.paragraph_format.space_after = Pt(4)
     r_pres = p_pres.add_run("Présenté par :")
-    r_pres.font.name = "Calibri"
+    r_pres.font.name = "Times New Roman"
     r_pres.font.size = Pt(11)
     r_pres.font.bold = True
     
     p_nom = doc.add_paragraph()
     p_nom.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_nom.paragraph_format.space_after = Pt(36)
-    r_nom = p_nom.add_run("ADOGLI Jean-Paul")
-    r_nom.font.name = "Calibri"
+    r_nom = p_nom.add_run("JOHNSON Nancy")
+    r_nom.font.name = "Times New Roman"
     r_nom.font.size = Pt(12)
     r_nom.font.bold = True
     
@@ -218,18 +218,18 @@ def create_cover_page(doc):
     p_acad = c_acad.paragraphs[0]
     p_acad.alignment = WD_ALIGN_PARAGRAPH.LEFT
     r_acad_t = p_acad.add_run("Encadreur Académique :\n")
-    r_acad_t.font.name = "Calibri"
+    r_acad_t.font.name = "Times New Roman"
     r_acad_t.font.size = Pt(10.5)
     r_acad_t.font.bold = True
     r_acad_t.font.italic = True
     r_acad_t.font.underline = True
     
-    r_acad_n = p_acad.add_run("Monsieur Latevi Sena LAWSON\n")
-    r_acad_n.font.name = "Calibri"
+    r_acad_n = p_acad.add_run("Monsieur Essowaba AHOULOUMI\n")
+    r_acad_n.font.name = "Times New Roman"
     r_acad_n.font.size = Pt(10.5)
     
     r_acad_f = p_acad.add_run("Ing. spécialiste webmaster")
-    r_acad_f.font.name = "Calibri"
+    r_acad_f.font.name = "Times New Roman"
     r_acad_f.font.size = Pt(10)
     r_acad_f.font.color.rgb = C_MUTED
     
@@ -238,18 +238,18 @@ def create_cover_page(doc):
     p_prof = c_prof.paragraphs[0]
     p_prof.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     r_prof_t = p_prof.add_run("Encadreur Professionnel :\n")
-    r_prof_t.font.name = "Calibri"
+    r_prof_t.font.name = "Times New Roman"
     r_prof_t.font.size = Pt(10.5)
     r_prof_t.font.bold = True
     r_prof_t.font.italic = True
     r_prof_t.font.underline = True
     
-    r_prof_n = p_prof.add_run("Monsieur Kokou AGBOKOU\n")
-    r_prof_n.font.name = "Calibri"
+    r_prof_n = p_prof.add_run("Monsieur Fissale TCHAKALA\n")
+    r_prof_n.font.name = "Times New Roman"
     r_prof_n.font.size = Pt(10.5)
     
-    r_prof_f = p_prof.add_run("Technicien informatique")
-    r_prof_f.font.name = "Calibri"
+    r_prof_f = p_prof.add_run("Ingénieur de formation en Systèmes et Sécurité d'Information,\nResponsable des Opérations IT à SUNU Bank Togo")
+    r_prof_f.font.name = "Times New Roman"
     r_prof_f.font.size = Pt(10)
     r_prof_f.font.color.rgb = C_MUTED
     
@@ -263,14 +263,14 @@ def create_cover_page(doc):
     p_ville.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_ville.paragraph_format.space_after = Pt(2)
     r_ville = p_ville.add_run("LOME, TOGO")
-    r_ville.font.name = "Calibri"
+    r_ville.font.name = "Times New Roman"
     r_ville.font.size = Pt(11)
     r_ville.font.bold = True
     
     p_annee = doc.add_paragraph()
     p_annee.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_annee = p_annee.add_run("Année académique : 2024-2025")
-    r_annee.font.name = "Calibri"
+    r_annee.font.name = "Times New Roman"
     r_annee.font.size = Pt(10.5)
 
 print("[OK] Fonction Page de Couverture Adogli prête.")

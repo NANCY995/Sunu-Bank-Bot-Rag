@@ -8,53 +8,171 @@ export const RagStudioView: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResult, setSearchResult] = useState<string | null>(null);
   const [matchedDoc, setMatchedDoc] = useState<any>(null);
-  const [selectedDocId, setSelectedDocId] = useState<string>('SUNU-POL-2024-ETUDES');
+  const [selectedDocId, setSelectedDocId] = useState<string>('PROD-EP-EDUCATION');
 
   const knowledgeBase: RagDocument[] = [
     {
-      id: 'SUNU-POL-2024-ETUDES',
-      title: 'Police d’Assurance Visa Études & Mobilité Internationale',
-      category: 'Assurance Voyage & Santé',
-      coverage: 'Monde entier (conforme espace Schengen et international)',
-      startingPrice: '15 € / mois (ou 10 000 FCFA / mois)',
+      id: 'PROD-EP-EDUCATION',
+      title: 'Visa Études (Épargne-Éducation)',
+      category: 'Épargne & Prévoyance Éducation',
+      startingPrice: '4 250 FCFA / mois (ou 12 750 FCFA/trimestre)',
+      coverage: 'Financement études supérieures + Protection décès parent',
+      yield: 'Taux minimum garanti 3,5% net l’an + participation aux bénéfices',
       benefits: [
-        'Prise en charge des frais médicaux d’urgence et d’hospitalisation jusqu’à 30 000 €',
-        'Rapatriement sanitaire intégral et assistance médicale 24h/24 et 7j/7',
-        'Conformité garantie aux exigences consulaires et visas étudiants (Schengen, Campus France, USA, Canada)',
-        'Assurance bagages et responsabilité civile à l’étranger incluse',
+        'Constitution d’un capital garanti converti au terme en rentes trimestrielles d’études (sur 3, 4 ou 5 ans)',
+        'Prévoyance : Exonération intégrale des cotisations restantes si décès ou IAD du parent souscripteur',
+        'Droit de renonciation légal de 30 jours conformément à l’Article 76 du Code CIMA',
+        'Accessible dès 18 ans pour un enfant de 0 à 18 ans à la souscription'
       ],
-      eligibility: 'Étudiants âgés de 16 à 35 ans inscrits dans un établissement d’enseignement supérieur étranger.',
+      eligibility: 'Parents, tuteurs ou proches âgés de 18 à 65 ans souscrivant pour un enfant.',
     },
     {
-      id: 'SUNU-CRED-AUTO-2024',
-      title: 'Conditions Générales Crédit Auto Confort & Véhicule Vert',
-      category: 'Financement Particuliers',
-      rates: 'Taux nominal à partir de 6.5% HT, durée jusqu’à 60 mois',
+      id: 'PROD-EP-EDUPRO',
+      title: 'Visa Études Plus (Éducation Renforcée)',
+      category: 'Épargne-Éducation Renforcée',
+      startingPrice: '10 000 FCFA / mois',
+      coverage: 'Bourses trimestrielles + Rente orphelinat immédiate + Doublement accident',
+      yield: 'Taux minimum garanti 3,5% net l’an (Code CIMA)',
       benefits: [
-        'Financement jusqu’à 100% du prix d’achat du véhicule neuf ou occasion récente',
-        'Option assurance tous risques packagée avec décote bonifiée',
-        'Différé de remboursement initial possible jusqu’à 3 mois',
-        'Frais de dossier réduits pour les titulaires de compte salaire SUNU Bank Togo',
-      ],
-    },
-    {
-      id: 'SUNU-RETRAITE-ZEN-2024',
-      title: 'Plan Épargne Retraite Zen & Capitalisation Horizon',
-      category: 'Épargne & Prévoyance',
-      yield: 'Rendement minimum garanti de 4.25% net + participation aux bénéfices',
-      benefits: [
-        'Versements libres ou programmés dès 15 000 FCFA / mois',
-        'Disponibilité partielle des fonds en cas d’imprévu majeur ou acquisition résidence principale',
-        'Exonération fiscale sur les plus-values après 5 ans de souscription',
-        'Garantie décès et rente viagère réversible au conjoint désigné',
+        'Rente d’orphelinat immédiate versée dès le décès du souscripteur jusqu’à l’échéance',
+        'Doublement du capital en cas de décès accidentel',
+        'Bourses trimestrielles d’études pour financer l’université et grandes écoles'
       ],
     },
     {
-      id: 'SUNU-RISK-AML-2024',
-      title: 'Manuel de Conformité et Gestion des Risques Réglementaires BCEAO/UMOA',
-      category: 'Sécurité & Risques',
-      compliance: 'Conformité stricte directives BCEAO, GABAC et GAFI',
-      highlights: 'Chiffrement AES-256 de bout en bout des transactions bancaires, authentification multi-facteurs obligatoire, traçabilité des accès aux dossiers de crédit.',
+      id: 'PROD-EP-RETRAITE',
+      title: 'Horizon Retraite (Capitalisation Retraite)',
+      category: 'Capitalisation Retraite Individuelle',
+      startingPrice: '10 000 FCFA / mois',
+      coverage: 'Complément de retraite garanti + Bonus de fidélité',
+      yield: 'Rendement minimum garanti de 3,5% l’an + participation bénéfices (Art. 84 CIMA)',
+      benefits: [
+        'Bonus de fidélité exceptionnel de 92% de la première annuité versé au terme (si durée >= 10 ans)',
+        'Choix à terme entre capital unique en une fois ou rente viagère mensuelle réversible',
+        'Rachat encadré par le Code CIMA (indemnité max de 5% de la provision mathématique)'
+      ],
+    },
+    {
+      id: 'PROD-EP-RET5',
+      title: 'Horizon Retraite 5 (Retraite Accélérée)',
+      category: 'Retraite Cadres & Seniors',
+      startingPrice: '25 000 FCFA / mois',
+      coverage: '5 ans ferme pour cadres proches de la retraite',
+      yield: 'Taux technique garanti 3,5% l’an',
+      benefits: [
+        'Capitalisation courte et intensive sur 5 ans',
+        'Sécurisation de la transition professionnelle',
+        'Transmission intégrale aux ayants droit en cas de décès'
+      ]
+    },
+    {
+      id: 'PROD-EP-BONUS',
+      title: 'Épargne Bonus SUNU',
+      category: 'Épargne Bonifiée avec Tirages au Sort',
+      startingPrice: '5 000 FCFA / mois',
+      coverage: '10 ou 15 ans avec tirages au sort trimestriels',
+      benefits: [
+        'Tirages au sort nationaux trimestriels pour remporter le capital total par anticipation',
+        'Dispense intégrale du paiement des cotisations futures en cas de gain au tirage',
+        'Restitution du capital garanti majoré des intérêts au terme'
+      ]
+    },
+    {
+      id: 'PROD-PR-PROTPLUS',
+      title: 'Protect Plus (Micro-assurance Santé & Accident)',
+      category: 'Micro-assurance Prévoyance',
+      startingPrice: 'Dès 500 FCFA / mois (5 000 F ou 10 000 F / an)',
+      coverage: 'Indemnité hospitalière + Capital décès accidentel',
+      benefits: [
+        'Prise en charge des frais d’hospitalisation dès 5 jours consécutifs suite à accident (jusqu’à 250 000 FCFA)',
+        'Capital décès ou invalidité par accident garanti de 500 000 FCFA à 1 000 000 FCFA',
+        'Souscription simplifiée sans questionnaire médical lourd'
+      ]
+    },
+    {
+      id: 'PROD-PR-SECCOMPTE',
+      title: 'Secure Compte (Prévoyance adossée au Compte)',
+      category: 'Prévoyance Bancaire Intégrée',
+      startingPrice: 'De 2 700 à 33 500 FCFA par an',
+      coverage: 'Sécurisation des dépôts bancaires et de la famille',
+      benefits: [
+        'Capital garanti de 400 000 FCFA à 5 000 000 FCFA versé aux proches',
+        'Couvre les titulaires de compte de 18 à 70 ans',
+        'Adossement direct au compte bancaire SUNU Bank Togo'
+      ]
+    },
+    {
+      id: 'PROD-EP-DIGMOOV',
+      title: 'Épargne Moov (100% Mobile Money)',
+      category: 'Micro-assurance Mobile',
+      startingPrice: '500 à 5 000 FCFA / mois sur Moov Money',
+      coverage: '15 ans dématérialisés + tirages au sort',
+      benefits: [
+        'Épargne mobile accessible sans compte bancaire via Moov Money',
+        'Tirages au sort trimestriels pour remporter le capital intégral de 15 ans',
+        'Inclusion financière maximale pour les populations togolaises'
+      ]
+    },
+    {
+      id: 'REG-CIMA-LIVRE1',
+      title: 'Code CIMA Livre I : Contrat d\'Assurance Vie & Droits de l\'Assuré',
+      category: 'Réglementation & Droit des Assurances (Livre I)',
+      compliance: 'Conférence Interafricaine des Marchés d’Assurances (CIMA)',
+      highlights: 'Articles 6 & 65-1 (Information précontractuelle et encadré légal), Articles 74 & 76 (Rachat après 2 ans, pénalité plafonnée à 5%), Article 75 (Avance sur police), Article 76 (Renonciation 30 jours), Article 84 (Participation aux bénéfices >= 85%), Article 21 (Sinistre 5j), Article 28 (Prescription 2 ans).',
+      benefits: [
+        'Articles 6 & 65-1 : Information précontractuelle obligatoire avec encadré légal standardisé',
+        'Article 74 & 76 : Valeurs de rachat réglementées (max 5% de la PM, 0% après 10 ans)',
+        'Article 76 : Faculté de renonciation d\'ordre public de 30 jours avec remboursement intégral sous 30 jours',
+        'Article 84 : Obligation légale de redistribution d\'au moins 85% des bénéfices financiers avec effet cliquet'
+      ]
+    },
+    {
+      id: 'REG-CIMA-ACTUARIAT',
+      title: 'Actuariat Vie & Décisions du Conseil des Ministres des Assurances (CMA)',
+      category: 'Réglementation Actuarielle & Prudentielle CIMA',
+      compliance: 'Conseil des Ministres des Assurances (CMA) / CRCA',
+      highlights: 'TMG 3,5% net/an plafonné, Provisions Mathématiques adossées à 100%, Tables de mortalité TD 88/90 et TF 88/90, Effet Cliquet actuariel irréversible.',
+      benefits: [
+        'TMG fixé à 3,5% net par an pour préserver la solvabilité et sécuriser les épargnants',
+        'Provisions Mathématiques calculées aux intérêts composés pour garantir à 100% les capitaux',
+        'Tables de mortalité réglementaires TD 88/90 (décès) et TF 88/90 (survie/rentes)'
+      ]
+    },
+    {
+      id: 'REG-CIMA-LIVRE7',
+      title: 'Code CIMA Livre VII & Règlement n° 003/CIMA/2012 : Micro-assurance',
+      category: 'Micro-assurance & Canaux Numériques',
+      compliance: 'Règlement n° 003/CIMA/2012 & Livre VII du Code CIMA',
+      highlights: 'Micro-assurance simplifiée pour l\'inclusion financière au Togo, suppression des bilans médicaux lourds, Protect Plus dès 500 F/mois, Épargne Moov via Mobile Money avec règlement en 48h.',
+      benefits: [
+        'Formalités de souscription ultra-allégées sans questionnaire médical approfondi',
+        'Conditions contractuelles lisibles et accessibles aux populations à faibles revenus',
+        'Protect Plus & Épargne Moov : liquidation accélérée des prestations d\'urgence'
+      ]
+    },
+    {
+      id: 'REG-CIMA-BANCASSURANCE',
+      title: 'Code CIMA Livre V, Circulaires CRCA & Mandat SUNU Bank Togo',
+      category: 'Bancassurance & Intermédiation Financière',
+      compliance: 'Code CIMA Livre V, Circulaires CRCA, Normes BCEAO & Loi togolaise n° 2019-014',
+      highlights: 'Mandat de distribution exclusive SUNU Bank Togo / SUNU Assurances Vie Togo, obligation de convenance patrimoniale KYC (Art. 6), séparation stricte des dépôts et primes, protection des données (IPDCP).',
+      benefits: [
+        'Intermédiation bancassurance encadrée par le Livre V et les circulaires CRCA',
+        'Devoir de conseil et diagnostic KYC obligatoire avant toute recommandation',
+        'Cantonnement des flux et conformité à la loi togolaise n° 2019-014 (IPDCP Togo)'
+      ]
+    },
+    {
+      id: 'REG-CIMA-ORGANES',
+      title: 'Organes Réglementaires CIMA (CMA, CRCA, Secrétariat Général) & Recours',
+      category: 'Supervision Institutionnelle & Règlement des Litiges',
+      compliance: 'Traité instituant la CIMA (Libreville) & Commission Régionale de Contrôle des Assurances',
+      highlights: 'Conseil des Ministres des Assurances (législation), CRCA à Libreville (contrôle et sanctions), procédure de médiation amiable sous 30 jours et saisine de la CRCA en cas de contestation.',
+      benefits: [
+        'Conseil des Ministres des Assurances : adoption des règlements communautaires uniformes',
+        'CRCA : autorité de supervision prudentielle indépendante et juridiction disciplinaire',
+        'Voies de recours et traitement amiable des réclamations clients sous 30 jours'
+      ]
     },
   ];
 

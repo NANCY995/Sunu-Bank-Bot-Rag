@@ -78,7 +78,7 @@ def add_header_footer_lines(section, is_roman=False):
     fpPr.append(fpBdr)
     
     # Run Auteur à gauche
-    run_left = fp.add_run("Rédigé et présenté par ADOGLI Jean-Paul")
+    run_left = fp.add_run("Rédigé et présenté par JOHNSON Nancy")
     run_left.font.name = "Calibri"
     run_left.font.size = Pt(9)
     run_left.font.color.rgb = RGBColor(0x4A, 0x55, 0x68)

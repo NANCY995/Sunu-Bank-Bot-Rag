@@ -25,6 +25,14 @@
   .font-mono-code {
     font-family: 'JetBrains Mono', monospace;
   }
+
+  .font-alike, .font-bot {
+    font-family: 'Alike', Georgia, Cambria, 'Times New Roman', serif;
+    letter-spacing: 0.012em;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 .glow-red {

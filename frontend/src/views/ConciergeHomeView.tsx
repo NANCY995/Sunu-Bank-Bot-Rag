@@ -12,27 +12,33 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
   const quickPills = [
     {
       id: 'visa-etudes',
-      label: 'Visa Études',
+      label: 'Visa Études (Éducation)',
       icon: 'school',
-      query: 'I need some information about student insurance for studying abroad. Specifically Visa Études.',
+      query: 'Simule Visa Études avec 15 000 FCFA par mois pendant 10 ans pour financer les études de mon enfant.',
     },
     {
-      id: 'plan-retraite',
-      label: 'Plan Retirement',
+      id: 'horizon-retraite',
+      label: 'Horizon Retraite (Bonus 92%)',
       icon: 'savings',
-      query: 'Comment fonctionne le Plan Épargne Retraite Zen et quels sont les rendements garantis ?',
+      query: 'Fais-moi une simulation pour Horizon Retraite avec 25 000 FCFA par mois pendant 15 ans et explique le bonus de fidélité.',
     },
     {
-      id: 'credit-auto',
-      label: 'Credit Auto',
-      icon: 'directions_car',
-      query: 'Quelles sont les conditions et taux pour le Crédit Auto SUNU Bank Togo ?',
+      id: 'epargne-bonus',
+      label: 'Épargne Bonus & Tirages',
+      icon: 'military_tech',
+      query: 'Comment fonctionne Épargne Bonus SUNU avec le mécanisme de tirage au sort trimestriel ?',
     },
     {
-      id: 'insurance-options',
-      label: 'Insurance Options',
+      id: 'protect-plus',
+      label: 'Protect Plus (Micro-assurance)',
       icon: 'health_and_safety',
-      query: 'Quelles sont toutes les formules d’assurance et de prévoyance proposées par SUNU ?',
+      query: 'Quelles sont les garanties d’hospitalisation et de décès accidentel de Protect Plus dès 500 FCFA par mois ?',
+    },
+    {
+      id: 'conformite-cima',
+      label: 'Conformité Code CIMA',
+      icon: 'gavel',
+      query: 'Quelles sont les obligations d’information précontractuelle selon l’Article 6 du Code CIMA et les règles de rachat ?',
     },
   ];
 
@@ -51,9 +57,9 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
       {/* Ambient Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#E21E26] rounded-full opacity-5 blur-[140px] mix-blend-screen pointer-events-none"></div>
 
-      <main className="w-full max-w-3xl px-4 md:px-6 mx-auto my-auto py-12 flex flex-col items-center z-10">
+      <main className="w-full max-w-3xl px-4 md:px-6 mx-auto my-auto py-10 flex flex-col items-center z-10">
         {/* Minimalist Official Branding */}
-        <div className="mb-10 text-center flex flex-col items-center">
+        <div className="mb-8 text-center flex flex-col items-center">
           <div className="h-20 px-5 py-2 mb-4 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
             <img
               src={logoSunu}
@@ -64,9 +70,12 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
           <h1 className="font-heading text-3xl md:text-5xl font-extrabold text-[#E21E26] mb-1 tracking-tight">
             SUNU Bank Togo
           </h1>
-          <p className="font-heading text-lg text-slate-600 dark:text-[#e7bdb8] font-medium">
-            Votre Concierge Financier & Assurance
+          <p className="font-heading text-base md:text-lg text-slate-700 dark:text-[#e7bdb8] font-medium">
+            Conseiller Bancassurance & Simulateur CIMA
           </p>
+          <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-300 text-xs font-mono-code font-semibold">
+            <span>Portefeuille 8 Produits • Articles 6, 74 & 76 Code CIMA</span>
+          </div>
         </div>
 
         {/* Primary Chat Interface Card */}
@@ -75,12 +84,12 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[#2a2a2a] flex-shrink-0 flex items-center justify-center border border-slate-200 dark:border-[#353534] mt-1 text-[#E21E26]">
               <span className="material-symbols-outlined text-[24px] text-[#E21E26]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                smart_toy
+                support_agent
               </span>
             </div>
             <div className="bg-slate-100 dark:bg-[#2a2a2a] p-5 rounded-2xl rounded-tl-none border border-slate-200 dark:border-[#353534] shadow-sm max-w-[85%]">
-              <p className="text-base md:text-lg text-slate-800 dark:text-[#e5e2e1] leading-relaxed">
-                Hello! I'm your Financial Concierge. How can I assist you with your banking or insurance needs today?
+              <p className="text-sm md:text-base text-slate-800 dark:text-[#e5e2e1] leading-relaxed">
+                Bonjour ! Je suis votre Concierge Bancassurance SUNU Bank Togo. Je réponds à toutes vos questions sur nos 8 contrats d'assurance vie et réalise vos simulations financières précontractuelles instantanées.
               </p>
             </div>
           </div>
@@ -92,8 +101,8 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask anything about banking, insurance, or loans..."
-              className="w-full bg-slate-50 dark:bg-[#131313] border border-slate-300 dark:border-[#353534] rounded-2xl py-5 pl-6 pr-16 text-base text-slate-900 dark:text-[#e5e2e1] placeholder-slate-400 dark:placeholder-[#888888] focus:ring-2 focus:ring-[#E21E26] focus:border-transparent focus:outline-none transition-all shadow-inner"
+              placeholder="Posez une question ou demandez une simulation (ex: Simule Horizon Retraite 25 000 F/mois sur 15 ans)..."
+              className="w-full bg-slate-50 dark:bg-[#131313] border border-slate-300 dark:border-[#353534] rounded-2xl py-5 pl-6 pr-16 text-sm md:text-base text-slate-900 dark:text-[#e5e2e1] placeholder-slate-400 dark:placeholder-[#888888] focus:ring-2 focus:ring-[#E21E26] focus:border-transparent focus:outline-none transition-all shadow-inner"
             />
             <button
               id="concierge-home-submit-btn"
@@ -108,21 +117,21 @@ export const ConciergeHomeView: React.FC<ConciergeHomeViewProps> = ({ onStartCha
           </form>
 
           {/* Quick Start Suggestions */}
-          <div className="flex flex-wrap justify-center gap-3 mt-2">
+          <div className="flex flex-wrap justify-center gap-2.5 mt-2">
             {quickPills.map((pill) => (
               <button
                 key={pill.id}
                 id={`pill-${pill.id}`}
                 onClick={() => handlePillClick(pill.query)}
-                className="bg-slate-100 hover:bg-slate-200 dark:bg-[#1c1b1b] dark:hover:bg-[#252424] transition-colors border border-slate-200 dark:border-[#2a2a2a] hover:border-[#E21E26]/50 px-4 md:px-5 py-2.5 rounded-full flex items-center gap-2 group cursor-pointer"
+                className="bg-slate-100 hover:bg-slate-200 dark:bg-[#1c1b1b] dark:hover:bg-[#252424] transition-colors border border-slate-200 dark:border-[#2a2a2a] hover:border-[#E21E26]/50 px-3.5 md:px-4 py-2 rounded-full flex items-center gap-2 group cursor-pointer text-xs"
               >
                 <span
-                  className="material-symbols-outlined text-[#E21E26] text-[18px] opacity-90 group-hover:opacity-100"
+                  className="material-symbols-outlined text-[#E21E26] text-[17px] opacity-90 group-hover:opacity-100"
                   style={{ fontVariationSettings: "'FILL' 1" }}
                 >
                   {pill.icon}
                 </span>
-                <span className="font-heading text-xs md:text-sm font-bold text-slate-700 dark:text-[#e7bdb8] group-hover:text-[#E21E26] dark:group-hover:text-white">
+                <span className="font-heading text-xs font-bold text-slate-700 dark:text-[#e7bdb8] group-hover:text-[#E21E26] dark:group-hover:text-white">
                   {pill.label}
                 </span>
               </button>

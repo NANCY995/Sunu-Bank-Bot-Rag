@@ -144,7 +144,7 @@ def add_section_divider_slide(prs, section_num, section_title, section_subtitle=
     tb_bot = slide.shapes.add_textbox(Inches(1.2), Inches(4.8), Inches(10.8), Inches(0.6))
     tf_bot = tb_bot.text_frame
     p_bot = tf_bot.paragraphs[0]
-    p_bot.text = "Soutenance de Mémoire de Master • Collège de Paris / Université de Lomé • SUNU Bank Togo"
+    p_bot.text = "Soutenance de Mémoire de Licence • Collège de Paris Supérieur Togo • SUNU Bank Togo"
     p_bot.font.name = "Segoe UI"
     p_bot.font.size = Pt(11)
     p_bot.font.color.rgb = RGBColor(0xCB, 0xD5, 0xE1)
@@ -179,7 +179,7 @@ def build_presentation():
     tf_dip = tb_dip.text_frame
     p_dip = tf_dip.paragraphs[0]
     p_dip.alignment = PP_ALIGN.CENTER
-    p_dip.text = "Mémoire en vue de l'obtention du diplôme de : Master en Intelligence Artificielle & Big Data"
+    p_dip.text = "Mémoire en vue de l'obtention du diplôme de : Licence en Intelligence Artificielle & Big Data"
     p_dip.font.name = "Segoe UI"
     p_dip.font.size = Pt(13)
     p_dip.font.bold = True
@@ -215,8 +215,8 @@ def build_presentation():
     p_c1.font.size = Pt(11)
     p_c1.font.bold = True
     p_c1.font.color.rgb = C_RED
-    p_c2 = tf_c.add_paragraph()
-    p_c2.text = "ADOGLI Jean-Paul"
+    p_c2 = tf_c.paragraphs[0]
+    p_c2.text = "JOHNSON Nancy"
     p_c2.font.name = "Segoe UI"
     p_c2.font.size = Pt(13)
     p_c2.font.bold = True
@@ -231,19 +231,19 @@ def build_presentation():
     card_acad = add_card(s1, Inches(4.8), Inches(4.7), Inches(3.8), Inches(1.8), bg_color=C_WHITE, border_color=C_BORDER)
     tf_a = card_acad.text_frame
     p_a1 = tf_a.paragraphs[0]
-    p_a1.text = "Encadreur Académique :"
+    p_a1.text = "Directeur de Mémoire :"
     p_a1.font.name = "Segoe UI"
     p_a1.font.size = Pt(11)
     p_a1.font.bold = True
     p_a1.font.color.rgb = C_NAVY
     p_a2 = tf_a.add_paragraph()
-    p_a2.text = "M. Latevi Sena LAWSON"
+    p_a2.text = "M. Essowaba AHOULOUMI"
     p_a2.font.name = "Segoe UI"
     p_a2.font.size = Pt(12)
     p_a2.font.bold = True
     p_a2.font.color.rgb = C_DARK
     p_a3 = tf_a.add_paragraph()
-    p_a3.text = "Ing. spécialiste webmaster\nCollège de Paris Supérieur / Université de Lomé"
+    p_a3.text = "Ing. spécialiste webmaster\nCollège de Paris Supérieur Togo"
     p_a3.font.name = "Segoe UI"
     p_a3.font.size = Pt(9.5)
     p_a3.font.color.rgb = C_MUTED
@@ -252,19 +252,19 @@ def build_presentation():
     card_prof = add_card(s1, Inches(8.9), Inches(4.7), Inches(3.6), Inches(1.8), bg_color=C_WHITE, border_color=C_BORDER)
     tf_p = card_prof.text_frame
     p_p1 = tf_p.paragraphs[0]
-    p_p1.text = "Encadreur de Stage :"
+    p_p1.text = "Encadreur Professionnel :"
     p_p1.font.name = "Segoe UI"
     p_p1.font.size = Pt(11)
     p_p1.font.bold = True
     p_p1.font.color.rgb = C_NAVY
     p_p2 = tf_p.add_paragraph()
-    p_p2.text = "M. Kokou AGBOKOU"
+    p_p2.text = "M. Fissale TCHAKALA"
     p_p2.font.name = "Segoe UI"
     p_p2.font.size = Pt(12)
     p_p2.font.bold = True
     p_p2.font.color.rgb = C_DARK
     p_p3 = tf_p.add_paragraph()
-    p_p3.text = "Technicien informatique\nSUNU Bank Togo"
+    p_p3.text = "Ingénieur en Systèmes et Sécurité d'Information\nResponsable des Opérations IT, SUNU Bank Togo"
     p_p3.font.name = "Segoe UI"
     p_p3.font.size = Pt(9.5)
     p_p3.font.color.rgb = C_MUTED
@@ -274,7 +274,7 @@ def build_presentation():
     tf_foot = tb_foot.text_frame
     p_f = tf_foot.paragraphs[0]
     p_f.alignment = PP_ALIGN.CENTER
-    p_f.text = "LOME, TOGO • Année Académique 2024 - 2025"
+    p_f.text = "LOMÉ, TOGO • Année Académique 2025 - 2026"
     p_f.font.name = "Segoe UI"
     p_f.font.size = Pt(10)
     p_f.font.bold = True
@@ -387,9 +387,9 @@ def build_presentation():
     p.font.color.rgb = C_RED
     
     p_q = tf_pb.add_paragraph()
-    p_q.text = "« Dans quelle mesure l'automatisation de l'information précontractuelle par un système RAG (Retrieval-Augmented Generation) permet-elle d'améliorer la compréhension des clients tout en garantissant la conformité réglementaire CIMA et la fiabilité documentaire chez SUNU Bank Togo ? »"
+    p_q.text = "« Comment la conception d'un assistant conversationnel fondé sur l'architecture RAG permet-elle d'accroître la fiabilité de l'information précontractuelle sur les produits d'assurance vie à SUNU Bank Togo, tout en garantissant la conformité aux exigences du Code CIMA ? »"
     p_q.font.name = "Segoe UI"
-    p_q.font.size = Pt(12)
+    p_q.font.size = Pt(11.5)
     p_q.font.bold = True
     p_q.font.italic = True
     p_q.font.color.rgb = C_NAVY
@@ -401,9 +401,9 @@ def build_presentation():
     p_sub.font.bold = True
     
     pb_bullets = [
-        "Éliminer les hallucinations des modèles génératifs standards.",
-        "Respecter strictement l'obligation légale d'information (Art. 6 & 74 CIMA).",
-        "Garantir la confidentialité des données bancaires (Loi IPDCP Togo)."
+        "Éliminer les hallucinations des modèles génératifs standards grâce au retriever.",
+        "Respecter strictement l'obligation légale d'information (Articles 6 & 74 du Code CIMA).",
+        "Garantir la confidentialité des données bancaires (Loi IPDCP Togo n° 2019-014)."
     ]
     for b in pb_bullets:
         p = tf_pb.add_paragraph()
@@ -412,24 +412,23 @@ def build_presentation():
         p.font.size = Pt(10)
         p.font.color.rgb = C_DARK
 
-    # Slide 5 : Questions Spécifiques
+    # Slide 5 : Questions Spécifiques (3 questions harmonisées)
     s5 = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_background(s5, C_LIGHT_BG)
-    add_header(s5, "QUESTIONS SPECIFIQUES DE RECHERCHE", "Déclinaison de la problématique")
+    add_header(s5, "QUESTIONS SPECIFIQUES DE RECHERCHE", "Déclinaison de la problématique en 3 axes")
     add_footer(s5, 5)
     
     q_data = [
-        ("1", "Diagnostic & Besoins d'Information", "Quels sont les freins majeurs à la compréhension précontractuelle des produits d'assurance vie chez les prospects de SUNU Bank Togo, et comment caractériser leurs besoins d'information récurrents ?"),
-        ("2", "Conception & Calibration de l'Architecture RAG", "Comment concevoir et calibrer un pipeline RAG (stratégie de chunking, modèle d'embeddings, seuils de similarité) capable de restituer avec exactitude les clauses des contrats d'assurance vie ?"),
-        ("3", "Conformité Réglementaire & Traçabilité", "Quels mécanismes de sécurité (citation dynamique des sources, détection hors périmètre, escalade conseiller) permettent d'assurer une conformité stricte au Code CIMA et aux exigences de l'IPDCP Togo ?"),
-        ("4", "Évaluation Empirique & Acceptabilité", "Quels sont les impacts mesurables du prototype conversationnel sur l'exactitude des réponses (RAGAS), la réduction du temps de conseil et l'acceptation par les utilisateurs (TAM) ?")
+        ("1", "Diagnostic des Besoins & Corpus Métier", "Quels sont les freins majeurs à la compréhension précontractuelle des produits d'assurance vie chez les clients de SUNU Bank Togo, et comment formaliser leurs besoins d'information récurrents sous forme de corpus certifié ?"),
+        ("2", "Conception & Calibration de l'Architecture RAG", "Comment concevoir et calibrer un pipeline RAG (chunking, embeddings, seuils de similarité) capable de restituer fidèlement les clauses contractuelles sans générer d'hallucinations ?"),
+        ("3", "Conformité Réglementaire CIMA & Acceptabilité", "Dans quelle mesure le prototype développé respecte-t-il les obligations de transparence du Code CIMA (articles 6 et 74) et répond-il aux critères d'acceptabilité et d'utilisabilité des conseillers et souscripteurs ?")
     ]
     for idx, (num, title, text) in enumerate(q_data):
-        top = Inches(1.5 + idx * 1.3)
-        card = add_card(s5, Inches(0.8), top, Inches(11.73), Inches(1.15), bg_color=C_WHITE)
+        top = Inches(1.5 + idx * 1.7)
+        card = add_card(s5, Inches(0.8), top, Inches(11.73), Inches(1.5), bg_color=C_WHITE)
         
         # Badge
-        badge = s5.shapes.add_shape(MSO_SHAPE.OVAL, Inches(1.0), top + Inches(0.2), Inches(0.75), Inches(0.75))
+        badge = s5.shapes.add_shape(MSO_SHAPE.OVAL, Inches(1.0), top + Inches(0.35), Inches(0.8), Inches(0.8))
         badge.fill.solid()
         badge.fill.fore_color.rgb = C_NAVY
         badge.line.color.rgb = C_NAVY
@@ -438,27 +437,27 @@ def build_presentation():
         p_b.alignment = PP_ALIGN.CENTER
         p_b.text = f"Q{num}"
         p_b.font.name = "Segoe UI"
-        p_b.font.size = Pt(13)
+        p_b.font.size = Pt(14)
         p_b.font.bold = True
         p_b.font.color.rgb = C_WHITE
         
-        tb = s5.shapes.add_textbox(Inches(1.9), top + Inches(0.1), Inches(10.4), Inches(0.95))
+        tb = s5.shapes.add_textbox(Inches(2.0), top + Inches(0.15), Inches(10.3), Inches(1.2))
         tf = tb.text_frame
         tf.word_wrap = True
         p1 = tf.paragraphs[0]
         p1.text = title
         p1.font.name = "Segoe UI"
-        p1.font.size = Pt(11)
+        p1.font.size = Pt(12)
         p1.font.bold = True
         p1.font.color.rgb = C_RED
         
         p2 = tf.add_paragraph()
         p2.text = text
         p2.font.name = "Segoe UI"
-        p2.font.size = Pt(9.5)
+        p2.font.size = Pt(10.5)
         p2.font.color.rgb = C_DARK
 
-    # Slide 6 : Hypothèses de Recherche
+    # Slide 6 : Hypothèses de Recherche (3 hypothèses harmonisées)
     s6 = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_background(s6, C_LIGHT_BG)
     add_header(s6, "HYPOTHESES DE L'ETUDE", "Cadre de validation empirique")
@@ -475,15 +474,15 @@ def build_presentation():
     p.font.bold = True
     p.font.color.rgb = RGBColor(0x90, 0xCD, 0xF4)
     p_t = tf_hg.add_paragraph()
-    p_t.text = "L'implémentation d'un assistant conversationnel RAG fondé sur un corpus documentaire certifié permet d'automatiser l'information précontractuelle en bancassurance vie, en offrant une exactitude documentaire supérieure à 75% et en réduisant les asymétries d'information."
+    p_t.text = "L'implémentation d'un assistant conversationnel RAG fondé sur un corpus documentaire certifié permet d'automatiser l'information précontractuelle en bancassurance vie, en offrant une exactitude documentaire supérieure à 75 % et en garantissant la conformité réglementaire CIMA."
     p_t.font.name = "Segoe UI"
     p_t.font.size = Pt(10.5)
     p_t.font.color.rgb = C_WHITE
     
     h_cards = [
-        ("H1", "Calibration du Retrieval", "Un découpage documentaire calibré (taille 300 / overlap 30) combiné à all-MiniLM-L6-v2 maximise le taux de récupération (Source Hit@5 ≥ 75%)."),
-        ("H2", "Fidélité & Anti-Hallucination", "L'ancrage contextuel strict et l'injection de prompts de refus éliminent les hallucinations factuelles (Score Faithfulness RAGAS ≥ 0.80)."),
-        ("H3", "Conformité CIMA & Confiance", "La citation explicite des clauses contractuelles et l'escalade conseiller renforcent la conformité légale et la confiance perçue (TAM ≥ 4/5).")
+        ("H1", "Calibration du Retrieval", "Un découpage documentaire calibré (taille 300 / overlap 30) combiné au modèle all-MiniLM-L6-v2 maximise le taux de récupération des clauses pertinentes (Hit@5 ≥ 75 %)."),
+        ("H2", "Fidélité & Conformité CIMA", "L'ancrage contextuel strict et le mécanisme de rejet des requêtes hors périmètre réduisent les hallucinations factuelles et garantissent la conformité aux articles 6 et 74 du Code CIMA (Score Faithfulness ≥ 0,80)."),
+        ("H3", "Utilisabilité & Acceptabilité", "L'interface conversationnelle intégrant la citation des sources et l'escalade vers un conseiller humain assure un niveau d'utilisabilité et d'acceptabilité élevé auprès des utilisateurs (Score SUS ≥ 75/100).")
     ]
     for idx, (code, title, text) in enumerate(h_cards):
         left = Inches(0.8 + idx * 4.0)
@@ -511,13 +510,13 @@ def build_presentation():
         p_txt.font.size = Pt(10)
         p_txt.font.color.rgb = C_DARK
 
-    # Slide 7 : Objectifs de Recherche
+    # Slide 7 : Objectifs de Recherche (3 objectifs harmonisés)
     s7 = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_background(s7, C_LIGHT_BG)
     add_header(s7, "OBJECTIFS DE L'ETUDE", "Finalités académiques et opérationnelles")
     add_footer(s7, 7)
     
-    c_og = add_card(s7, Inches(0.8), Inches(1.4), Inches(11.73), Inches(1.1), bg_color=C_RED, border_color=C_RED)
+    c_og = add_card(s7, Inches(0.8), Inches(1.4), Inches(11.73), Inches(1.15), bg_color=C_RED, border_color=C_RED)
     tf_og = c_og.text_frame
     tf_og.word_wrap = True
     p = tf_og.paragraphs[0]
@@ -527,37 +526,42 @@ def build_presentation():
     p.font.bold = True
     p.font.color.rgb = C_WHITE
     p_t = tf_og.add_paragraph()
-    p_t.text = "Concevoir, implémenter et évaluer empiriquement un système RAG certifié pour automatiser l'information précontractuelle en bancassurance vie chez SUNU Bank Togo."
+    p_t.text = "Concevoir, implémenter et évaluer empiriquement un assistant conversationnel fondé sur l'architecture RAG, capable de fiabiliser la diffusion de l'information précontractuelle sur les produits d'assurance vie à SUNU Bank Togo dans le respect des exigences réglementaires CIMA."
     p_t.font.name = "Segoe UI"
-    p_t.font.size = Pt(11)
+    p_t.font.size = Pt(10.5)
     p_t.font.bold = True
     p_t.font.color.rgb = C_WHITE
     
     obj_cards = [
-        ("1", "Structuration du Corpus", "Collecter, auditer et segmenter les 5 documents sources officiels (spécifications, conditions générales, notice CIMA) en 150 chunks indexés."),
-        ("2", "Développement du Pipeline", "Implémenter l'architecture LangChain/ChromaDB avec garde-fous CIMA (Articles 6 et 74), citation dynamique et module d'escalade."),
-        ("3", "Évaluation Expérimentale", "Mesurer rigoureusement les métriques de retrieval (Hit@k, MRR), de génération (RAGAS) et tester le prototype sur 75 requêtes métiers."),
-        ("4", "Stratégie de Déploiement", "Formuler un plan d'intégration opérationnel au Core Banking et aux canaux digitaux (Web, WhatsApp) de SUNU Bank Togo.")
+        ("OS1", "Structuration & Indexation du Corpus", "Collecter, auditer et segmenter les documents contractuels officiels de SUNU Bank Togo (conditions générales, fiches produits, notice CIMA) en 150 chunks vectorisés dans ChromaDB."),
+        ("OS2", "Développement de l'Architecture RAG Sécurisée", "Implémenter le pipeline de recherche sémantique et de génération avec garde-fous CIMA (articles 6 et 74), citation dynamique des clauses et module d'escalade vers un conseiller."),
+        ("OS3", "Évaluation Expérimentale & Ergonomique", "Mesurer rigoureusement les performances de retrieval (Hit@k, MRR), la qualité de génération (RAGAS) sur 75 requêtes métiers et l'utilisabilité de l'interface (Score SUS).")
     ]
-    for idx, (num, title, text) in enumerate(obj_cards):
-        row = 0 if idx < 2 else 1
-        col = idx % 2
-        left = Inches(0.8) if col == 0 else Inches(6.8)
-        top = Inches(2.7 + row * 2.0)
-        c = add_card(s7, left, top, Inches(5.7), Inches(1.85), bg_color=C_WHITE)
+    for idx, (code, title, text) in enumerate(obj_cards):
+        left = Inches(0.8 + idx * 4.0)
+        c = add_card(s7, left, Inches(2.75), Inches(3.75), Inches(3.85), bg_color=C_WHITE)
         tf = c.text_frame
         tf.word_wrap = True
         
         p = tf.paragraphs[0]
-        p.text = f"Objectif Spécifique {num} : {title}"
+        p.text = code
         p.font.name = "Segoe UI"
-        p.font.size = Pt(11)
+        p.font.size = Pt(15)
         p.font.bold = True
         p.font.color.rgb = C_NAVY
         
+        p_tit = tf.add_paragraph()
+        p_tit.text = title
+        p_tit.font.name = "Segoe UI"
+        p_tit.font.size = Pt(11)
+        p_tit.font.bold = True
+        p_tit.font.color.rgb = C_RED
+        
         p_txt = tf.add_paragraph()
-        p_txt.text = text
+        p_txt.text = "\n" + text
         p_txt.font.name = "Segoe UI"
+        p_txt.font.size = Pt(10)
+        p_txt.font.color.rgb = C_DARK
         p_txt.font.size = Pt(9.5)
         p_txt.font.color.rgb = C_DARK
 
@@ -1067,7 +1071,7 @@ def build_presentation():
     
     p_author = tf_end.add_paragraph()
     p_author.alignment = PP_ALIGN.CENTER
-    p_author.text = "\nADOGLI Jean-Paul • Master en Intelligence Artificielle & Big Data\nCollège de Paris Supérieur / Université de Lomé • SUNU Bank Togo"
+    p_author.text = "\nJOHNSON Nancy • Licence en Intelligence Artificielle & Big Data\nCollège de Paris Supérieur Togo • SUNU Bank Togo"
     p_author.font.name = "Segoe UI"
     p_author.font.size = Pt(11)
     p_author.font.color.rgb = C_MUTED

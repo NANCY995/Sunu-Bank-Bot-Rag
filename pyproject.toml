@@ -40,7 +40,12 @@ testpaths = ["tests"]
 
 [tool.pyright]
 include = ["src", "scripts", "tests", "app"]
-extraPaths = [".", "src", "scripts"]
+extraPaths = [
+    ".",
+    "src",
+    "scripts",
+    "C:/Users/Johnson Nancy/AppData/Local/Programs/Python/Python313/Lib/site-packages",
+]
 venvPath = ".."
 venv = ".venv"
 

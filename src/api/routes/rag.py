@@ -15,6 +15,7 @@ from src.generation.rag_chain import build_rag_chain
 from src.indexing.embeddings import get_embedding_model
 from src.indexing.vectorstore import load_vectorstore
 from src.retrieval.retriever import create_retriever
+from src.services.simulator import simulate_product
 from src.utils.config import CHAT_MAX_TOKENS, CHROMA_PERSIST_DIR
 
 router = APIRouter(prefix="/rag", tags=["rag"])
@@ -77,3 +78,19 @@ def chat(
         escalated=bool(escalation["escalate"]),
         intent=escalation.get("intent", ""),
     )
+
+
+class SimulateRequest(BaseModel):
+    product_key: str = Field(description="Nom ou identifiant du produit (ex: horizon_retraite, visa_etudes)")
+    monthly_amount: float = Field(ge=500, description="Cotisation mensuelle en FCFA")
+    duration_years: int = Field(ge=1, le=35, description="Durée du contrat en années")
+
+
+@router.post("/simulate")
+def simulate(payload: SimulateRequest):
+    result = simulate_product(
+        product_key=payload.product_key,
+        monthly_amount=payload.monthly_amount,
+        duration_years=payload.duration_years,
+    )
+    return result.to_dict()

@@ -3,16 +3,32 @@ export type ScreenType =
   | 'concierge-home' 
   | 'concierge-chat';
 
+export interface SimulationData {
+  productId: string;
+  productName: string;
+  category: string;
+  monthlyAmount: number;
+  durationYears: number;
+  totalContributed: number;
+  guaranteedCapital: number;
+  specificBenefit: string;
+  fidelityBonus?: number;
+  quarterlyPension?: number;
+  deathDisabilityGuarantee: string;
+  cimaMentions: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
   structuredData?: {
-    product: string;
+    product?: string;
     startingPrice?: string;
     coverage?: string;
     benefits?: Array<{ label: string; detail: string }>;
+    simulation?: SimulationData;
   } | null;
   sources?: Array<{ id: string; title: string; category: string }>;
 }
