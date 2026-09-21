@@ -19,6 +19,42 @@ export interface SimulationData {
   cimaMentions: string;
 }
 
+export interface RagInspectorData {
+  queryTransformation: {
+    originalQuery: string;
+    canonicalQuery: string;
+    extractedEntities: string[];
+    intent: string;
+    subQueries?: string[];
+  };
+  fusionRetrieval: {
+    technique: string;
+    retrievedDocuments: Array<{
+      id: string;
+      title: string;
+      category: string;
+      rrfScore: number;
+      relevancePct: number;
+      explanation: string;
+    }>;
+  };
+  complianceCheckpoints: {
+    cimaArticle6: boolean;
+    cimaArticle74?: boolean;
+    cimaArticle76: boolean;
+    cimaArticle84?: boolean;
+    bceaoPrudential?: boolean;
+    faithfulnessScore: number;
+    cimaComplianceScore: string;
+  };
+  metrics: {
+    latencyMs: number;
+    mrr: number;
+    hitAt5: string;
+    status: string;
+  };
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -30,6 +66,7 @@ export interface ChatMessage {
     coverage?: string;
     benefits?: Array<{ label: string; detail: string }>;
     simulation?: SimulationData;
+    ragInspector?: RagInspectorData;
   } | null;
   sources?: Array<{ id: string; title: string; category: string }>;
 }
