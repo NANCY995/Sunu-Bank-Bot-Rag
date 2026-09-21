@@ -70,9 +70,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
         setErrorMessage('Compte désactivé. Contactez un administrateur.');
         return;
       }
-      setErrorMessage('Identifiants incorrects. Utilisez les identifiants démo : admin@sunubank.tg / admin1234');
+      setErrorMessage('Identifiants incorrects. Veuillez vérifier votre adresse email et mot de passe.');
     } catch {
-      setErrorMessage('Identifiants incorrects. En mode démo : admin@sunubank.tg / admin1234');
+      setErrorMessage('Identifiants incorrects ou erreur de communication avec le serveur.');
     } finally {
       setIsLoading(false);
     }
@@ -121,14 +121,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                 </div>
               )}
 
-              {/* Demo hint */}
-              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-3 text-xs text-amber-700 dark:text-amber-400">
-                <span className="font-bold">Mode démo admin :</span>{' '}
-                <code className="font-mono bg-amber-100 dark:bg-amber-900/30 px-1 rounded">admin@sunubank.tg</code>
-                {' / '}
-                <code className="font-mono bg-amber-100 dark:bg-amber-900/30 px-1 rounded">admin1234</code>
-              </div>
-
               {/* Email */}
               <div className="space-y-1.5">
                 <label htmlFor="login-email" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
@@ -143,7 +135,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                     required
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="admin@sunubank.tg"
+                    placeholder="prenom.nom@sunubank.tg"
                     className="block w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-black border border-slate-300 dark:border-[#2D2D2D] text-slate-900 dark:text-[#e2e2e2] placeholder-slate-400 dark:placeholder-[#555] text-sm focus:border-[#E21E26] focus:ring-2 focus:ring-[#E21E26]/20 focus:outline-none transition-colors"
                   />
                 </div>
