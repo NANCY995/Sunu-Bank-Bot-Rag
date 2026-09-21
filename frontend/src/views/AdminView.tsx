@@ -72,7 +72,7 @@ const Badge: React.FC<{ role: string }> = ({ role }) => (
 
 // ─── Default Fallback Data (Prevents empty dashboard) ──────────────────────────
 const DEFAULT_KPIS: KpiData = {
-  users: 5,
+  users: 6,
   conversations: 148,
   escalations: 7,
   contracts: 842,
@@ -82,10 +82,11 @@ const DEFAULT_KPIS: KpiData = {
 
 const DEFAULT_USERS: User[] = [
   { id: 1, email: 'admin@sunubank.tg', username: 'admin', full_name: 'Administrateur Principal Bancassurance', role: 'admin', is_active: true },
-  { id: 2, email: 'conseiller.lome@sunubank.tg', username: 'koffi.mensah', full_name: 'Koffi Mensah (Agence Centrale Lomé)', role: 'agent', is_active: true },
-  { id: 3, email: 'conseiller.kara@sunubank.tg', username: 'awa.tchalla', full_name: 'Awa Tchalla (Agence Kara)', role: 'agent', is_active: true },
-  { id: 4, email: 'compliance@sunubank.tg', username: 'compliance.cima', full_name: 'Direction Conformité & Actuariat CIMA', role: 'admin', is_active: true },
-  { id: 5, email: 'support.client@sunubank.tg', username: 'kodjo.agbe', full_name: 'Kodjo Agbé (Support Clientèle)', role: 'agent', is_active: true },
+  { id: 2, email: 'josettaa@yahoo.fr', username: 'josettaa', full_name: 'Josetta (Testeur Qualité & Bancassurance)', role: 'admin', is_active: true },
+  { id: 3, email: 'conseiller.lome@sunubank.tg', username: 'koffi.mensah', full_name: 'Koffi Mensah (Agence Centrale Lomé)', role: 'agent', is_active: true },
+  { id: 4, email: 'conseiller.kara@sunubank.tg', username: 'awa.tchalla', full_name: 'Awa Tchalla (Agence Kara)', role: 'agent', is_active: true },
+  { id: 5, email: 'compliance@sunubank.tg', username: 'compliance.cima', full_name: 'Direction Conformité & Actuariat CIMA', role: 'admin', is_active: true },
+  { id: 6, email: 'support.client@sunubank.tg', username: 'kodjo.agbe', full_name: 'Kodjo Agbé (Support Clientèle)', role: 'agent', is_active: true },
 ];
 
 // ─── Main AdminView ─────────────────────────────────────────────────────────────

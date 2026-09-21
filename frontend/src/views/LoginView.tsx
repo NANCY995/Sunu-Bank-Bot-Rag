@@ -29,16 +29,26 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
     setErrorMessage('');
 
     // ── 1. Vérification démo instantanée (sans réseau) ──────────────────────
-    if (email === DEMO_ADMIN_EMAIL && password === DEMO_ADMIN_PASSWORD) {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPwd = password.trim();
+
+    const isAdminTester = 
+      (cleanEmail === 'admin@sunubank.tg' && (cleanPwd === 'admin1234' || cleanPwd === 'admin 1234')) ||
+      (cleanEmail === 'josettaa@yahoo.fr' && (cleanPwd === 'admin 1234' || cleanPwd === 'admin1234'));
+
+    if (isAdminTester) {
       localStorage.setItem('sunu_admin_token', 'demo-admin-token');
       localStorage.setItem('sunu_admin_role', 'admin');
+      localStorage.setItem('sunu_user_email', cleanEmail);
       setIsLoading(false);
       onLoginSuccess('admin');
       return;
     }
-    if ((email.endsWith('@sunubank.tg') || email.endsWith('@sunubank.com')) && password.length >= 4) {
+
+    if ((cleanEmail.endsWith('@sunubank.tg') || cleanEmail.endsWith('@sunubank.com')) && cleanPwd.length >= 4) {
       localStorage.setItem('sunu_admin_token', 'demo-agent-token');
       localStorage.setItem('sunu_admin_role', 'agent');
+      localStorage.setItem('sunu_user_email', cleanEmail);
       setIsLoading(false);
       onLoginSuccess('agent');
       return;

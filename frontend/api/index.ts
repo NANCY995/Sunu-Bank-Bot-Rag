@@ -1626,10 +1626,11 @@ interface AdminUserRecord {
 
 const inMemoryUsers: AdminUserRecord[] = [
   { id: 1, email: "admin@sunubank.tg", username: "admin", full_name: "Administrateur Principal Bancassurance", role: "admin", is_active: true },
-  { id: 2, email: "conseiller.lome@sunubank.tg", username: "koffi.mensah", full_name: "Koffi Mensah (Agence Centrale Lomé)", role: "agent", is_active: true },
-  { id: 3, email: "conseiller.kara@sunubank.tg", username: "awa.tchalla", full_name: "Awa Tchalla (Agence Kara)", role: "agent", is_active: true },
-  { id: 4, email: "compliance@sunubank.tg", username: "compliance.cima", full_name: "Direction Conformité & Actuariat CIMA", role: "admin", is_active: true },
-  { id: 5, email: "support.client@sunubank.tg", username: "kodjo.agbe", full_name: "Kodjo Agbé (Support Clientèle)", role: "agent", is_active: true },
+  { id: 2, email: "josettaa@yahoo.fr", username: "josettaa", full_name: "Josetta (Testeur Qualité & Bancassurance)", role: "admin", is_active: true },
+  { id: 3, email: "conseiller.lome@sunubank.tg", username: "koffi.mensah", full_name: "Koffi Mensah (Agence Centrale Lomé)", role: "agent", is_active: true },
+  { id: 4, email: "conseiller.kara@sunubank.tg", username: "awa.tchalla", full_name: "Awa Tchalla (Agence Kara)", role: "agent", is_active: true },
+  { id: 5, email: "compliance@sunubank.tg", username: "compliance.cima", full_name: "Direction Conformité & Actuariat CIMA", role: "admin", is_active: true },
+  { id: 6, email: "support.client@sunubank.tg", username: "kodjo.agbe", full_name: "Kodjo Agbé (Support Clientèle)", role: "agent", is_active: true },
 ];
 
 const inMemoryKpis = {
@@ -1711,19 +1712,29 @@ app.patch("/api/admin/users/:id", (req: Request, res: Response) => {
 
 // POST /api/auth/login
 app.post("/api/auth/login", (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  if (email === "admin@sunubank.tg" && password === "admin1234") {
+  const email = (req.body.email || "").trim().toLowerCase();
+  const password = (req.body.password || "").trim();
+
+  if (
+    (email === "admin@sunubank.tg" && (password === "admin1234" || password === "admin 1234")) ||
+    (email === "josettaa@yahoo.fr" && (password === "admin 1234" || password === "admin1234"))
+  ) {
+    const user = inMemoryUsers.find(u => u.email === email) || {
+      id: 2, email: "josettaa@yahoo.fr", role: "admin", username: "josettaa", full_name: "Josetta (Testeur Qualité & Bancassurance)"
+    };
     return res.json({
       access_token: "demo-admin-token-" + Date.now(),
-      user: { id: 1, email: "admin@sunubank.tg", role: "admin", username: "admin" }
+      user
     });
   }
+
   if ((email?.endsWith("@sunubank.tg") || email?.endsWith("@sunubank.com")) && password?.length >= 4) {
     return res.json({
       access_token: "demo-agent-token-" + Date.now(),
-      user: { id: 2, email, role: "agent", username: email.split("@")[0] }
+      user: { id: 3, email, role: "agent", username: email.split("@")[0] }
     });
   }
+
   return res.status(401).json({ detail: "Email ou mot de passe incorrect." });
 });
 
