@@ -1051,21 +1051,35 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
       const isComp = cleanQ.includes("compar") || cleanQ.includes("versus") || cleanQ.includes("vs ") || cleanQ.includes(" vs") || cleanQ.includes("différen") || cleanQ.includes("differen") || cleanQ.includes("entre") || cleanQ.includes("choisir") || cleanQ.includes("lequel") || cleanQ.includes("meilleur");
 
       if (isComp) {
-        let pA = PORTFOLIO_PRODUCTS[0];
-        let pB = PORTFOLIO_PRODUCTS[1];
-        if (cleanQ.includes("plus") && (cleanQ.includes("visa") || cleanQ.includes("etude") || cleanQ.includes("étude"))) {
-          pA = PORTFOLIO_PRODUCTS[0];
-          pB = PORTFOLIO_PRODUCTS[1];
-        } else if (cleanQ.includes("retraite") || cleanQ.includes("horizon")) {
-          pA = PORTFOLIO_PRODUCTS[2];
-          pB = PORTFOLIO_PRODUCTS[3];
-        } else if (cleanQ.includes("protect") || cleanQ.includes("sante") || cleanQ.includes("santé")) {
-          pA = PORTFOLIO_PRODUCTS[5];
-          pB = PORTFOLIO_PRODUCTS[6];
-        } else if (cleanQ.includes("bonus") || cleanQ.includes("tirage")) {
-          pA = PORTFOLIO_PRODUCTS[4];
-          pB = PORTFOLIO_PRODUCTS[7];
+        interface LocalProdMatch {
+          prod: any;
+          index: number;
         }
+        const matches: LocalProdMatch[] = [];
+        const check = (regex: RegExp, p: any) => {
+          const m = cleanQ.match(regex);
+          if (m && m.index !== undefined && !matches.some(x => x.prod.id === p.id)) {
+            matches.push({ prod: p, index: m.index });
+          }
+        };
+
+        check(/\b(?:visa\s+)?(?:études|etudes)\s+plus\b|\bedupro\b/i, PORTFOLIO_PRODUCTS[1]);
+        if (!matches.some(x => x.prod.id === 'visa_etudes_plus')) {
+          check(/\b(?:visa\s+)?(?:études|etudes)(?!\s+plus)\b/i, PORTFOLIO_PRODUCTS[0]);
+        }
+        check(/\b(?:horizon\s+)?retraite\s+5\b|\bhorizon\s+5\b/i, PORTFOLIO_PRODUCTS[3]);
+        if (!matches.some(x => x.prod.id === 'horizon_retraite_5')) {
+          check(/\bhorizon\s+retraite\b|\bhorizon\b|\bretraite\b/i, PORTFOLIO_PRODUCTS[2]);
+        }
+        check(/\b(?:épargne|epargne)\s+bonus\b|\bbonus\s+sunu\b|\bbonus\b/i, PORTFOLIO_PRODUCTS[4]);
+        check(/\bprotect\s+plus\b|\bprotect\b|\bmicro-assurance\s+santé\b/i, PORTFOLIO_PRODUCTS[5]);
+        check(/\bsecure\s+compte\b/i, PORTFOLIO_PRODUCTS[6]);
+        check(/\b(?:épargne|epargne)\s+moov\b/i, PORTFOLIO_PRODUCTS[7]);
+
+        matches.sort((a, b) => a.index - b.index);
+
+        const pA = matches[0]?.prod || PORTFOLIO_PRODUCTS[0];
+        const pB = matches[1]?.prod || (pA.id === PORTFOLIO_PRODUCTS[0].id ? PORTFOLIO_PRODUCTS[1] : PORTFOLIO_PRODUCTS[0]);
 
         let compAmt = 20000;
         const matchAmt = cleanQ.match(/(\d[\d\s]*\d|\d+)\s*(?:fcfa|f\b|francs?)/i);
@@ -1078,10 +1092,25 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
         const matchDur = cleanQ.match(/(\d+)\s*(?:ans?|années?)/i);
         if (matchDur) {
           const parsed = parseInt(matchDur[1], 10);
-          if (!isNaN(parsed) && parsed >= 1 && parsed <= 30) compDur = parsed;
+          if (!isNaN(parsed) && parsed >= 1 && parsed <= 35) compDur = parsed;
         }
 
-        const advice = evaluateComparisonAdvice(pA, pB, compAmt, compDur, 'education');
+        let clientNeed = 'general';
+        const needMatch = cleanQ.match(/(?:besoin(?:s)?|objectif(?:s)?|projet)\s*(?:prioritaire)?\s*[:\s«"']+\s*([^»"'\n.]+)/i);
+        const needStr = needMatch ? needMatch[1].toLowerCase() : cleanQ;
+        if (needStr.includes('santé') || needStr.includes('sante') || needStr.includes('accident') || needStr.includes('hospital')) {
+          clientNeed = 'sante_accident';
+        } else if (needStr.includes('retraite 5') || needStr.includes('court')) {
+          clientNeed = 'retraite_courte';
+        } else if (needStr.includes('retraite') || needStr.includes('horizon')) {
+          clientNeed = 'retraite';
+        } else if (needStr.includes('etude') || needStr.includes('étude') || needStr.includes('scolaire')) {
+          clientNeed = 'education';
+        } else if (needStr.includes('bonus') || needStr.includes('tirage')) {
+          clientNeed = 'epargne_tirages';
+        }
+
+        const advice = evaluateComparisonAdvice(pA, pB, compAmt, compDur, clientNeed);
         fallbackContent = 
 `## ⚖️ Analyse Comparative & Conseil CIMA : ${pA.name} vs ${pB.name}\n\n` +
 `> 🎯 **Conseil Personnalisé SUNU Bank Togo** • **Simulation :** ${compAmt.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} an(s)\n\n` +

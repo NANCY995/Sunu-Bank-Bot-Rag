@@ -1,15 +1,42 @@
 import express, { Request, Response } from "express";
+import path from "path";
+import os from "os";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
+dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
+export function getLocalNetworkIp(): string {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    if (name.toLowerCase().includes("wi-fi") || name.toLowerCase().includes("wireless") || name.toLowerCase().includes("eth")) {
+      for (const net of interfaces[name] || []) {
+        if (net.family === "IPv4" && !net.internal) {
+          return net.address;
+        }
+      }
+    }
+  }
+  for (const name of Object.keys(interfaces)) {
+    if (!name.toLowerCase().includes("vethernet") && !name.toLowerCase().includes("pseudo")) {
+      for (const net of interfaces[name] || []) {
+        if (net.family === "IPv4" && !net.internal) {
+          return net.address;
+        }
+      }
+    }
+  }
+  return "localhost";
+}
+
 // Initialize Gemini SDK with telemetry header
 const getAIClient = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!apiKey) return null;
   return new GoogleGenAI({
     apiKey,
@@ -974,32 +1001,50 @@ export function buildComparativeAdvice(
   const simA = computeActuarialSimulation(mapKey(prodA.id), compAmount, compDur);
   const simB = computeActuarialSimulation(mapKey(prodB.id), compAmount, compDur);
 
-  // Détection du besoin prioritaire
+  // Détection du besoin prioritaire (en isolant le besoin explicite ou en retirant les noms des produits)
   let detectedNeed = "general";
   let needTitle = "Votre Projet d'Assurance Vie";
 
-  if (norm.includes("etude") || norm.includes("étude") || norm.includes("enfant") || norm.includes("scolaire") || norm.includes("education") || norm.includes("université") || norm.includes("bourse")) {
-    detectedNeed = "education";
-    needTitle = "Financement des études et protection de l'avenir de vos enfants";
-  } else if (norm.includes("retraite 5") || norm.includes("ret5") || norm.includes("court") || norm.includes("senior")) {
-    detectedNeed = "retraite_courte";
-    needTitle = "Retraite accélérée sur 5 ans pour cadre / senior";
-  } else if (norm.includes("retraite") || norm.includes("horizon") || norm.includes("pension") || norm.includes("vieux jour") || norm.includes("viagere") || norm.includes("viagère")) {
-    detectedNeed = "retraite";
-    needTitle = "Préparation de votre retraite et maintien du niveau de vie";
-  } else if (norm.includes("santé") || norm.includes("sante") || norm.includes("accident") || norm.includes("hospital") || norm.includes("maladie") || norm.includes("protect")) {
+  let queryForNeed = norm;
+  const needMatch = norm.match(/(?:besoin(?:s)?|objectif(?:s)?|projet)\s*(?:prioritaire)?\s*[:\s«"']+\s*([^»"'\n.]+)/i);
+  if (needMatch && needMatch[1]) {
+    queryForNeed = needMatch[1].toLowerCase();
+  } else {
+    // Retirer les noms des produits pour éviter qu'un mot comme "études" dans "Visa Études" n'écrase le besoin réel
+    queryForNeed = norm
+      .replace(new RegExp((prodA.title || "").toLowerCase().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "g"), "")
+      .replace(new RegExp((prodB.title || "").toLowerCase().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "g"), "")
+      .replace(/\b(?:visa\s+)?(?:études|etudes)(?:\s+plus)?\b/gi, "")
+      .replace(/\bhorizon\s+retraite(?:\s+5)?\b/gi, "")
+      .replace(/\b(?:épargne|epargne)\s+bonus\b/gi, "")
+      .replace(/\bprotect\s+plus\b/gi, "")
+      .replace(/\bsecure\s+compte\b/gi, "")
+      .replace(/\b(?:épargne|prevoyance)\s+moov\b/gi, "")
+      .replace(/\bsérénité\b|\bserenite\b/gi, "");
+  }
+
+  if (queryForNeed.includes("santé") || queryForNeed.includes("sante") || queryForNeed.includes("accident") || queryForNeed.includes("hospital") || queryForNeed.includes("maladie")) {
     detectedNeed = "sante_accident";
     needTitle = "Couverture santé, accident et frais d'hospitalisation";
-  } else if (norm.includes("bonus") || norm.includes("tirage") || norm.includes("loterie")) {
+  } else if (queryForNeed.includes("retraite 5") || queryForNeed.includes("ret5") || queryForNeed.includes("court") || queryForNeed.includes("senior")) {
+    detectedNeed = "retraite_courte";
+    needTitle = "Retraite accélérée sur 5 ans pour cadre / senior";
+  } else if (queryForNeed.includes("retraite") || queryForNeed.includes("horizon") || queryForNeed.includes("pension") || queryForNeed.includes("vieux jour") || queryForNeed.includes("viagere") || queryForNeed.includes("viagère")) {
+    detectedNeed = "retraite";
+    needTitle = "Préparation de votre retraite et maintien du niveau de vie";
+  } else if (queryForNeed.includes("etude") || queryForNeed.includes("étude") || queryForNeed.includes("enfant") || queryForNeed.includes("scolaire") || queryForNeed.includes("education") || queryForNeed.includes("université") || queryForNeed.includes("bourse")) {
+    detectedNeed = "education";
+    needTitle = "Financement des études et protection de l'avenir de vos enfants";
+  } else if (queryForNeed.includes("bonus") || queryForNeed.includes("tirage") || queryForNeed.includes("loterie")) {
     detectedNeed = "epargne_tirages";
     needTitle = "Constitution d'épargne avec opportunité de gains immédiats au tirage";
-  } else if (norm.includes("compte") || norm.includes("banque") || norm.includes("decouvert")) {
+  } else if (queryForNeed.includes("compte") || queryForNeed.includes("banque") || queryForNeed.includes("decouvert")) {
     detectedNeed = "compte_bancaire";
     needTitle = "Sécurisation de votre compte bancaire et couverture familiale";
-  } else if (norm.includes("moov") || norm.includes("mobile") || norm.includes("informel")) {
+  } else if (queryForNeed.includes("moov") || queryForNeed.includes("mobile") || queryForNeed.includes("informel")) {
     detectedNeed = "mobile_money";
     needTitle = "Micro-épargne digitale sans compte bancaire classique";
-  } else if (norm.includes("obseque") || norm.includes("obsèque") || norm.includes("deuil") || norm.includes("serenite") || norm.includes("sérénité") || norm.includes("funeraire") || norm.includes("funéraire")) {
+  } else if (queryForNeed.includes("obseque") || queryForNeed.includes("obsèque") || queryForNeed.includes("deuil") || queryForNeed.includes("funeraire") || queryForNeed.includes("funéraire")) {
     detectedNeed = "obseques";
     needTitle = "Prise en charge digne et urgente des frais d'obsèques (48h)";
   }
@@ -1119,6 +1164,34 @@ export function buildComparativeAdvice(
       goldenRule = `Pour les clients bancarisés voulant laisser un capital substantiel à leur famille, **${secProd.title}** est le choix de référence.`;
     }
   }
+  // Cas 3bis : Besoin Santé / Accident & Hospitalisation alors que les produits choisis sont des contrats d'épargne ou éducation (ex: Épargne Bonus vs Visa Études Plus)
+  else if (detectedNeed === "sante_accident" && !idA.includes("PROTPLUS") && !idB.includes("PROTPLUS")) {
+    const hasAccidentGuar = (id: string) => id.includes("EDUPRO") || id.includes("EDUCATION") || id.includes("SECCOMPTE");
+    const isAAccident = hasAccidentGuar(idA);
+    const isBAccident = hasAccidentGuar(idB);
+
+    if (isAAccident && !isBAccident) {
+      winner = prodA;
+      alternative = prodB;
+    } else if (isBAccident && !isAAccident) {
+      winner = prodB;
+      alternative = prodA;
+    } else {
+      winner = simA.guaranteedCapital >= simB.guaranteedCapital ? prodA : prodB;
+      alternative = winner.id === prodA.id ? prodB : prodA;
+    }
+
+    matchScore = "88% (Alerte Prévoyance Santé & Accident)";
+    whyWinner = [
+      `**Garantie Accident & Prévoyance supérieure** : ${winner.id.includes("EDUPRO") ? "Intègre le **doublement du capital garanti en cas de décès accidentel** du souscripteur et le versement d'une **rente d'orphelinat immédiate** pour sécuriser les enfants." : (winner.benefits[1] || winner.benefits[0])}`,
+      `**Exonération des cotisations en cas d'IAD/Décès** : Si un accident entraîne une invalidité absolue et définitive, l'assureur prend en charge toutes les primes restantes et le capital complet est versé à terme.`,
+      `**Constitution d'un capital garanti CIMA (3,5% net/an)** : Épargne progressive disponible dès 2 ans de cotisations (Art. 74 CIMA) pour faire face aux coups durs.`
+    ];
+    whyAlternative = [
+      `**${alternative.title}** n'offre **aucune couverture accident ni santé**. C'est un pur contrat de capitalisation financière (Livre I CIMA) dont le seul atout est le tirage au sort semestriel pouvant anticiper le gain de l'épargne.`
+    ];
+    goldenRule = `Entre ces deux produits, **${winner.title}** est le choix rationnel car il contient une vraie protection en cas d'accident grave (doublement du capital). **🚨 ALERTE DÉONTOLOGIQUE MAJEURE DU CONSEILLER SUNU BANK** : Sachez que ni **${prodA.title}** ni **${prodB.title}** ne prennent en charge les **frais médicaux d'hospitalisation** (forfait séjour, soins). Pour être véritablement couvert en cas de maladie ou d'hospitalisation, vous devez impérativement compléter votre souscription avec **Protect Plus** (dès 500 à 1 000 FCFA/mois, jusqu'à 250 000 FCFA d'indemnité d'hospitalisation accidentelle dès 5 jours consécutifs + capital décès accidentel d'1 000 000 FCFA) !`;
+  }
   // Cas 4 : Cas Général selon le besoin détecté
   else {
     const matchA = doesProductMatchNeed(idA, detectedNeed);
@@ -1134,7 +1207,7 @@ export function buildComparativeAdvice(
         `**Garanties CIMA** : ${prodA.yield || "Taux technique garanti 3,5% net/an"}.`
       ];
       whyAlternative = [
-        `**${prodB.title}** est un contrat de catégorie ${prodB.category}, conçu pour ${prodB.target}.`
+        `**${prodB.title}** est un contrat de catégorie ${prodB.category}, orienté vers : ${prodB.benefits[0] || 'un autre objectif d\'épargne'}.`
       ];
       goldenRule = `Pour votre objectif prioritaire (${needTitle}), **${prodA.title}** répond exactement au cahier des charges, tandis que **${prodB.title}** répond à une finalité différente.`;
     } else if (matchB && !matchA) {
@@ -1147,7 +1220,7 @@ export function buildComparativeAdvice(
         `**Garanties CIMA** : ${prodB.yield || "Taux technique garanti 3,5% net/an"}.`
       ];
       whyAlternative = [
-        `**${prodA.title}** est un contrat de catégorie ${prodA.category}, conçu pour ${prodA.target}.`
+        `**${prodA.title}** est un contrat de catégorie ${prodA.category}, orienté vers : ${prodA.benefits[0] || 'un autre objectif d\'épargne'}.`
       ];
       goldenRule = `Pour votre objectif prioritaire (${needTitle}), **${prodB.title}** répond exactement au cahier des charges, tandis que **${prodA.title}** est axé sur un autre besoin.`;
     } else {
@@ -1170,10 +1243,15 @@ export function buildComparativeAdvice(
     }
   }
 
+  const durationNotice = compDur > 15
+    ? `> ⚠️ **Observation Réglementaire CIMA sur la durée de ${compDur} ans demandée** :\n> Ni **${prodA.title}** (durée max 15 ans) ni **${prodB.title}** (durée max 15 ans) ne prévoient de terme à ${compDur} ans dans leurs conditions générales CIMA. Chez SUNU Bank Togo, pour un horizon de ${compDur} ans, le contrat de référence est **Horizon Retraite** (5 à 25 ans avec bonus de fidélité de 92%). Pour cette comparaison, la projection ci-dessous est donc calculée sur la durée maximale contractuelle autorisée de **15 ans** *(soit ${simA.durationYears} ans)*.\n\n`
+    : "";
+
   // Formatage de la réponse officielle
   return (
 `## ⚖️ Analyse Comparative & Conseil CIMA : ${prodA.title} vs ${prodB.title}\n\n` +
 `> 🎯 **Objectif analysé :** ${needTitle} • **Simulation retenue :** ${compAmount.toLocaleString('fr-FR')} FCFA/mois sur ${compDur} an(s)\n\n` +
+`${durationNotice}` +
 `### 📊 1. Tableau Comparatif Synthétique\n\n` +
 `| Critère d'évaluation | **${prodA.title}** | **${prodB.title}** |\n` +
 `|---|---|---|\n` +
@@ -1214,6 +1292,22 @@ app.get("/api/health", (_req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     bank: "SUNU Bank Togo",
     regulation: "Code CIMA / UEMOA / CRCA"
+  });
+});
+
+// API Network Info Endpoint (Pour test en salle via Smartphone / QR Code)
+app.get("/api/network-info", (_req: Request, res: Response) => {
+  const localIp = getLocalNetworkIp();
+  const port = Number(process.env.PORT || 3000);
+  const url = `http://${localIp}:${port}`;
+  res.json({
+    localIp,
+    port,
+    url,
+    qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(url)}`,
+    bank: "SUNU Bank Togo",
+    service: "Bancassurance RAG & Simulateur Actuariel CIMA",
+    status: "online"
   });
 });
 
@@ -1360,8 +1454,11 @@ Directives strictes :
   * Formule une règle de décision limpide pour trancher immédiatement.
   * Rappelle les garanties légales CIMA (Art. 6 information précontractuelle, Art. 76 renonciation 30 jours, Art. 74 rachat après 2 ans).`;
 
+        let modelName = process.env.GOOGLE_LLM_MODEL || "gemini-3.6-flash";
+        if (modelName.includes("2.0") || modelName.includes("2.5")) modelName = "gemini-3.6-flash";
+
         const response = await ai.models.generateContent({
-          model: "gemini-2.0-flash",
+          model: modelName,
           config: {
             systemInstruction: systemInstruction,
           },
@@ -1385,32 +1482,7 @@ Directives strictes :
 
     // ── Fallback Déterministe Certifié CIMA ───────────────────────────────────────
 
-    // 1. Détection prioritaire : Terme du Glossaire ou Réglementation CIMA (32 termes)
-    const lexiconAnswer = findLexiconAnswer(message);
-    if (lexiconAnswer) {
-      return res.json({
-        reply: lexiconAnswer,
-        structuredData: null
-      });
-    }
-
-    // 2. Détection simulation financière précontractuelle
-    if (simulationData) {
-      return res.json({
-        reply: `Voici votre simulation financière précontractuelle pour **${simulationData.productName}** (${simulationData.category}) :\n\n` +
-          `💰 **Cotisation** : ${simulationData.monthlyAmount.toLocaleString('fr-FR')} FCFA / mois\n` +
-          `📅 **Durée prévue** : ${simulationData.durationYears} ans\n` +
-          `📊 **Total cotisé** : ${simulationData.totalContributed.toLocaleString('fr-FR')} FCFA\n` +
-          `🎯 **Capital garanti à terme** : **${simulationData.guaranteedCapital.toLocaleString('fr-FR')} FCFA** *(avec Taux Minimum Garanti CIMA de 3,5% l'an + participation aux bénéfices Art. 84)*\n\n` +
-          `✨ **Spécificité contractuelle** : ${simulationData.specificBenefit}\n` +
-          `🛡️ **Couverture prévoyance** : ${simulationData.deathDisabilityGuarantee}\n\n` +
-          `⚖️ *${simulationData.cimaMentions}*\n\n` +
-          `Souhaitez-vous ajuster le montant ou être mis en relation avec votre conseiller SUNU Bank Togo en agence pour éditer votre proposition d'assurance officielle ?`,
-        structuredData: { simulation: simulationData }
-      });
-    }
-
-    // 3. Comparaison universelle multi-produits & Conseil Personnalisé (Visa Études vs Plus, Retraite, Protect Plus, etc.)
+    // 1. Comparaison universelle multi-produits & Conseil Personnalisé (Prioritaire absolu sur le comparateur)
     const normalized = message.toLowerCase();
     const isComparison = normalized.includes("compar") || normalized.includes("versus") ||
       normalized.includes("vs ") || normalized.includes(" vs") || normalized.includes("différen") ||
@@ -1419,45 +1491,58 @@ Directives strictes :
       (normalized.includes("conseil") && (normalized.includes("visa") || normalized.includes("horizon") || normalized.includes("retraite") || normalized.includes("protect") || normalized.includes("bonus") || normalized.includes("etude") || normalized.includes("étude")));
 
     if (isComparison) {
-      // Détection de tous les produits mentionnés
-      const recognizedProducts: any[] = [];
+      // Détection ordonnée des produits mentionnés dans le message
+      interface ProductMatch {
+        product: any;
+        index: number;
+      }
+      const matches: ProductMatch[] = [];
 
-      if (normalized.includes("plus") && (normalized.includes("visa") || normalized.includes("étude") || normalized.includes("etude") || normalized.includes("edupro"))) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[1]); // Visa Études Plus
-      }
-      if ((normalized.includes("visa études") || normalized.includes("visa etudes") || normalized.includes("études") || normalized.includes("etudes")) && !recognizedProducts.some(p => p.id === "PROD-EP-EDUPRO")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[0]); // Visa Études
-      }
-      if (normalized.includes("horizon 5") || normalized.includes("retraite 5") || normalized.includes("ret5")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[3]); // Horizon Retraite 5
-      }
-      if ((normalized.includes("horizon") || normalized.includes("retraite")) && !recognizedProducts.some(p => p.id === "PROD-EP-RET5") && !recognizedProducts.some(p => p.id === "PROD-EP-RETRAITE")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[2]); // Horizon Retraite
-      }
-      if (normalized.includes("bonus") || normalized.includes("tirage")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[4]); // Épargne Bonus
-      }
-      if (normalized.includes("protect") || normalized.includes("santé") || normalized.includes("sante") || normalized.includes("hospital")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[5]); // Protect Plus
-      }
-      if (normalized.includes("secure") || normalized.includes("compte")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[6]); // Secure Compte
-      }
-      if (normalized.includes("moov")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[7]); // Épargne Moov
-      }
-      if (normalized.includes("serenite") || normalized.includes("sérénité") || normalized.includes("obseque") || normalized.includes("obsèque")) {
-        recognizedProducts.push(SUNU_KNOWLEDGE_DOCUMENTS[9]); // Sérénité
-      }
+      const checkMatch = (regex: RegExp, prod: any) => {
+        const m = normalized.match(regex);
+        if (m && m.index !== undefined) {
+          if (!matches.some(item => item.product.id === prod.id)) {
+            matches.push({ product: prod, index: m.index });
+          }
+        }
+      };
 
-      // Sélection des 2 produits à comparer
-      let prodA = recognizedProducts[0] || SUNU_KNOWLEDGE_DOCUMENTS[0];
-      let prodB = recognizedProducts[1];
+      // Visa Études Plus
+      checkMatch(/\b(?:visa\s+)?(?:études|etudes)\s+plus\b|\bedupro\b/i, SUNU_KNOWLEDGE_DOCUMENTS[1]);
+      // Visa Études classique (si pas Plus)
+      if (!matches.some(item => item.product.id === "PROD-EP-EDUPRO")) {
+        checkMatch(/\b(?:visa\s+)?(?:études|etudes)(?!\s+plus)\b/i, SUNU_KNOWLEDGE_DOCUMENTS[0]);
+      }
+      // Horizon Retraite 5
+      checkMatch(/\b(?:horizon\s+)?retraite\s+5\b|\bhorizon\s+5\b|\bret5\b/i, SUNU_KNOWLEDGE_DOCUMENTS[3]);
+      // Horizon Retraite classique
+      if (!matches.some(item => item.product.id === "PROD-EP-RET5")) {
+        checkMatch(/\bhorizon\s+retraite\b|\bhorizon\b|\bretraite\b/i, SUNU_KNOWLEDGE_DOCUMENTS[2]);
+      }
+      // Épargne Bonus
+      checkMatch(/\b(?:épargne|epargne)\s+bonus\b|\bbonus\s+sunu\b|\bbonus\b/i, SUNU_KNOWLEDGE_DOCUMENTS[4]);
+      // Protect Plus (mot-clé explicite 'protect' pour ne pas capturer le simple besoin santé)
+      checkMatch(/\bprotect\s+plus\b|\bprotect\b|\bmicro-assurance\s+santé\b/i, SUNU_KNOWLEDGE_DOCUMENTS[5]);
+      // Secure Compte
+      checkMatch(/\bsecure\s+compte\b|\bseccompte\b/i, SUNU_KNOWLEDGE_DOCUMENTS[6]);
+      // Épargne Moov
+      checkMatch(/\b(?:épargne|epargne)\s+moov\b|\bdigmoov\b/i, SUNU_KNOWLEDGE_DOCUMENTS[7]);
+      // Prévoyance Moov
+      checkMatch(/\b(?:prévoyance|prevoyance)\s+moov\b/i, SUNU_KNOWLEDGE_DOCUMENTS[8]);
+      // Sérénité
+      checkMatch(/\bsérénité\b|\bserenite\b|\bobsèques\b|\bobseques\b/i, SUNU_KNOWLEDGE_DOCUMENTS[9]);
+
+      // Trier selon l'ordre d'apparition dans le message de l'utilisateur
+      matches.sort((a, b) => a.index - b.index);
+
+      let prodA = matches[0]?.product || SUNU_KNOWLEDGE_DOCUMENTS[0];
+      let prodB = matches[1]?.product;
       if (!prodB) {
         if (prodA.id === "PROD-EP-EDUCATION") prodB = SUNU_KNOWLEDGE_DOCUMENTS[1];
         else if (prodA.id === "PROD-EP-EDUPRO") prodB = SUNU_KNOWLEDGE_DOCUMENTS[0];
         else if (prodA.id === "PROD-EP-RETRAITE") prodB = SUNU_KNOWLEDGE_DOCUMENTS[3];
         else if (prodA.id === "PROD-EP-RET5") prodB = SUNU_KNOWLEDGE_DOCUMENTS[2];
+        else if (prodA.id === "PROD-EP-BONUS") prodB = SUNU_KNOWLEDGE_DOCUMENTS[1];
         else if (prodA.id === "PROD-PR-PROTPLUS") prodB = SUNU_KNOWLEDGE_DOCUMENTS[6];
         else prodB = SUNU_KNOWLEDGE_DOCUMENTS[2];
       }
@@ -1473,7 +1558,7 @@ Directives strictes :
       const matchDur = normalized.match(/(\d+)\s*(?:ans?|années?)/i);
       if (matchDur) {
         const parsed = parseInt(matchDur[1], 10);
-        if (!isNaN(parsed) && parsed >= 1 && parsed <= 30) compDur = parsed;
+        if (!isNaN(parsed) && parsed >= 1 && parsed <= 35) compDur = parsed;
       }
 
       const comparativeAnswer = buildComparativeAdvice(prodA, prodB, compAmount, compDur, message);
@@ -1481,6 +1566,31 @@ Directives strictes :
       return res.json({
         reply: comparativeAnswer,
         structuredData: null
+      });
+    }
+
+    // 2. Détection Terme du Glossaire ou Réglementation CIMA (32 termes)
+    const lexiconAnswer = findLexiconAnswer(message);
+    if (lexiconAnswer) {
+      return res.json({
+        reply: lexiconAnswer,
+        structuredData: null
+      });
+    }
+
+    // 3. Détection simulation financière précontractuelle
+    if (simulationData) {
+      return res.json({
+        reply: `Voici votre simulation financière précontractuelle pour **${simulationData.productName}** (${simulationData.category}) :\n\n` +
+          `💰 **Cotisation** : ${simulationData.monthlyAmount.toLocaleString('fr-FR')} FCFA / mois\n` +
+          `📅 **Durée prévue** : ${simulationData.durationYears} ans\n` +
+          `📊 **Total cotisé** : ${simulationData.totalContributed.toLocaleString('fr-FR')} FCFA\n` +
+          `🎯 **Capital garanti à terme** : **${simulationData.guaranteedCapital.toLocaleString('fr-FR')} FCFA** *(avec Taux Minimum Garanti CIMA de 3,5% l'an + participation aux bénéfices Art. 84)*\n\n` +
+          `✨ **Spécificité contractuelle** : ${simulationData.specificBenefit}\n` +
+          `🛡️ **Couverture prévoyance** : ${simulationData.deathDisabilityGuarantee}\n\n` +
+          `⚖️ *${simulationData.cimaMentions}*\n\n` +
+          `Souhaitez-vous ajuster le montant ou être mis en relation avec votre conseiller SUNU Bank Togo en agence pour éditer votre proposition d'assurance officielle ?`,
+        structuredData: { simulation: simulationData }
       });
     }
 
