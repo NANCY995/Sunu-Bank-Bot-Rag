@@ -311,7 +311,7 @@ const DEFAULT_SYSTEM_HEALTH: SystemHealth = {
 // ─── Main AdminView ─────────────────────────────────────────────────────────────
 export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
   const [tab, setTab] = useState<'dashboard' | 'users'>('dashboard');
-  const [dashboardSubtab, setDashboardSubtab] = useState<'all' | 'memoire' | 'operations' | 'system'>('all');
+  const [dashboardSubtab, setDashboardSubtab] = useState<'all' | 'operations' | 'rag' | 'system'>('all');
   const [kpis, setKpis] = useState<KpiData>(DEFAULT_KPIS);
   const [ragData, setRagData] = useState<RagData>(DEFAULT_RAG_DATA);
   const [systemHealth, setSystemHealth] = useState<SystemHealth>(DEFAULT_SYSTEM_HEALTH);
@@ -518,24 +518,24 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono-code font-bold uppercase tracking-wider bg-[#E21E26]/20 text-[#E21E26] border border-[#E21E26]/40">
-                      Cadre de Recherche Mémoire DSR
+                      Supervision & Pilotage
                     </span>
                     <span className="text-[11px] text-slate-400 font-medium">
                       SUNU Bank Togo • Code CIMA • Normes BCEAO
                     </span>
                   </div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight mt-1.5 flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-[#E21E26]" />
-                    Tableau de Bord & Métriques du Mémoire
+                    <BarChart3 className="w-5 h-5 text-[#E21E26]" />
+                    Tableau de Bord Opérationnel & Moteur RAG
                   </h2>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Confrontation empirique des indicateurs de recherche DSR & exploitation bancassurance SUNU Bank Togo
+                    Supervision en temps réel de l'activité bancassurance, des performances du moteur RAG et de l'infrastructure
                   </p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    3/3 Hypothèses Validées
+                    Système Opérationnel • 99,98 % Uptime
                   </span>
                   <button
                     onClick={() => { loadKpis(); loadRagData(); loadSystemHealth(); }}
@@ -549,45 +549,57 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
 
               {/* 4 Grandes Métriques Synthèse Exécutive */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                {/* 1. Hypothèses */}
-                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-emerald-500/40 transition-colors">
-                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
-                    <span>Hypothèses de Recherche</span>
-                    <Award className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1">3 / 3</div>
-                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">H1, H2, H3 confirmées ✓</div>
-                </div>
-
-                {/* 2. RAGAS Global */}
-                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-blue-500/40 transition-colors">
-                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
-                    <span>Score Global RAGAS</span>
-                    <Sparkles className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-black text-blue-400 mt-1 font-mono">
-                    {ragData.ragas.score_global.toFixed(3)}
-                  </div>
-                  <div className="text-[11px] text-emerald-400 font-medium mt-0.5">+7,3 % vs seuil (≥ 0,750)</div>
-                </div>
-
-                {/* 3. Conformité CIMA */}
-                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-amber-500/40 transition-colors">
-                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
-                    <span>Conformité CIMA</span>
-                    <Scale className="w-4 h-4 text-amber-400" />
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-1">92,4 %</div>
-                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">Audit experts : 4,62 / 5</div>
-                </div>
-
-                {/* 4. Latence Moyenne */}
+                {/* 1. Conversations */}
                 <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-violet-500/40 transition-colors">
                   <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
-                    <span>Latence Globale</span>
-                    <Clock className="w-4 h-4 text-violet-400" />
+                    <span>Activité Conversations</span>
+                    <MessageSquare className="w-4 h-4 text-violet-400" />
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-violet-400 mt-1 font-mono">1 257 ms</div>
+                  <div className="text-2xl sm:text-3xl font-black text-violet-400 mt-1 font-mono">
+                    {kpis.conversations}
+                  </div>
+                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">
+                    {kpis.conversations > 0 ? (((kpis.conversations - kpis.escalations) / kpis.conversations) * 100).toFixed(1) : '100'} % résolues sans escalade
+                  </div>
+                </div>
+
+                {/* 2. Contrats & Portefeuille */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-emerald-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Contrats Bancassurance</span>
+                    <Landmark className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1 font-mono">
+                    {kpis.contracts.toLocaleString()}
+                  </div>
+                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">
+                    {kpis.transactions.toLocaleString()} transactions traitées
+                  </div>
+                </div>
+
+                {/* 3. Sécurité & Fraude */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-amber-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Sécurité & Conformité</span>
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-1 font-mono">
+                    {kpis.transactions > 0 ? (((kpis.transactions - kpis.frauds) / kpis.transactions) * 100).toFixed(1) : '99.9'} %
+                  </div>
+                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">
+                    {kpis.frauds} interception(s) CIMA / BCEAO
+                  </div>
+                </div>
+
+                {/* 4. Latence Moteur RAG */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-blue-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Latence Moteur RAG</span>
+                    <Clock className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-blue-400 mt-1 font-mono">
+                    {ragData.latency.total_ms} ms
+                  </div>
                   <div className="text-[11px] text-slate-300 font-medium mt-0.5">Pipeline local : 47 ms</div>
                 </div>
               </div>
@@ -597,8 +609,8 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
             <div className="flex flex-wrap gap-2 pt-1 border-b border-slate-200 dark:border-[#252525] pb-3">
               {[
                 { id: 'all', label: 'Toutes les métriques', icon: <Layers className="w-3.5 h-3.5" /> },
-                { id: 'memoire', label: 'Hypothèses & RAGAS (Mémoire)', icon: <Award className="w-3.5 h-3.5" /> },
                 { id: 'operations', label: 'Exploitation Bancassurance', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+                { id: 'rag', label: 'Performance Moteur RAG & Latence', icon: <Cpu className="w-3.5 h-3.5" /> },
                 { id: 'system', label: 'Santé Système & RAM (DevOps)', icon: <Activity className="w-3.5 h-3.5" /> },
               ].map(st => (
                 <button
@@ -615,314 +627,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
               ))}
             </div>
 
-            {/* ══════════ SECTION 1 : VALIDATION DES 3 HYPOTHÈSES DU MÉMOIRE ══════════ */}
-            {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
-              <div className="space-y-3.5">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    Validation Statistique des 3 Hypothèses de Recherche (Tableau IV.7 du Mémoire)
-                  </h3>
-                  <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-full">
-                    Méthodologie Design Science Research (DSR)
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* H1 Card */}
-                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-blue-500/30 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow relative overflow-hidden">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center font-extrabold text-sm text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                          H1
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-sm text-slate-900 dark:text-white">Recherche Documentaire</div>
-                          <div className="text-[11px] text-slate-400">Chunking & Embeddings</div>
-                        </div>
-                      </div>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                        <Check className="w-3 h-3" />CONFIRMÉE
-                      </span>
-                    </div>
-
-                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 space-y-2 text-xs border border-slate-100 dark:border-[#222]">
-                      <div className="flex justify-between items-baseline">
-                        <span className="text-slate-500">Cible fixée :</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">Hit@5 ≥ 75,0 % | MRR ≥ 0,400</span>
-                      </div>
-                      <div className="flex justify-between items-baseline pt-1 border-t border-slate-200 dark:border-[#222]">
-                        <span className="text-blue-600 dark:text-blue-400 font-bold">Résultat obtenu :</span>
-                        <span className="font-extrabold text-blue-700 dark:text-blue-300 font-mono">Hit@5 = 78,7 % | MRR = 0,434</span>
-                      </div>
-                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2">
-                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '78.7%' }} />
-                      </div>
-                      <div className="text-[10px] text-slate-400 pt-0.5 flex justify-between items-center">
-                        <span>IC 95 % : [70,2 % ; 87,2 %]</span>
-                        <span className="text-slate-500">150 chunks (500t / 15%)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* H2 Card */}
-                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow relative overflow-hidden">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-sm text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                          H2
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-sm text-slate-900 dark:text-white">Fidélité & Code CIMA</div>
-                          <div className="text-[11px] text-slate-400">Génération Conditionnée</div>
-                        </div>
-                      </div>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                        <Check className="w-3 h-3" />CONFIRMÉE
-                      </span>
-                    </div>
-
-                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 space-y-2 text-xs border border-slate-100 dark:border-[#222]">
-                      <div className="flex justify-between items-baseline">
-                        <span className="text-slate-500">Cible fixée :</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">Faithfulness ≥ 0,80 | CIMA ≥ 4/5</span>
-                      </div>
-                      <div className="flex justify-between items-baseline pt-1 border-t border-slate-200 dark:border-[#222]">
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
-                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">Faithfulness = 0,840 | CIMA = 92,4 %</span>
-                      </div>
-                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2">
-                        <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '84%' }} />
-                      </div>
-                      <div className="text-[10px] text-slate-400 pt-0.5 flex justify-between items-center">
-                        <span>IC 95 % : [0,802 ; 0,878]</span>
-                        <span className="text-slate-500">Audit experts : 4,62 / 5</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* H3 Card */}
-                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-violet-500/30 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow relative overflow-hidden">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-violet-50 dark:bg-violet-950/50 flex items-center justify-center font-extrabold text-sm text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800">
-                          H3
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-sm text-slate-900 dark:text-white">Usabilité & TAM</div>
-                          <div className="text-[11px] text-slate-400">Acceptabilité Usagers</div>
-                        </div>
-                      </div>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                        <Check className="w-3 h-3" />CONFIRMÉE
-                      </span>
-                    </div>
-
-                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 space-y-2 text-xs border border-slate-100 dark:border-[#222]">
-                      <div className="flex justify-between items-baseline">
-                        <span className="text-slate-500">Cible fixée :</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">Score SUS ≥ 75,0 | Utilité ≥ 4,0/5</span>
-                      </div>
-                      <div className="flex justify-between items-baseline pt-1 border-t border-slate-200 dark:border-[#222]">
-                        <span className="text-violet-600 dark:text-violet-400 font-bold">Résultat obtenu :</span>
-                        <span className="font-extrabold text-violet-700 dark:text-violet-300 font-mono">Score SUS = 82,5 | Utilité = 4,55/5</span>
-                      </div>
-                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2">
-                        <div className="bg-violet-500 h-2 rounded-full" style={{ width: '82.5%' }} />
-                      </div>
-                      <div className="text-[10px] text-slate-400 pt-0.5 flex justify-between items-center">
-                        <span>Grade « Excellent » (Bangor)</span>
-                        <span className="text-slate-500">Facilité d'usage : 4,60 / 5</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ══════════ SECTION 2 : SCORES RAGAS & CONFORMITÉ CIMA (TABLEAU IV.4) ══════════ */}
-            {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
-              <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-5">
-                <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 dark:border-[#242424] pb-4">
-                  <div>
-                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#E21E26]" />
-                      Évaluation Empirique RAGAS & Conformité Juridique CIMA (Tableau IV.4)
-                    </h3>
-                    <p className="text-xs text-slate-400 mt-0.5">Mesures automatisées sur 75 requêtes métier précontractuelles</p>
-                  </div>
-                  <div className="bg-slate-50 dark:bg-[#141414] px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a2a2a] text-right">
-                    <span className="text-xs text-slate-400">Score Global RAGAS :</span>{' '}
-                    <span className="text-lg font-black text-[#E21E26] font-mono">{ragData.ragas.score_global.toFixed(3)}</span>
-                    <span className="text-xs text-slate-400"> / 1,000</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    {
-                      label: 'Faithfulness (Fidélité factuelle)',
-                      score: ragData.ragas.faithfulness,
-                      target: 0.800,
-                      desc: 'Proportion de propositions étayées par le contexte contractuel certifié',
-                      status: 'Objectif dépassé (+5,0 %)'
-                    },
-                    {
-                      label: 'Answer Relevancy (Pertinence de réponse)',
-                      score: ragData.ragas.answer_relevancy,
-                      target: 0.750,
-                      desc: 'Adéquation sémantique entre la question posée et la réponse synthétisée',
-                      status: 'Objectif dépassé (+8,3 %)'
-                    },
-                    {
-                      label: 'Context Precision (Précision du contexte)',
-                      score: ragData.ragas.context_precision,
-                      target: 0.750,
-                      desc: 'Capacité à positionner les chunks pertinents en tête du prompt',
-                      status: 'Objectif dépassé (+10,0 %)'
-                    },
-                    {
-                      label: 'Context Recall (Rappel contextuel)',
-                      score: ragData.ragas.context_recall,
-                      target: 0.750,
-                      desc: 'Couverture exhaustive de l\'ensemble des clauses de la réponse d\'or',
-                      status: 'Objectif dépassé (+6,0 %)'
-                    },
-                  ].map((m, idx) => (
-                    <div key={idx} className="bg-slate-50 dark:bg-[#141414] rounded-xl p-4 border border-slate-100 dark:border-[#222] space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs sm:text-sm text-slate-800 dark:text-[#e5e2e1]">{m.label}</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] text-slate-400 font-mono">cible ≥ {m.target.toFixed(3)}</span>
-                          <span className="font-extrabold text-base text-[#E21E26] font-mono">{m.score.toFixed(3)}</span>
-                        </div>
-                      </div>
-                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2.5 relative">
-                        <div
-                          className="bg-gradient-to-r from-[#E21E26] via-amber-500 to-emerald-500 h-2.5 rounded-full transition-all duration-700"
-                          style={{ width: `${Math.min(m.score * 100, 100)}%` }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-[11px] pt-1">
-                        <span className="text-slate-400 text-[11px] truncate max-w-[70%]">{m.desc}</span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 shrink-0 text-[10px] bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                          {m.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Encadré Certificat de Conformité CIMA */}
-                <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border-2 border-emerald-500/30 rounded-2xl p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#1f1f1f] flex items-center justify-center border border-emerald-500/30 shadow-sm shrink-0">
-                      <Scale className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                        Conformité Juridique CIMA Experte (Articles 65-1, 74 & 76)
-                      </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        Audit qualitatif en double aveugle par comité d'experts SUNU Bank & SUNU Assurances Vie Togo
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-baseline gap-2 shrink-0 bg-white/60 dark:bg-[#141414] px-4 py-2 rounded-xl border border-emerald-500/30">
-                    <span className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">92,4 %</span>
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">(4,62 / 5)</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ══════════ SECTION 3 : RECHERCHE & PROFILAGE DE LATENCE (TABLEAUX IV.1, IV.2 & IV.5) ══════════ */}
-            {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Retrieval Benchmarks */}
-                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
-                      <Cpu className="w-4 h-4 text-blue-500" />
-                      Performance Retrieval & Indexation (Tableaux IV.1 & IV.2)
-                    </h3>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2.5 text-xs">
-                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
-                      <div className="text-slate-400 text-[11px] font-medium">Hit@1 (Top-1 exact)</div>
-                      <div className="text-xl font-black text-slate-900 dark:text-white mt-1">54,7 %</div>
-                    </div>
-                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
-                      <div className="text-slate-400 text-[11px] font-medium">Hit@3 (Top-3 documentaire)</div>
-                      <div className="text-xl font-black text-slate-900 dark:text-white mt-1">72,0 %</div>
-                    </div>
-                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
-                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">Hit@5 (Retenu pour H1)</div>
-                      <div className="text-xl font-black text-blue-700 dark:text-blue-300 mt-1">78,7 %</div>
-                    </div>
-                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
-                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">MRR Global (Mean Reciprocal)</div>
-                      <div className="text-xl font-black text-blue-700 dark:text-blue-300 mt-1 font-mono">0,434</div>
-                    </div>
-                  </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-1 pt-1 bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
-                    <div>• <strong>Modèle retenu :</strong> <code className="text-[10px] bg-white dark:bg-[#202020] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#333]">all-MiniLM-L6-v2</code> (384 dimensions)</div>
-                    <div>• <strong>Indexation ChromaDB :</strong> 150 chunks de 500 tokens (15 % chevauchement)</div>
-                  </div>
-                </div>
-
-                {/* Profilage de latence */}
-                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-violet-500" />
-                      Profilage de Latence (Tableau IV.5 du Mémoire)
-                    </h3>
-                    <span className="text-xs font-black text-violet-600 dark:text-violet-400 font-mono bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 px-2.5 py-1 rounded-lg">
-                      1 257 ms (~1,26 s)
-                    </span>
-                  </div>
-
-                  {/* Stacked bar visualization */}
-                  <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-3 overflow-hidden flex shadow-inner">
-                    <div className="bg-emerald-500 h-full" style={{ width: '0.6%' }} title="PII: 8ms" />
-                    <div className="bg-blue-500 h-full" style={{ width: '1.1%' }} title="Embeddings: 14ms" />
-                    <div className="bg-indigo-500 h-full" style={{ width: '0.7%' }} title="Vector DB: 9ms" />
-                    <div className="bg-amber-500 h-full" style={{ width: '0.3%' }} title="Prompt: 4ms" />
-                    <div className="bg-[#E21E26] h-full" style={{ width: '96.4%' }} title="LLM Gemini: 1210ms" />
-                    <div className="bg-violet-500 h-full" style={{ width: '0.9%' }} title="Citations: 12ms" />
-                  </div>
-
-                  <div className="space-y-1.5 text-xs">
-                    {[
-                      { step: '1. Sécurité Regex & Filtrage PII', ms: 8, pct: '0,6 %', color: 'bg-emerald-500' },
-                      { step: '2. Vectorisation all-MiniLM (CPU)', ms: 14, pct: '1,1 %', color: 'bg-blue-500' },
-                      { step: '3. Recherche ChromaDB (Top-5)', ms: 9, pct: '0,7 %', color: 'bg-indigo-500' },
-                      { step: '4. Construction du Prompt', ms: 4, pct: '0,3 %', color: 'bg-amber-500' },
-                      { step: '5. Inférence LLM (Gemini Flash API)', ms: 1210, pct: '96,4 %', color: 'bg-[#E21E26]' },
-                      { step: '6. Post-traitement & Citations CIMA', ms: 12, pct: '0,9 %', color: 'bg-violet-500' },
-                    ].map((s, idx) => (
-                      <div key={idx} className="flex items-center justify-between gap-2 py-0.5">
-                        <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate flex items-center gap-1.5">
-                          <span className={`w-2 h-2 rounded-full ${s.color} shrink-0`} />
-                          {s.step}
-                        </span>
-                        <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
-                          <span className="text-slate-400 text-[10px]">{s.pct}</span>
-                          <span className="font-bold text-slate-800 dark:text-[#e5e2e1] w-14 text-right">{s.ms} ms</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-[#222]">
-                    💡 <strong>Observation clé :</strong> Le pipeline local RAG + Sécurité ne consomme que <strong>47 ms (3,6 %)</strong>. 96,4 % du temps est l'inférence cloud du LLM.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* ══════════ SECTION 4 : KPIS OPÉRATIONNELS BANQUE ASSURANCE ══════════ */}
+            {/* ══════════ SECTION 1 : ACTIVITÉ OPÉRATIONNELLE BANQUE ASSURANCE ══════════ */}
             {(dashboardSubtab === 'all' || dashboardSubtab === 'operations') && (
               <div className="space-y-4">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
@@ -997,6 +702,92 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                     </div>
                     <p className="text-xs text-slate-400">{kpis.frauds} interception(s) sur {kpis.transactions} transaction(s)</p>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* ══════════ SECTION 2 : PERFORMANCE RETRIEVAL & PROFILAGE DE LATENCE DU MOTEUR RAG ══════════ */}
+            {(dashboardSubtab === 'all' || dashboardSubtab === 'rag') && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Retrieval Benchmarks */}
+                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-blue-500" />
+                      Performance Retrieval & Indexation Vectorielle
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2.5 text-xs">
+                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
+                      <div className="text-slate-400 text-[11px] font-medium">Hit@1 (Top-1 exact)</div>
+                      <div className="text-xl font-black text-slate-900 dark:text-white mt-1">54,7 %</div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
+                      <div className="text-slate-400 text-[11px] font-medium">Hit@3 (Top-3 contextuel)</div>
+                      <div className="text-xl font-black text-slate-900 dark:text-white mt-1">72,0 %</div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
+                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">Hit@5 (Top-5 sémantique)</div>
+                      <div className="text-xl font-black text-blue-700 dark:text-blue-300 mt-1">78,7 %</div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
+                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">MRR Global (Mean Reciprocal Rank)</div>
+                      <div className="text-xl font-black text-blue-700 dark:text-blue-300 mt-1 font-mono">0,434</div>
+                    </div>
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-1 pt-1 bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
+                    <div>• <strong>Modèle d'embedding :</strong> <code className="text-[10px] bg-white dark:bg-[#202020] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#333]">all-MiniLM-L6-v2</code> (384 dimensions)</div>
+                    <div>• <strong>Indexation ChromaDB :</strong> 150 chunks de 500 tokens (15 % chevauchement)</div>
+                  </div>
+                </div>
+
+                {/* Profilage de latence */}
+                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-violet-500" />
+                      Profilage de Latence du Pipeline RAG
+                    </h3>
+                    <span className="text-xs font-black text-violet-600 dark:text-violet-400 font-mono bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 px-2.5 py-1 rounded-lg">
+                      1 257 ms (~1,26 s)
+                    </span>
+                  </div>
+
+                  {/* Stacked bar visualization */}
+                  <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-3 overflow-hidden flex shadow-inner">
+                    <div className="bg-emerald-500 h-full" style={{ width: '0.6%' }} title="PII: 8ms" />
+                    <div className="bg-blue-500 h-full" style={{ width: '1.1%' }} title="Embeddings: 14ms" />
+                    <div className="bg-indigo-500 h-full" style={{ width: '0.7%' }} title="Vector DB: 9ms" />
+                    <div className="bg-amber-500 h-full" style={{ width: '0.3%' }} title="Prompt: 4ms" />
+                    <div className="bg-[#E21E26] h-full" style={{ width: '96.4%' }} title="LLM Gemini: 1210ms" />
+                    <div className="bg-violet-500 h-full" style={{ width: '0.9%' }} title="Citations: 12ms" />
+                  </div>
+
+                  <div className="space-y-1.5 text-xs">
+                    {[
+                      { step: '1. Sécurité Regex & Filtrage PII', ms: 8, pct: '0,6 %', color: 'bg-emerald-500' },
+                      { step: '2. Vectorisation all-MiniLM (CPU)', ms: 14, pct: '1,1 %', color: 'bg-blue-500' },
+                      { step: '3. Recherche ChromaDB (Top-5)', ms: 9, pct: '0,7 %', color: 'bg-indigo-500' },
+                      { step: '4. Construction du Prompt', ms: 4, pct: '0,3 %', color: 'bg-amber-500' },
+                      { step: '5. Inférence LLM (Gemini Flash API)', ms: 1210, pct: '96,4 %', color: 'bg-[#E21E26]' },
+                      { step: '6. Post-traitement & Citations CIMA', ms: 12, pct: '0,9 %', color: 'bg-violet-500' },
+                    ].map((s, idx) => (
+                      <div key={idx} className="flex items-center justify-between gap-2 py-0.5">
+                        <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${s.color} shrink-0`} />
+                          {s.step}
+                        </span>
+                        <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
+                          <span className="text-slate-400 text-[10px]">{s.pct}</span>
+                          <span className="font-bold text-slate-800 dark:text-[#e5e2e1] w-14 text-right">{s.ms} ms</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-[#222]">
+                    💡 <strong>Observation clé :</strong> Le pipeline local RAG + Sécurité ne consomme que <strong>47 ms (3,6 %)</strong>. 96,4 % du temps est l'inférence cloud du LLM.
+                  </p>
                 </div>
               </div>
             )}
