@@ -788,11 +788,27 @@ export const ConciergeChatView: React.FC<ConciergeChatViewProps> = ({
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (err) {
       console.error('Chat error:', err);
+      const cleanQ = query.toLowerCase();
+      const quoteMatch = cleanQ.match(/«\s*(.*?)\s*»/) || cleanQ.match(/"\s*(.*?)\s*"/);
+      const target = quoteMatch ? quoteMatch[1].trim().toLowerCase() : cleanQ;
+      const matchedLex = CIMA_LEXICON.find(item => 
+        target.includes(item.term.toLowerCase()) || 
+        item.term.toLowerCase().includes(target)
+      );
+
+      let fallbackContent = "Pour toute souscription ou information complémentaire sur les produits SUNU Bank Togo (Visa Études, Horizon Retraite, Épargne Bonus, Protect Plus), nos conseillers vous accueillent dans nos 28 agences avec le respect rigoureux des dispositions du Code CIMA.";
+      
+      if (matchedLex) {
+        fallbackContent = `## 📜 Fiche CIMA : ${matchedLex.term}\n\n` +
+          `> **Catégorie :** ${matchedLex.category} • **Cadre :** Code des Assurances CIMA\n\n` +
+          `### Définition Réglementaire :\n${matchedLex.definition}\n\n` +
+          `*Information officielle certifiée CIMA. Les conseillers de SUNU Bank Togo sont à votre disposition en agence pour toute étude personnalisée.*`;
+      }
+
       const fallbackMsg: ChatMessage = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
-        content:
-          "Pour toute souscription ou information complémentaire sur les produits SUNU Bank Togo (Visa Études, Horizon Retraite, Épargne Bonus, Protect Plus), nos conseillers vous accueillent dans nos 28 agences avec le respect rigoureux des dispositions du Code CIMA.",
+        content: fallbackContent,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);

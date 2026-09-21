@@ -235,6 +235,440 @@ export const SUNU_KNOWLEDGE_DOCUMENTS = [
   }
 ];
 
+// ==============================================================================
+// BASE DE CONNAISSANCE : 32 TERMES RÉGLEMENTAIRES, ACTUARIELS ET BANCASSURANCE CIMA
+// ==============================================================================
+export interface LexiconEntry {
+  id: string;
+  term: string;
+  category: 'Réglementation' | 'Actuariat' | 'Contrat' | 'Bancassurance';
+  aliases: string[];
+  definition: string;
+  legalBasis: string;
+  bankApplication: string;
+  concreteExample: string;
+  relatedProducts: string[];
+}
+
+export const CIMA_LEXICON_DATABASE: LexiconEntry[] = [
+  // ── 1. Réglementation CIMA & Protection du Souscripteur (9 termes) ───────────
+  {
+    id: "LEX-REG-ART6",
+    term: "Article 6 du Code CIMA",
+    category: "Réglementation",
+    aliases: ["article 6", "art 6", "art. 6", "information precontractuelle", "information précontractuelle", "notice d'information"],
+    definition: "Obligation légale impérative imposant à la banque et à l'assureur de remettre au souscripteur, AVANT la conclusion du contrat, une proposition d'assurance et une fiche d'information précontractuelle claire, loyale et détaillée.",
+    legalBasis: "Article 6 du Code des Assurances CIMA (Livre I, Titre I).",
+    bankApplication: "En agence SUNU Bank Togo, le conseiller remet systématiquement au client une fiche synthétique décrivant les garanties, cotisations, durée, délais de paiement et exclusions avant tout paiement ou signature.",
+    concreteExample: "Avant de souscrire un contrat Visa Études, Koffi reçoit une fiche officielle détaillant le taux minimum garanti (3,5%) et le tableau des valeurs de rachat.",
+    relatedProducts: ["Tous les 8 contrats du portefeuille SUNU Bank Togo"]
+  },
+  {
+    id: "LEX-REG-ART65",
+    term: "Article 65-1 du Code CIMA",
+    category: "Réglementation",
+    aliases: ["article 65-1", "article 65", "art 65-1", "art. 65-1", "encadre legal", "encadré légal", "encadre standardise"],
+    definition: "Encadré légal standardisé et obligatoire inséré en tête de toute proposition d'assurance vie, en caractères très apparents, attirant expressément l'attention du souscripteur sur la durée, le capital garanti, les valeurs de rachat et les frais.",
+    legalBasis: "Article 65-1 du Code CIMA (Protection et transparence de l'épargnant).",
+    bankApplication: "Sur tous les bulletins de souscription SUNU Bank (Horizon Retraite, Visa Études), cet encadré résume en un coup d'œil les 5 points clés du contrat.",
+    concreteExample: "Dès la première page, Ama voit un encadré rouge lui rappelant que tout rachat est interdit avant 2 ans de cotisations effectives.",
+    relatedProducts: ["Visa Études", "Visa Études Plus", "Horizon Retraite", "Épargne Bonus", "Sérénité"]
+  },
+  {
+    id: "LEX-REG-ART74",
+    term: "Valeur de rachat (Article 74)",
+    category: "Réglementation",
+    aliases: ["valeur de rachat", "article 74", "art 74", "art. 74", "rachat", "rachat anticipe", "rachat anticipé", "retrait anticipe"],
+    definition: "Montant net récupérable par le souscripteur s'il met fin à son contrat d'assurance vie avant l'échéance. En zone CIMA, le rachat est strictement INTERDIT avant 2 ans révolus de cotisations effectives (ou 15% des primes prévues pour les contrats de moins de 10 ans).",
+    legalBasis: "Article 74 du Code CIMA (Conditions de liquidation de la provision mathématique).",
+    bankApplication: "SUNU Bank applique rigoureusement cette règle : pendant les 24 premiers mois, aucune valeur de rachat n'est exigible afin de protéger l'effort d'épargne constitué.",
+    concreteExample: "Si vous cotisez 15 000 FCFA/mois sur Visa Études, vous ne pouvez pas demander de rachat avant d'avoir versé 24 mensualités (360 000 FCFA).",
+    relatedProducts: ["Visa Études", "Visa Études Plus", "Horizon Retraite", "Épargne Bonus", "Sérénité"]
+  },
+  {
+    id: "LEX-REG-ART76-RACHAT",
+    term: "Plafonnement des frais de rachat (Art. 76)",
+    category: "Réglementation",
+    aliases: ["frais de rachat", "penalite de rachat", "pénalité de rachat", "plafonnement des frais de rachat", "indemnite de rachat"],
+    definition: "Protection légale interdisant à l'assureur de prélever une indemnité de rachat supérieure à 5% de la provision mathématique. Au-delà de 10 ans de contrat, tout rachat est obligatoirement sans aucune pénalité (0%).",
+    legalBasis: "Article 76 du Code CIMA.",
+    bankApplication: "Pour un rachat effectué entre la 3e et la 9e année chez SUNU Bank, la pénalité ne dépasse jamais 5% de l'épargne acquise. À partir de la 10e année, le rachat est 100% net de pénalité.",
+    concreteExample: "Sur une provision mathématique de 1 000 000 FCFA au bout de 4 ans, la pénalité maximale légale est de 50 000 FCFA (vous récupérez au minimum 950 000 FCFA).",
+    relatedProducts: ["Horizon Retraite", "Visa Études", "Épargne Bonus", "Sérénité"]
+  },
+  {
+    id: "LEX-REG-ART76-RENONC",
+    term: "Faculté de renonciation de 30 jours (Art. 76)",
+    category: "Réglementation",
+    aliases: ["renonciation", "delai de renonciation", "délai de renonciation", "30 jours", "retractation", "rétractation", "annuler contrat"],
+    definition: "Droit légal d'ordre public permettant à tout souscripteur d'annuler son contrat d'assurance vie dans un délai de 30 jours calendaires après signature, avec remboursement intégral de toutes les sommes versées sous 30 jours sans frais ni pénalité.",
+    legalBasis: "Article 76 alinéa 1 du Code CIMA.",
+    bankApplication: "Si vous changez d'avis après signature d'un contrat chez SUNU Bank Togo, une simple notification écrite dans les 30 jours déclenche le remboursement à 100% sur votre compte bancaire.",
+    concreteExample: "Kodjo signe Horizon Retraite le 1er mai et verse 25 000 FCFA. Il renonce le 20 mai : SUNU Assurances lui restitue l'intégralité des 25 000 FCFA.",
+    relatedProducts: ["Tous les contrats d'assurance vie SUNU Bank Togo"]
+  },
+  {
+    id: "LEX-REG-ART84",
+    term: "Participation aux bénéfices (Article 84)",
+    category: "Réglementation",
+    aliases: ["article 84", "art 84", "art. 84", "participation aux benefices", "participation aux bénéfices", "benefices financiers", "pb"],
+    definition: "Obligation réglementaire imposant à la compagnie d'assurance de redistribuer aux souscripteurs d'assurance vie au moins 85% des bénéfices financiers nets réalisés sur le placement des provisions mathématiques.",
+    legalBasis: "Article 84 du Code CIMA.",
+    bankApplication: "Chaque année, SUNU Assurances Vie Togo calcule les résultats financiers de ses placements et affecte la quote-part aux contrats avec effet cliquet (irréversibilité des gains).",
+    concreteExample: "En plus du taux garanti de 3,5%, votre contrat Horizon Retraite reçoit un bonus de participation aux bénéfices de 1,5%, portant le rendement annuel net à 5,0%.",
+    relatedProducts: ["Horizon Retraite", "Visa Études", "Épargne Bonus", "Sérénité"]
+  },
+  {
+    id: "LEX-REG-ART28",
+    term: "Prescription Biennale (Article 28)",
+    category: "Réglementation",
+    aliases: ["prescription biennale", "prescription", "article 28", "art 28", "art. 28", "delai de recours", "délai de recours", "2 ans"],
+    definition: "Règle de droit selon laquelle toutes les actions et réclamations judiciaires dérivant d'un contrat d'assurance se prescrivent par deux (2) ans à compter de l'événement qui leur donne naissance. Pour les bénéficiaires d'un capital décès, le délai court à compter du jour où ils ont eu connaissance du décès.",
+    legalBasis: "Article 28 du Code CIMA (Prescription des actions).",
+    bankApplication: "Les réclamations sur sinistre ou contestations de cotisations doivent être introduites dans les 2 ans pour rester recevables devant les juridictions togolaises.",
+    concreteExample: "En cas d'accident survenu en mars 2024, l'assuré a jusqu'en mars 2026 pour faire valoir ses droits à indemnité.",
+    relatedProducts: ["Tous les contrats de bancassurance SUNU Bank Togo"]
+  },
+  {
+    id: "LEX-REG-ART21",
+    term: "Déclaration de sinistre (Article 21)",
+    category: "Réglementation",
+    aliases: ["declaration de sinistre", "déclaration de sinistre", "article 21", "art 21", "art. 21", "delai sinistre", "délai sinistre", "5 jours"],
+    definition: "Obligation légale incombant à l'assuré ou aux bénéficiaires d'aviser l'assureur de tout sinistre (décès, accident, hospitalisation) dès qu'ils en ont connaissance, et au plus tard dans un délai légal de 5 jours ouvrés.",
+    legalBasis: "Article 21 du Code CIMA.",
+    bankApplication: "Pour les garanties de prévoyance SUNU Bank (Protect Plus, Secure Compte, Sérénité), la déclaration rapide en agence permet d'activer le versement des fonds sous 48 à 72 heures.",
+    concreteExample: "En cas d'hospitalisation d'urgence suite à un accident de circulation, les proches avisent SUNU Bank sous 5 jours avec le certificat d'admission hospitalière.",
+    relatedProducts: ["Protect Plus", "Secure Compte", "Sérénité", "Prévoyance Moov"]
+  },
+  {
+    id: "LEX-REG-CRCA",
+    term: "Commission Régionale de Contrôle (CRCA)",
+    category: "Réglementation",
+    aliases: ["crca", "commission regionale de controle", "commission régionale de contrôle", "gendarme des assurances", "autorite de controle"],
+    definition: "Organe juridictionnel et de supervision supranational institué par le Traité CIMA, chargé de veiller à la solvabilité des compagnies d'assurance, d'agréer les produits et dirigeants, et de protéger les droits des souscripteurs dans les 14 États membres.",
+    legalBasis: "Traité CIMA (Libreville) & Statuts de la CRCA.",
+    bankApplication: "Garantit que SUNU Assurances Vie Togo dispose des réserves prudentielles nécessaires pour honorer 100% de ses engagements de capitaux garantis auprès des clients SUNU Bank.",
+    concreteExample: "La CRCA effectue des audits réguliers pour s'assurer que les provisions mathématiques de vos contrats de retraite sont rigoureusement cantonnées et sécurisées.",
+    relatedProducts: ["Régulation de l'ensemble du marché bancassurance au Togo"]
+  },
+
+  // ── 2. Actuariat & Littératie Financière (6 termes) ─────────────────────────
+  {
+    id: "LEX-ACT-TMG",
+    term: "Taux d'Intérêt Technique Garanti (TMG)",
+    category: "Actuariat",
+    aliases: ["tmg", "taux technique", "taux d'interet technique", "taux d'intérêt technique", "taux minimum garanti", "3,5%", "3.5%"],
+    definition: "Taux d'intérêt actuariel minimal fixé par la réglementation CIMA (réglementé à 3,5% net/an) que l'assureur a l'obligation légale de servir sur l'épargne constituée, garantissant l'absence totale de perte en capital.",
+    legalBasis: "Décision du Conseil des Ministres des Assurances (CMA) de la CIMA.",
+    bankApplication: "Sur Visa Études, Horizon Retraite et Épargne Bonus chez SUNU Bank Togo, votre capital progresse chaque année à hauteur de 3,5% minimum, sans aucun aléa boursier.",
+    concreteExample: "Si vous placez 1 000 000 FCFA, l'assureur garantit au minimum 35 000 FCFA d'intérêts nets sur l'année, qui s'ajoutent à votre capital de façon définitive.",
+    relatedProducts: ["Visa Études", "Visa Études Plus", "Horizon Retraite", "Épargne Bonus", "Sérénité"]
+  },
+  {
+    id: "LEX-ACT-PM",
+    term: "Provision Mathématique (PM)",
+    category: "Actuariat",
+    aliases: ["provision mathematique", "provision mathématique", "pm", "reserve mathematique", "réserve mathématique"],
+    definition: "Réserve financière légale inscrite au passif du bilan de l'assureur pour garantir à 100% et à tout moment le paiement futur des capitaux garantis ou rentes dus aux souscripteurs.",
+    legalBasis: "Articles 334 et suivants du Code CIMA.",
+    bankApplication: "SUNU Bank Togo et SUNU Assurances Vie couvrent 100% de ces provisions par des actifs souverains (obligations du Trésor togolais et de l'UEMOA) certifiés.",
+    concreteExample: "La valeur de rachat de votre contrat d'assurance vie après 3 ans correspond à la provision mathématique constituée, déduction faite des frais de rachat légaux (max 5%).",
+    relatedProducts: ["Horizon Retraite", "Visa Études", "Épargne Bonus", "Sérénité"]
+  },
+  {
+    id: "LEX-ACT-TABLES",
+    term: "Tables de Mortalité CIMA (TD/TF 88-90)",
+    category: "Actuariat",
+    aliases: ["tables de mortalite", "tables de mortalité", "td/tf", "td 88", "tf 88", "table de survie"],
+    definition: "Tables biométriques statistiques agréées par la CIMA mesurant les probabilités de décès (TD 88/90) et de survie (TF 88/90) des assurés de la zone francophone africaine, servant de socle actuariel au calcul des primes et des rentes.",
+    legalBasis: "Réglementation actuarielle CIMA Livre I.",
+    bankApplication: "Permet de tarifer au juste prix les contrats prévoyance et de calculer avec précision les rentes d'éducation (Visa Études) et rentes de retraite (Horizon Retraite).",
+    concreteExample: "La table TF 88-90 détermine le montant exact de la rente viagère mensuelle qu'un cadre de 60 ans percevra à vie chez SUNU Bank à partir de son capital constitué.",
+    relatedProducts: ["Horizon Retraite", "Visa Études Plus", "Protect Plus", "Secure Compte"]
+  },
+  {
+    id: "LEX-ACT-CAPITALISATION",
+    term: "Capitalisation Actuarielle",
+    category: "Actuariat",
+    aliases: ["capitalisation actuarielle", "capitalisation", "interets composes", "intérêts composés"],
+    definition: "Mécanisme financier où les primes nettes versées produisent des intérêts annuels composés au TMG de 3,5%, lesquels génèrent à leur tour de nouveaux intérêts au fil des années, majorés de la participation aux bénéfices.",
+    legalBasis: "Code CIMA Livre I (Contrats de capitalisation et d'épargne vie).",
+    bankApplication: "Permet aux clients de SUNU Bank Togo de faire fructifier une petite épargne régulière pour atteindre des montants importants à terme grâce à la durée.",
+    concreteExample: "En versant 25 000 FCFA/mois pendant 15 ans sur Horizon Retraite (4,5 millions FCFA versés), la capitalisation génère plus de 6,1 millions FCFA de capital garanti à terme.",
+    relatedProducts: ["Horizon Retraite", "Horizon Retraite 5", "Visa Études", "Épargne Bonus"]
+  },
+  {
+    id: "LEX-ACT-BONUS-FID",
+    term: "Bonus de Fidélité Actuariel",
+    category: "Actuariat",
+    aliases: ["bonus de fidelite", "bonus de fidélité", "bonus fidelite", "bonus 92%", "bonus 92"],
+    definition: "Majoration financière contractuelle octroyée à l'échéance au souscripteur ayant maintenu son contrat sans interruption ni rachat. Chez SUNU Bank Togo, ce bonus atteint 92% de la première annuité de cotisation sur Horizon Retraite pour toute durée >= 10 ans.",
+    legalBasis: "Conditions générales du contrat Horizon Retraite visées par la CRCA.",
+    bankApplication: "Récompense exceptionnelle réservée aux épargnants fidèles de SUNU Bank Togo pour valoriser la préparation de leur retraite.",
+    concreteExample: "Pour une cotisation de 25 000 FCFA/mois (1ère annuité de 300 000 FCFA), SUNU Bank vous verse un bonus cash supplémentaire de 276 000 FCFA (92%) à l'échéance.",
+    relatedProducts: ["Horizon Retraite"]
+  },
+  {
+    id: "LEX-ACT-CHARGEMENT",
+    term: "Frais de Chargement",
+    category: "Actuariat",
+    aliases: ["frais de chargement", "chargement", "frais de gestion", "frais d'acquisition", "frais sur primes"],
+    definition: "Quotes-parts réglementées prélevées sur chaque prime pour rémunérer la distribution commerciale (frais d'acquisition bancassurance) et couvrir la gestion administrative et comptable du contrat par l'assureur.",
+    legalBasis: "Note technique actuarielle déposée auprès de la CRCA.",
+    bankApplication: "Intégrés de manière transparente dès le départ : ils sont déduits de la prime brute pour obtenir la prime pure d'épargne qui capitalise au TMG de 3,5%.",
+    concreteExample: "Sur votre bulletin de souscription SUNU Bank, la décomposition entre prime d'épargne, prime de risque décès et frais de chargement est explicitement indiquée.",
+    relatedProducts: ["Tous les contrats de bancassurance vie"]
+  },
+
+  // ── 3. Contrat, Prévoyance & Sinistres (10 termes) ──────────────────────────
+  {
+    id: "LEX-CON-AVANCE",
+    term: "Avance sur Police",
+    category: "Contrat",
+    aliases: ["avance sur police", "avance", "pret sur police", "prêt sur police", "emprunt sur contrat"],
+    definition: "Prêt à taux modéré consenti par l'assureur au souscripteur, garanti par le nantissement de sa provision mathématique, lui permettant d'obtenir des liquidités d'urgence sans résilier son contrat ni perdre son ancienneté.",
+    legalBasis: "Article 75 du Code CIMA.",
+    bankApplication: "Chez SUNU Bank, un client ayant au moins 2 ans d'ancienneté sur Horizon Retraite peut demander une avance pour financer un projet imprévu sans rompre son épargne.",
+    concreteExample: "Vous disposez de 2 000 000 FCFA d'épargne : l'assureur peut vous consentir une avance de 1 200 000 FCFA à taux préférentiel remboursable sous 12 à 24 mois.",
+    relatedProducts: ["Horizon Retraite", "Visa Études", "Sérénité"]
+  },
+  {
+    id: "LEX-CON-REDUCTION",
+    term: "Réduction du Contrat",
+    category: "Contrat",
+    aliases: ["reduction du contrat", "réduction du contrat", "mise en reduction", "mise en réduction", "arret des cotisations"],
+    definition: "Opération permettant à un souscripteur qui ne peut ou ne veut plus payer ses cotisations périodiques (après au moins 2 ans) de conserver son contrat actif sans rachat, pour un capital garanti réduit proportionnel aux primes versées.",
+    legalBasis: "Article 74 et 75 du Code CIMA.",
+    bankApplication: "Alternative idéale au rachat : si vos revenus baissent temporairement, SUNU Bank maintient votre contrat en vigueur et votre capital réduit continue de capitaliser.",
+    concreteExample: "Souscripteur sur 15 ans, Koffi cesse ses cotisations après 7 ans : son contrat est 'mis en réduction' et il percevra son capital constitué à la 15e année sans pénalité.",
+    relatedProducts: ["Horizon Retraite", "Visa Études", "Épargne Bonus"]
+  },
+  {
+    id: "LEX-CON-RENTE-VIAGERE",
+    term: "Rente Viagère Réversible",
+    category: "Contrat",
+    aliases: ["rente viagere", "rente viagère", "rente reversible", "rente réversible", "rente mensuelle", "pension viagere"],
+    definition: "Revenu régulier garanti versé à vie à l'assuré à compter de sa retraite. La clause de réversibilité prévoit qu'en cas de décès du retraité, la rente continue d'être versée au conjoint survivant (à 60% ou 100%).",
+    legalBasis: "Code CIMA Livre I (Assurance sur la vie - Rentes viagères).",
+    bankApplication: "Option de sortie majeure d'Horizon Retraite chez SUNU Bank Togo, assurant une sécurité financière absolue jusqu'au dernier jour.",
+    concreteExample: "À 60 ans, M. Lawson transforme son capital constitué de 15 millions FCFA en une rente viagère de 95 000 FCFA/mois réversible à 100% sur son épouse.",
+    relatedProducts: ["Horizon Retraite", "Sérénité"]
+  },
+  {
+    id: "LEX-CON-RENTE-ORPH",
+    term: "Rente d'Orphelinat Immédiate",
+    category: "Contrat",
+    aliases: ["rente d'orphelinat", "rente d'orphelinat immédiate", "orphelinat", "rente enfant", "rente etudes deces"],
+    definition: "Prestation prévoyance spécifique et exclusive de Visa Études Plus. Dès le décès du parent souscripteur, une rente régulière est versée immédiatement à l'enfant orphelin pour son entretien jusqu'au début de ses études universitaires.",
+    legalBasis: "Garantie prévoyance adossée agréée CRCA / Code CIMA.",
+    bankApplication: "Permet de protéger l'enfant sans attendre le terme prévu du contrat, garantissant qu'il ne quittera pas l'école suite au décès de son parent.",
+    concreteExample: "Si un parent souscripteur de Visa Études Plus décède quand son enfant a 8 ans, l'enfant perçoit immédiatement une allocation trimestrielle jusqu'à ses 18 ans, date où commence en plus le versement des bourses d'études !",
+    relatedProducts: ["Visa Études Plus"]
+  },
+  {
+    id: "LEX-CON-CLAUSE-BENEF",
+    term: "Clause Bénéficiaire",
+    category: "Contrat",
+    aliases: ["clause beneficiaire", "clause bénéficiaire", "designation beneficiaire", "désignation bénéficiaire", "beneficiaire deces"],
+    definition: "Stipulation contractuelle par laquelle le souscripteur désigne la ou les personnes qui recevront le capital garanti en cas de décès de l'assuré. En droit CIMA, ce capital ne fait pas partie de la succession de l'assuré et échappe aux créanciers.",
+    legalBasis: "Articles 60 à 68 du Code CIMA.",
+    bankApplication: "Chez SUNU Bank, la rédaction de la clause bénéficiaire est soignée avec le conseiller (mention nominative ou standard 'mon conjoint, à défaut mes enfants nés ou à naître').",
+    concreteExample: "Le capital de 5 000 000 FCFA versé aux enfants désignés dans la clause est payé directement sans attendre le règlement successoral ni payer de droits de succession.",
+    relatedProducts: ["Tous les contrats de bancassurance vie"]
+  },
+  {
+    id: "LEX-CON-BENEF-ACCEPT",
+    term: "Bénéficiaire Acceptant",
+    category: "Contrat",
+    aliases: ["beneficiaire acceptant", "bénéficiaire acceptant", "acceptation beneficiaire", "clause irrevocable"],
+    definition: "Bénéficiaire ayant formellement notifié son acceptation du contrat avec l'accord du souscripteur. Dès cette acceptation, la clause devient irrévocable : le souscripteur ne peut plus modifier les bénéficiaires ni demander de rachat sans l'accord écrit du bénéficiaire.",
+    legalBasis: "Article 68 du Code CIMA.",
+    bankApplication: "Mesure de haute sécurité juridique : SUNU Bank exige la signature du bénéficiaire acceptant pour toute demande de modification ultérieure du contrat.",
+    concreteExample: "Une banque désignée bénéficiaire acceptante pour garantir un crédit immobilier empêche l'emprunteur de racheter son contrat d'assurance vie sans remboursement du prêt.",
+    relatedProducts: ["Horizon Retraite", "Visa Études", "Secure Compte"]
+  },
+  {
+    id: "LEX-CON-CARENCE",
+    term: "Délai de Carence (Stage d'attente)",
+    category: "Contrat",
+    aliases: ["delai de carence", "délai de carence", "stage d'attente", "carence", "stage d'attente maladie"],
+    definition: "Période initiale après la souscription pendant laquelle les garanties ne sont pas encore applicables en cas de maladie. En droit CIMA, le délai de carence est STRICTEMENT EXCLU en cas d'accident corporel direct (couverture immédiate).",
+    legalBasis: "Dispositions contractuelles CIMA Livre I et Livre VII.",
+    bankApplication: "Sur Protect Plus et Secure Compte, en cas d'accident de la route, la garantie décès ou hospitalisation fonctionne dès la première minute, sans aucun délai de carence.",
+    concreteExample: "Un souscripteur blessé dans un accident 3 jours après avoir souscrit Protect Plus bénéficie immédiatement de la prise en charge hospitalière de 250 000 FCFA.",
+    relatedProducts: ["Protect Plus", "Secure Compte", "Prévoyance Moov"]
+  },
+  {
+    id: "LEX-CON-IAD",
+    term: "Invalidité Absolue et Définitive (IAD)",
+    category: "Contrat",
+    aliases: ["iad", "invalidite absolue et definitive", "invalidité absolue et définitive", "perte totale d'autonomie"],
+    definition: "Incapacité physique ou mentale totale et irréversible constatée médicalement, rendant l'assuré inapte à tout travail rémunéré et nécessitant l'assistance permanente d'une tierce personne pour les actes élémentaires de la vie (se laver, se nourrir, se déplacer).",
+    legalBasis: "Réglementation CIMA sur les assurances de personnes.",
+    bankApplication: "Déclenche par anticipation le paiement intégral du capital prévu en cas de décès et libère le souscripteur du paiement des cotisations futures.",
+    concreteExample: "Sur Visa Études, en cas d'IAD du parent, SUNU Assurances prend en charge 100% des primes restantes et maintient le capital complet pour les études de l'enfant.",
+    relatedProducts: ["Visa Études", "Visa Études Plus", "Protect Plus", "Secure Compte", "Horizon Retraite"]
+  },
+  {
+    id: "LEX-CON-EXCLUSION",
+    term: "Exclusion de Garantie",
+    category: "Contrat",
+    aliases: ["exclusion de garantie", "exclusion", "non couvert", "exclusions legales"],
+    definition: "Événements ou circonstances expressément exclus de la couverture par le Code CIMA ou les conditions générales du contrat, déchargeant l'assureur de toute obligation d'indemnisation.",
+    legalBasis: "Article 63 (Suicide au cours de la 1ère année), Article 20 (Faute intentionnelle), Risques de guerre.",
+    bankApplication: "Les exclusions sont obligatoirement rédigées en caractères gras et très apparents dans les documents contractuels SUNU Bank Togo remis au client.",
+    concreteExample: "Le suicide intervenant au cours de la première année de contrat est exclu par la loi CIMA (remboursement limité à la provision mathématique constituée).",
+    relatedProducts: ["Tous les contrats de bancassurance vie SUNU Bank"]
+  },
+  {
+    id: "LEX-CON-DECHEANCE",
+    term: "Déchéance de Garantie",
+    category: "Contrat",
+    aliases: ["decheance de garantie", "déchéance de garantie", "decheance", "perte de garantie"],
+    definition: "Sanction contractuelle privant l'assuré de son droit à indemnisation après la survenance d'un sinistre, consécutive au manquement délibéré à une obligation contractuelle (fausse déclaration intentionnelle ou déclaration tardive frauduleuse ayant causé un préjudice).",
+    legalBasis: "Article 18 et Article 21 du Code CIMA.",
+    bankApplication: "SUNU Bank veille à l'accompagnement loyal de ses clients pour éviter toute situation de déchéance par simple négligence.",
+    concreteExample: "Un assuré qui produit de fausses factures médicales ou dissimule sciemment les circonstances réelles d'un sinistre encourt la déchéance de garantie.",
+    relatedProducts: ["Protect Plus", "Secure Compte", "Sérénité"]
+  },
+
+  // ── 4. Bancassurance & Inclusion Financière Togo (7 termes) ─────────────────
+  {
+    id: "LEX-BAN-INTEGREE",
+    term: "Bancassurance Intégrée",
+    category: "Bancassurance",
+    aliases: ["bancassurance integree", "bancassurance intégrée", "bancassurance", "partenariat sunu bank"],
+    definition: "Partenariat stratégique et capitalistique permettant à SUNU Bank Togo de commercialiser sous mandat exclusif les contrats d'assurance vie de SUNU Assurances Vie Togo, avec prélèvements bancaires automatisés et guichet unique en agence.",
+    legalBasis: "Code CIMA Livre V (Intermédiaires d'assurance) & Conventions bancaires UMOA.",
+    bankApplication: "Offre aux clients de SUNU Bank Togo la commodité de gérer au même endroit leur compte bancaire, leurs crédits et leurs contrats d'assurance vie dans 28 agences.",
+    concreteExample: "Votre cotisation Horizon Retraite de 25 000 FCFA est automatiquement débitée chaque mois de votre compte salaire SUNU Bank sans frais de virement.",
+    relatedProducts: ["Tous les 8 contrats SUNU Bank Togo"]
+  },
+  {
+    id: "LEX-BAN-MICRO",
+    term: "Micro-assurance (Livre VII CIMA)",
+    category: "Bancassurance",
+    aliases: ["micro-assurance", "micro assurance", "livre vii", "livre 7", "reglement 003/cima/2012"],
+    definition: "Régime juridique dérogatoire instauré par le Livre VII du Code CIMA et le Règlement n° 003/CIMA/2012 pour favoriser l'inclusion financière des ménages modestes, artisans et commerçants du secteur informel grâce à des primes modiques et des formalités allégées.",
+    legalBasis: "Livre VII du Code CIMA & Règlement n° 003/CIMA/2012.",
+    bankApplication: "Matérialisé par Protect Plus (dès 500 F/mois) et Épargne Moov chez SUNU Bank : souscription sans bilan médical lourd et indemnisation rapide.",
+    concreteExample: "Une revendeuse du grand marché de Lomé souscrit Protect Plus pour 500 FCFA/mois et bénéficie d'une garantie de 150 000 FCFA en cas d'hospitalisation accidentelle.",
+    relatedProducts: ["Protect Plus", "Épargne Moov", "Prévoyance Moov"]
+  },
+  {
+    id: "LEX-BAN-MOOV",
+    term: "Épargne Mobile Money (Moov Money)",
+    category: "Bancassurance",
+    aliases: ["epargne moov", "épargne moov", "moov money", "mobile money", "assurance mobile"],
+    definition: "Solution d'assurance vie 100% digitale issue du partenariat entre SUNU Assurances Vie Togo et Moov Africa Togo, permettant de souscrire, cotiser et être indemnisé directement via son portefeuille mobile Moov Money sans compte bancaire classique.",
+    legalBasis: "Réglementation micro-assurance CIMA Livre VII et monnaie électronique BCEAO.",
+    bankApplication: "Ouvre l'assurance vie à toute la population togolaise, y compris dans les zones rurales non couvertes par les agences bancaires traditionnelles.",
+    concreteExample: "Vous composez la syntaxe USSD sur votre téléphone portable pour épargner 1 000 FCFA par mois sur votre compte Moov Money et participez aux tirages au sort trimestriels.",
+    relatedProducts: ["Épargne Moov", "Prévoyance Moov"]
+  },
+  {
+    id: "LEX-BAN-TIRAGE",
+    term: "Tirage au Sort Trimestriel",
+    category: "Bancassurance",
+    aliases: ["tirage au sort", "tirages au sort", "tirage trimestriel", "loterie assurance", "gain par anticipation"],
+    definition: "Dispositif actuariel et réglementaire appliqué aux contrats de capitalisation à tirages (Épargne Bonus SUNU et Épargne Moov). Le souscripteur gagnant au tirage national touche immédiatement l'intégralité du capital prévu au terme et est dispensé du paiement des cotisations restantes !",
+    legalBasis: "Code CIMA Livre I (Contrats d'épargne avec tirages au sort autorisés par la CRCA).",
+    bankApplication: "Supervisé par un huissier de justice agréé au Togo pour garantir une équité absolue entre tous les souscripteurs.",
+    concreteExample: "Ayant souscrit Épargne Bonus pour un capital à terme de 2 000 000 FCFA sur 10 ans, Yao est tiré au sort à la 2e année : il reçoit immédiatement 2 000 000 FCFA et ne paie plus aucun sou pendant les 8 années restantes !",
+    relatedProducts: ["Épargne Bonus SUNU", "Épargne Moov"]
+  },
+  {
+    id: "LEX-BAN-SERENITE",
+    term: "Capital Obsèques d'Urgence (Sérénité)",
+    category: "Bancassurance",
+    aliases: ["capital obseques", "capital obsèques", "serenite obseques", "sérénité obsèques", "frais funeraires", "frais funéraires"],
+    definition: "Prestation prévoyance d'assistance funéraire du contrat Sérénité prévoyant le déblocage prioritaire et garanti sous 24 à 48 heures des fonds nécessaires aux dépenses d'inhumation, préservant la dignité de la famille sans endettement.",
+    legalBasis: "Garantie d'assurance de personnes du Code CIMA.",
+    bankApplication: "Procédure d'urgence simplifiée en agence SUNU Bank Togo sur simple présentation du certificat de décès et de la pièce d'identité du bénéficiaire désigné.",
+    concreteExample: "Au décès de l'assuré, sa famille perçoit immédiatement 1 500 000 FCFA en agence pour organiser les obsèques dignement sans attendre le règlement de la succession.",
+    relatedProducts: ["Sérénité"]
+  },
+  {
+    id: "LEX-BAN-KYC",
+    term: "Diagnostic de Convenance KYC (Art. 6)",
+    category: "Bancassurance",
+    aliases: ["diagnostic de convenance", "kyc", "devoir de conseil", "convenance patrimoniale", "profilage client"],
+    definition: "Obligation déontologique et légale (fondée sur l'Article 6 du Code CIMA) imposant au banquier-assureur de mener un questionnaire d'évaluation patrimoniale préalable (revenus, capacité d'épargne, horizon temporel, besoins familiaux) avant de recommander un contrat d'assurance vie adapté.",
+    legalBasis: "Article 6 du Code CIMA & Instructions professionnelles de la CRCA.",
+    bankApplication: "Le conseiller SUNU Bank Togo ne vous fait jamais souscrire au hasard : il analyse votre projet (retraite, études des enfants, santé) pour calibrer la cotisation exacte.",
+    concreteExample: "Pour un jeune cadre de 30 ans avec deux enfants en bas âge, le conseiller orientera en priorité vers Visa Études pour les enfants et Horizon Retraite pour son avenir.",
+    relatedProducts: ["Tous les contrats SUNU Bank Togo"]
+  },
+  {
+    id: "LEX-BAN-IPDCP",
+    term: "Protection des Données (IPDCP Togo)",
+    category: "Bancassurance",
+    aliases: ["ipdcp", "protection des donnees", "protection des données", "loi 2019-014", "donnees personnelles", "données personnelles"],
+    definition: "Conformité obligatoire à la loi togolaise n° 2019-014 du 29 octobre 2019 relative à la protection des données à caractère personnel, encadrant la collecte, le traitement et la stricte confidentialité des données médicales et financières des souscripteurs en agence SUNU Bank.",
+    legalBasis: "Loi n° 2019-014 (République Togolaise) & Instance de Protection des Données à Caractère Personnel (IPDCP Togo).",
+    bankApplication: "Vos informations médicales (questionnaire de santé) et bancaires sont strictement protégées par le secret bancaire et médical et ne sont jamais transmises à des tiers non autorisés.",
+    concreteExample: "Les questionnaires de santé remplis pour Secure Compte ou Protect Plus sont scellés et traités uniquement par le médecin-conseil de la compagnie d'assurance.",
+    relatedProducts: ["Tous les contrats de bancassurance SUNU Bank Togo"]
+  }
+];
+
+export function findLexiconAnswer(query: string): string | null {
+  const norm = query.toLowerCase().trim();
+
+  // Extraction du terme si envoyé depuis "Poser au bot" : « ... »
+  const quoteMatch = norm.match(/«\s*(.*?)\s*»/) || norm.match(/"\s*(.*?)\s*"/);
+  const targetTerm = quoteMatch ? quoteMatch[1].trim() : norm;
+
+  // Recherche par correspondance exacte ou alias
+  for (const entry of CIMA_LEXICON_DATABASE) {
+    const entryTermNorm = entry.term.toLowerCase();
+    const entryIdNorm = entry.id.toLowerCase();
+
+    const isDirectTermMatch = targetTerm.includes(entryTermNorm) || entryTermNorm.includes(targetTerm);
+    const isIdMatch = targetTerm.includes(entryIdNorm);
+    const isAliasMatch = entry.aliases.some(alias => {
+      const a = alias.toLowerCase();
+      return norm.includes(a) || targetTerm.includes(a);
+    });
+
+    if (isDirectTermMatch || isIdMatch || isAliasMatch) {
+      return (
+`## 📜 Fiche Officielle CIMA : ${entry.term}\n\n` +
+`> **Catégorie :** ${entry.category} • **Cadre réglementaire :** ${entry.legalBasis}\n\n` +
+`### 1. Définition Juridique & Réglementaire\n` +
+`${entry.definition}\n\n` +
+`### 2. Application Pratique chez SUNU Bank Togo\n` +
+`${entry.bankApplication}\n\n` +
+`### 3. Exemple Concret pour le Souscripteur\n` +
+`💡 *${entry.concreteExample}*\n\n` +
+`### 4. Produits Associés dans notre Portefeuille\n` +
+`📌 ${entry.relatedProducts.map(p => `**${p}**`).join(', ')}\n\n` +
+`---\n\n` +
+`*Conformément aux normes de la Conférence Interafricaine des Marchés d'Assurances (CIMA) harmonisées dans les 14 États membres de la zone franc. Nos conseillers en agence SUNU Bank Togo sont à votre entière disposition pour vous guider.*`
+      );
+    }
+  }
+
+  // Si c'est une question générale sur le Code CIMA ou la réglementation
+  if (norm.includes("code cima") || norm.includes("reglementation") || norm.includes("réglementation") || norm.includes("glossaire") || norm.includes("litteratie") || norm.includes("littératie")) {
+    return (
+`## 🏛️ Code des Assurances CIMA & Réglementation Officielle\n\n` +
+`Le **Code CIMA** (Conférence Interafricaine des Marchés d'Assurances) est le corpus juridique unique et harmonisé régissant le secteur des assurances dans les **14 États membres** de la zone franc d'Afrique de l'Ouest et Centrale (dont le **Togo**).\n\n` +
+`### ⚖️ Les 7 Articles Piliers régissant vos contrats chez SUNU Bank Togo :\n\n` +
+`1. **Article 6 (Information précontractuelle)** : Obligation de remise de la fiche d'information détaillée avant signature.\n` +
+`2. **Article 65-1 (Encadré légal standardisé)** : Résumé obligatoire en tête de contrat mentionnant la durée, les garanties et les frais.\n` +
+`3. **Article 74 (Valeur de rachat)** : Rachat strictement interdit avant **2 ans** de cotisations effectives.\n` +
+`4. **Article 76 (Faculté de renonciation)** : Droit de rétractation de **30 jours calendaires** avec remboursement intégral à 100% sans frais.\n` +
+`5. **Article 76 (Plafonnement des frais de rachat)** : Indemnité de sortie plafonnée à **5% max** de la provision mathématique, et **0% après 10 ans**.\n` +
+`6. **Article 84 (Participation aux bénéfices)** : Obligation de redistribuer au moins **85%** des bénéfices financiers annuels aux épargnants.\n` +
+`7. **Article 28 (Prescription biennale)** : Délai légal de **2 ans** pour toute réclamation ou action en justice dérivant du contrat.\n\n` +
+`Vous pouvez me demander une explication approfondie sur n'importe lequel des **32 termes du glossaire** (ex : *« Explique-moi l'Article 74 »*, *« Qu'est-ce que le TMG ? »*, *« C'est quoi la rente d'orphelinat ? »*).`
+    );
+  }
+
+  return null;
+}
+
 export function computeActuarialSimulation(
   productKey: string,
   monthlyAmount?: number,
@@ -624,14 +1058,17 @@ app.post("/api/concierge/chat", async (req: Request, res: Response) => {
     }
 
     const ai = getAIClient();
-    const docsContext = JSON.stringify(SUNU_KNOWLEDGE_DOCUMENTS, null, 2);
+    const docsContext = JSON.stringify({
+      products: SUNU_KNOWLEDGE_DOCUMENTS,
+      cima_lexicon: CIMA_LEXICON_DATABASE
+    }, null, 2);
 
     if (ai) {
       try {
         const systemInstruction = `Tu es le Conseiller Bancassurance Senior et Concierge Financier officiel de SUNU Bank Togo.
 Ton rôle est d'accompagner les clients et chargés de clientèle avec expertise, amabilité, rigueur juridique et clarté sur l'ensemble du portefeuille de bancassurance vie conforme au Code CIMA.
 
-Base documentaire certifiée SUNU Bank Togo :
+Base documentaire certifiée SUNU Bank Togo (Produits officiels et Glossaire CIMA des 32 termes) :
 ${docsContext}
 
 ${simulationData ? `DONNÉES ACTUARIELLES OFFICIELLES CALCULÉES POUR CETTE SIMULATION :
@@ -642,7 +1079,8 @@ Directives strictes :
 1. TON : Haut de gamme, courtois, pédagogue, digne d'un conseiller bancassurance de référence à Lomé.
 2. CONFORMITÉ CODE CIMA : Rappelle toujours l'Article 6 (information précontractuelle loyale), le droit de renonciation de 30 jours (Art. 76) et le fait que la simulation précontractuelle est indicative et finalisée avec le conseiller en agence.
 3. SI LE CLIENT DEMANDE UNE SIMULATION OU DES CHIFFRES : Détaille le total cotisé, le capital garanti au terme avec le taux technique garanti de 3,5% l'an (Code CIMA), les spécificités (Bonus de fidélité 92% pour Horizon Retraite, rentes trimestrielles d'éducation pour Visa Études, tirages au sort pour Épargne Bonus/Moov, capitaux pour Protect Plus/Secure Compte).
-4. CITE LES ARTICLES DU CODE CIMA (Art. 6, 74, 76, 84).`;
+4. CITE LES ARTICLES DU CODE CIMA (Art. 6, 74, 76, 84, 21, 28, etc.).
+5. GLOSSAIRE & RÉGLEMENTATION CIMA : Si le client pose une question sur un article du Code CIMA ou un terme du glossaire (ex: Article 6, Article 74, Article 76, Article 84, TMG, Provision Mathématique, Rente d'orphelinat, CRCA, Avance, Réduction, etc.), réponds de manière approfondie, pédagogique et structurée en donnant la définition, le fondement légal, l'application concrète chez SUNU Bank Togo et un exemple.`;
 
         const response = await ai.models.generateContent({
           model: "gemini-2.0-flash",
@@ -663,11 +1101,22 @@ Directives strictes :
           structuredData: simulationData ? { simulation: simulationData } : null
         });
       } catch (genError) {
-        console.warn("Gemini API error in chat, using deterministic actuarial response:", genError);
+        console.warn("Gemini API error in chat, using deterministic response:", genError);
       }
     }
 
-    // Fallback déterministe
+    // ── Fallback Déterministe Certifié CIMA ───────────────────────────────────────
+
+    // 1. Détection prioritaire : Terme du Glossaire ou Réglementation CIMA (32 termes)
+    const lexiconAnswer = findLexiconAnswer(message);
+    if (lexiconAnswer) {
+      return res.json({
+        reply: lexiconAnswer,
+        structuredData: null
+      });
+    }
+
+    // 2. Détection simulation financière précontractuelle
     if (simulationData) {
       return res.json({
         reply: `Voici votre simulation financière précontractuelle pour **${simulationData.productName}** (${simulationData.category}) :\n\n` +
