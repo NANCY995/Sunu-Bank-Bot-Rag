@@ -323,6 +323,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'agent'>('all');
+  const [logFilter, setLogFilter] = useState<'ALL' | 'INFO' | 'SECURITY' | 'AUTH' | 'PERF'>('ALL');
 
   // New user form state
   const [showNewUser, setShowNewUser] = useState(false);
@@ -511,28 +512,88 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
         {/* ── DASHBOARD TAB ─────────────────────────────────────── */}
         {tab === 'dashboard' && (
           <div className="space-y-6">
-            {/* Header & Sub-Navigation */}
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h2 className="font-bold text-base text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-[#E21E26]" />
-                  Tableau de Bord & Métriques du Mémoire
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Confrontation empirique des indicateurs de recherche DSR & exploitation bancassurance SUNU Bank Togo
-                </p>
+            {/* Executive Hero Banner */}
+            <div className="bg-gradient-to-br from-slate-900 via-[#181C27] to-[#0F172A] dark:from-[#1A1A1A] dark:via-[#161616] dark:to-[#0F0F0F] rounded-2xl p-5 sm:p-6 border border-slate-800 dark:border-[#2d2d2d] shadow-xl text-white">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-slate-800/80 pb-4 mb-5">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono-code font-bold uppercase tracking-wider bg-[#E21E26]/20 text-[#E21E26] border border-[#E21E26]/40">
+                      Cadre de Recherche Mémoire DSR
+                    </span>
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      SUNU Bank Togo • Code CIMA • Normes BCEAO
+                    </span>
+                  </div>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight mt-1.5 flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-[#E21E26]" />
+                    Tableau de Bord & Métriques du Mémoire
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Confrontation empirique des indicateurs de recherche DSR & exploitation bancassurance SUNU Bank Togo
+                  </p>
+                </div>
+                <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    3/3 Hypothèses Validées
+                  </span>
+                  <button
+                    onClick={() => { loadKpis(); loadRagData(); loadSystemHealth(); }}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold transition-colors cursor-pointer border border-white/15 shadow-sm"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Actualiser</span>
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => { loadKpis(); loadRagData(); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2a2a] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252525] transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />Actualiser
-                </button>
+
+              {/* 4 Grandes Métriques Synthèse Exécutive */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* 1. Hypothèses */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-emerald-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Hypothèses de Recherche</span>
+                    <Award className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1">3 / 3</div>
+                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">H1, H2, H3 confirmées ✓</div>
+                </div>
+
+                {/* 2. RAGAS Global */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-blue-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Score Global RAGAS</span>
+                    <Sparkles className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-blue-400 mt-1 font-mono">
+                    {ragData.ragas.score_global.toFixed(3)}
+                  </div>
+                  <div className="text-[11px] text-emerald-400 font-medium mt-0.5">+7,3 % vs seuil (≥ 0,750)</div>
+                </div>
+
+                {/* 3. Conformité CIMA */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-amber-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Conformité CIMA</span>
+                    <Scale className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-1">92,4 %</div>
+                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">Audit experts : 4,62 / 5</div>
+                </div>
+
+                {/* 4. Latence Moyenne */}
+                <div className="bg-white/5 rounded-xl p-3.5 border border-white/10 hover:border-violet-500/40 transition-colors">
+                  <div className="text-[11px] text-slate-400 font-medium flex items-center justify-between">
+                    <span>Latence Globale</span>
+                    <Clock className="w-4 h-4 text-violet-400" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-violet-400 mt-1 font-mono">1 257 ms</div>
+                  <div className="text-[11px] text-slate-300 font-medium mt-0.5">Pipeline local : 47 ms</div>
+                </div>
               </div>
             </div>
 
-            {/* Sub-tabs pills */}
+            {/* Sub-tabs pills navigation */}
             <div className="flex flex-wrap gap-2 pt-1 border-b border-slate-200 dark:border-[#252525] pb-3">
               {[
                 { id: 'all', label: 'Toutes les métriques', icon: <Layers className="w-3.5 h-3.5" /> },
@@ -556,27 +617,27 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
 
             {/* ══════════ SECTION 1 : VALIDATION DES 3 HYPOTHÈSES DU MÉMOIRE ══════════ */}
             {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3.5">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     Validation Statistique des 3 Hypothèses de Recherche (Tableau IV.7 du Mémoire)
                   </h3>
-                  <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
-                    3/3 Hypothèses Validées
+                  <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-full">
+                    Méthodologie Design Science Research (DSR)
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* H1 Card */}
-                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-4.5 shadow-sm space-y-3">
+                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-blue-500/30 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow relative overflow-hidden">
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center font-extrabold text-sm text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                           H1
                         </div>
                         <div>
-                          <div className="font-extrabold text-sm text-slate-800 dark:text-white">Recherche Documentaire</div>
+                          <div className="font-extrabold text-sm text-slate-900 dark:text-white">Recherche Documentaire</div>
                           <div className="text-[11px] text-slate-400">Chunking & Embeddings</div>
                         </div>
                       </div>
@@ -584,30 +645,35 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                         <Check className="w-3 h-3" />CONFIRMÉE
                       </span>
                     </div>
-                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3 space-y-1.5 text-xs">
-                      <div className="flex justify-between">
+
+                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 space-y-2 text-xs border border-slate-100 dark:border-[#222]">
+                      <div className="flex justify-between items-baseline">
                         <span className="text-slate-500">Cible fixée :</span>
                         <span className="font-semibold text-slate-700 dark:text-slate-300">Hit@5 ≥ 75,0 % | MRR ≥ 0,400</span>
                       </div>
-                      <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-[#222]">
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
-                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Hit@5 = 78,7 % | MRR = 0,434</span>
+                      <div className="flex justify-between items-baseline pt-1 border-t border-slate-200 dark:border-[#222]">
+                        <span className="text-blue-600 dark:text-blue-400 font-bold">Résultat obtenu :</span>
+                        <span className="font-extrabold text-blue-700 dark:text-blue-300 font-mono">Hit@5 = 78,7 % | MRR = 0,434</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 pt-0.5">
-                        IC 95 % : [70,2 % ; 87,2 %] • 150 chunks (500 tokens / 15 %)
+                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2">
+                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '78.7%' }} />
+                      </div>
+                      <div className="text-[10px] text-slate-400 pt-0.5 flex justify-between items-center">
+                        <span>IC 95 % : [70,2 % ; 87,2 %]</span>
+                        <span className="text-slate-500">150 chunks (500t / 15%)</span>
                       </div>
                     </div>
                   </div>
 
                   {/* H2 Card */}
-                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-4.5 shadow-sm space-y-3">
+                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow relative overflow-hidden">
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-sm text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
                           H2
                         </div>
                         <div>
-                          <div className="font-extrabold text-sm text-slate-800 dark:text-white">Fidélité & Code CIMA</div>
+                          <div className="font-extrabold text-sm text-slate-900 dark:text-white">Fidélité & Code CIMA</div>
                           <div className="text-[11px] text-slate-400">Génération Conditionnée</div>
                         </div>
                       </div>
@@ -615,30 +681,35 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                         <Check className="w-3 h-3" />CONFIRMÉE
                       </span>
                     </div>
-                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3 space-y-1.5 text-xs">
-                      <div className="flex justify-between">
+
+                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 space-y-2 text-xs border border-slate-100 dark:border-[#222]">
+                      <div className="flex justify-between items-baseline">
                         <span className="text-slate-500">Cible fixée :</span>
                         <span className="font-semibold text-slate-700 dark:text-slate-300">Faithfulness ≥ 0,80 | CIMA ≥ 4/5</span>
                       </div>
-                      <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-[#222]">
+                      <div className="flex justify-between items-baseline pt-1 border-t border-slate-200 dark:border-[#222]">
                         <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
-                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Faithfulness = 0,840 | CIMA = 92,4 %</span>
+                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">Faithfulness = 0,840 | CIMA = 92,4 %</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 pt-0.5">
-                        IC 95 % : [0,802 ; 0,878] • Audit double aveugle : 4,62 / 5
+                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2">
+                        <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '84%' }} />
+                      </div>
+                      <div className="text-[10px] text-slate-400 pt-0.5 flex justify-between items-center">
+                        <span>IC 95 % : [0,802 ; 0,878]</span>
+                        <span className="text-slate-500">Audit experts : 4,62 / 5</span>
                       </div>
                     </div>
                   </div>
 
                   {/* H3 Card */}
-                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-4.5 shadow-sm space-y-3">
+                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-violet-500/30 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow relative overflow-hidden">
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-violet-50 dark:bg-violet-950/50 flex items-center justify-center font-extrabold text-sm text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800">
                           H3
                         </div>
                         <div>
-                          <div className="font-extrabold text-sm text-slate-800 dark:text-white">Usabilité & TAM</div>
+                          <div className="font-extrabold text-sm text-slate-900 dark:text-white">Usabilité & TAM</div>
                           <div className="text-[11px] text-slate-400">Acceptabilité Usagers</div>
                         </div>
                       </div>
@@ -646,17 +717,22 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                         <Check className="w-3 h-3" />CONFIRMÉE
                       </span>
                     </div>
-                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3 space-y-1.5 text-xs">
-                      <div className="flex justify-between">
+
+                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 space-y-2 text-xs border border-slate-100 dark:border-[#222]">
+                      <div className="flex justify-between items-baseline">
                         <span className="text-slate-500">Cible fixée :</span>
                         <span className="font-semibold text-slate-700 dark:text-slate-300">Score SUS ≥ 75,0 | Utilité ≥ 4,0/5</span>
                       </div>
-                      <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-[#222]">
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
-                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Score SUS = 82,5 | Utilité = 4,55/5</span>
+                      <div className="flex justify-between items-baseline pt-1 border-t border-slate-200 dark:border-[#222]">
+                        <span className="text-violet-600 dark:text-violet-400 font-bold">Résultat obtenu :</span>
+                        <span className="font-extrabold text-violet-700 dark:text-violet-300 font-mono">Score SUS = 82,5 | Utilité = 4,55/5</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 pt-0.5">
-                        Grade « Excellent » (Bangor et al.) • Facilité d'usage : 4,60 / 5
+                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2">
+                        <div className="bg-violet-500 h-2 rounded-full" style={{ width: '82.5%' }} />
+                      </div>
+                      <div className="text-[10px] text-slate-400 pt-0.5 flex justify-between items-center">
+                        <span>Grade « Excellent » (Bangor)</span>
+                        <span className="text-slate-500">Facilité d'usage : 4,60 / 5</span>
                       </div>
                     </div>
                   </div>
@@ -666,23 +742,23 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
 
             {/* ══════════ SECTION 2 : SCORES RAGAS & CONFORMITÉ CIMA (TABLEAU IV.4) ══════════ */}
             {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
-              <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-5">
+                <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 dark:border-[#242424] pb-4">
                   <div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-[#E21E26]" />
                       Évaluation Empirique RAGAS & Conformité Juridique CIMA (Tableau IV.4)
                     </h3>
-                    <p className="text-xs text-slate-400">Mesures automatisées sur 75 requêtes métier précontractuelles</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Mesures automatisées sur 75 requêtes métier précontractuelles</p>
                   </div>
-                  <div className="text-right">
+                  <div className="bg-slate-50 dark:bg-[#141414] px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a2a2a] text-right">
                     <span className="text-xs text-slate-400">Score Global RAGAS :</span>{' '}
-                    <span className="text-base font-extrabold text-[#E21E26]">{ragData.ragas.score_global.toFixed(3)}</span>
+                    <span className="text-lg font-black text-[#E21E26] font-mono">{ragData.ragas.score_global.toFixed(3)}</span>
                     <span className="text-xs text-slate-400"> / 1,000</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
                       label: 'Faithfulness (Fidélité factuelle)',
@@ -713,43 +789,48 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                       status: 'Objectif dépassé (+6,0 %)'
                     },
                   ].map((m, idx) => (
-                    <div key={idx} className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 border border-slate-100 dark:border-[#222]">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-xs text-slate-800 dark:text-[#e5e2e1]">{m.label}</span>
-                        <span className="font-extrabold text-sm text-[#E21E26] font-mono">{m.score.toFixed(3)}</span>
+                    <div key={idx} className="bg-slate-50 dark:bg-[#141414] rounded-xl p-4 border border-slate-100 dark:border-[#222] space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs sm:text-sm text-slate-800 dark:text-[#e5e2e1]">{m.label}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] text-slate-400 font-mono">cible ≥ {m.target.toFixed(3)}</span>
+                          <span className="font-extrabold text-base text-[#E21E26] font-mono">{m.score.toFixed(3)}</span>
+                        </div>
                       </div>
-                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2 mb-1.5">
+                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2.5 relative">
                         <div
-                          className="bg-gradient-to-r from-[#E21E26] to-emerald-500 h-2 rounded-full transition-all duration-700"
+                          className="bg-gradient-to-r from-[#E21E26] via-amber-500 to-emerald-500 h-2.5 rounded-full transition-all duration-700"
                           style={{ width: `${Math.min(m.score * 100, 100)}%` }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-400">{m.desc}</span>
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">{m.status}</span>
+                      <div className="flex items-center justify-between text-[11px] pt-1">
+                        <span className="text-slate-400 text-[11px] truncate max-w-[70%]">{m.desc}</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 shrink-0 text-[10px] bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                          {m.status}
+                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Encadré Conformité CIMA */}
-                <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1f1f1f] flex items-center justify-center border border-emerald-500/30 shrink-0">
-                      <Scale className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                {/* Encadré Certificat de Conformité CIMA */}
+                <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border-2 border-emerald-500/30 rounded-2xl p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#1f1f1f] flex items-center justify-center border border-emerald-500/30 shadow-sm shrink-0">
+                      <Scale className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div>
-                      <div className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                      <div className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
                         Conformité Juridique CIMA Experte (Articles 65-1, 74 & 76)
                       </div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         Audit qualitatif en double aveugle par comité d'experts SUNU Bank & SUNU Assurances Vie Togo
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-baseline gap-2 shrink-0">
-                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">92,4 %</span>
-                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">(4,62 / 5)</span>
+                  <div className="flex items-baseline gap-2 shrink-0 bg-white/60 dark:bg-[#141414] px-4 py-2 rounded-xl border border-emerald-500/30">
+                    <span className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">92,4 %</span>
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">(4,62 / 5)</span>
                   </div>
                 </div>
               </div>
@@ -759,46 +840,60 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
             {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Retrieval Benchmarks */}
-                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-3">
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                    <Cpu className="w-4 h-4 text-blue-500" />
-                    Performance Retrieval & Indexation (Tableaux IV.1 & IV.2)
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl">
-                      <div className="text-slate-400 text-[11px]">Hit@1</div>
-                      <div className="text-lg font-bold text-slate-900 dark:text-white">54,7 %</div>
+                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-blue-500" />
+                      Performance Retrieval & Indexation (Tableaux IV.1 & IV.2)
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2.5 text-xs">
+                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
+                      <div className="text-slate-400 text-[11px] font-medium">Hit@1 (Top-1 exact)</div>
+                      <div className="text-xl font-black text-slate-900 dark:text-white mt-1">54,7 %</div>
                     </div>
-                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl">
-                      <div className="text-slate-400 text-[11px]">Hit@3</div>
-                      <div className="text-lg font-bold text-slate-900 dark:text-white">72,0 %</div>
+                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
+                      <div className="text-slate-400 text-[11px] font-medium">Hit@3 (Top-3 documentaire)</div>
+                      <div className="text-xl font-black text-slate-900 dark:text-white mt-1">72,0 %</div>
                     </div>
-                    <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
-                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">Hit@5 (Retenu H1)</div>
-                      <div className="text-lg font-extrabold text-blue-700 dark:text-blue-300">78,7 %</div>
+                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
+                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">Hit@5 (Retenu pour H1)</div>
+                      <div className="text-xl font-black text-blue-700 dark:text-blue-300 mt-1">78,7 %</div>
                     </div>
-                    <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
-                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">MRR Global</div>
-                      <div className="text-lg font-extrabold text-blue-700 dark:text-blue-300">0,434</div>
+                    <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
+                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">MRR Global (Mean Reciprocal)</div>
+                      <div className="text-xl font-black text-blue-700 dark:text-blue-300 mt-1 font-mono">0,434</div>
                     </div>
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 pt-1">
-                    <div>• <strong>Modèle retenu :</strong> <code className="text-[10px] bg-slate-100 dark:bg-[#252525] px-1 py-0.5 rounded">all-MiniLM-L6-v2</code> (384 dimensions)</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-1 pt-1 bg-slate-50 dark:bg-[#141414] p-3 rounded-xl border border-slate-100 dark:border-[#222]">
+                    <div>• <strong>Modèle retenu :</strong> <code className="text-[10px] bg-white dark:bg-[#202020] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#333]">all-MiniLM-L6-v2</code> (384 dimensions)</div>
                     <div>• <strong>Indexation ChromaDB :</strong> 150 chunks de 500 tokens (15 % chevauchement)</div>
                   </div>
                 </div>
 
                 {/* Profilage de latence */}
-                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 sm:p-6 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                       <Clock className="w-4 h-4 text-violet-500" />
                       Profilage de Latence (Tableau IV.5 du Mémoire)
                     </h3>
-                    <span className="text-xs font-extrabold text-violet-600 dark:text-violet-400 font-mono">1 257 ms (~1,26 s)</span>
+                    <span className="text-xs font-black text-violet-600 dark:text-violet-400 font-mono bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 px-2.5 py-1 rounded-lg">
+                      1 257 ms (~1,26 s)
+                    </span>
                   </div>
 
-                  <div className="space-y-2 text-xs">
+                  {/* Stacked bar visualization */}
+                  <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-3 overflow-hidden flex shadow-inner">
+                    <div className="bg-emerald-500 h-full" style={{ width: '0.6%' }} title="PII: 8ms" />
+                    <div className="bg-blue-500 h-full" style={{ width: '1.1%' }} title="Embeddings: 14ms" />
+                    <div className="bg-indigo-500 h-full" style={{ width: '0.7%' }} title="Vector DB: 9ms" />
+                    <div className="bg-amber-500 h-full" style={{ width: '0.3%' }} title="Prompt: 4ms" />
+                    <div className="bg-[#E21E26] h-full" style={{ width: '96.4%' }} title="LLM Gemini: 1210ms" />
+                    <div className="bg-violet-500 h-full" style={{ width: '0.9%' }} title="Citations: 12ms" />
+                  </div>
+
+                  <div className="space-y-1.5 text-xs">
                     {[
                       { step: '1. Sécurité Regex & Filtrage PII', ms: 8, pct: '0,6 %', color: 'bg-emerald-500' },
                       { step: '2. Vectorisation all-MiniLM (CPU)', ms: 14, pct: '1,1 %', color: 'bg-blue-500' },
@@ -807,18 +902,21 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                       { step: '5. Inférence LLM (Gemini Flash API)', ms: 1210, pct: '96,4 %', color: 'bg-[#E21E26]' },
                       { step: '6. Post-traitement & Citations CIMA', ms: 12, pct: '0,9 %', color: 'bg-violet-500' },
                     ].map((s, idx) => (
-                      <div key={idx} className="flex items-center justify-between gap-2">
-                        <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate">{s.step}</span>
+                      <div key={idx} className="flex items-center justify-between gap-2 py-0.5">
+                        <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${s.color} shrink-0`} />
+                          {s.step}
+                        </span>
                         <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
-                          <span className="text-slate-500">{s.pct}</span>
+                          <span className="text-slate-400 text-[10px]">{s.pct}</span>
                           <span className="font-bold text-slate-800 dark:text-[#e5e2e1] w-14 text-right">{s.ms} ms</span>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-slate-400 pt-1 border-t border-slate-100 dark:border-[#222]">
-                    Temps moyen mesuré sur 100 requêtes consécutives garantissant une fluidité optimale.
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-[#222]">
+                    💡 <strong>Observation clé :</strong> Le pipeline local RAG + Sécurité ne consomme que <strong>47 ms (3,6 %)</strong>. 96,4 % du temps est l'inférence cloud du LLM.
                   </p>
                 </div>
               </div>
@@ -832,7 +930,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                   Activité Opérationnelle en Agence & Canaux Digitaux
                 </h3>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4">
                   <KpiCard label="Utilisateurs" value={kpis.users} accent="from-blue-500/10 to-blue-500/5"
                     icon={<Users className="w-5 h-5 text-blue-500" />} />
                   <KpiCard label="Conversations" value={kpis.conversations} accent="from-violet-500/10 to-violet-500/5"
@@ -849,16 +947,21 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Taux d'escalade */}
-                  <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4">
-                      <TrendingUp className="w-4 h-4 text-[#E21E26]" />
-                      <span className="font-bold text-sm">Taux d'escalade vers conseiller agence</span>
+                  <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-[#E21E26]" />
+                        <span className="font-bold text-sm">Taux d'escalade vers conseiller agence</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        Statut : Maîtrisé (&lt; 10 %)
+                      </span>
                     </div>
-                    <div className="flex items-end gap-2 mb-2">
-                      <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                    <div className="flex items-end gap-2">
+                      <span className="text-3xl font-black text-slate-900 dark:text-white">
                         {kpis.conversations > 0 ? ((kpis.escalations / kpis.conversations) * 100).toFixed(1) : '0.0'}%
                       </span>
-                      <span className="text-slate-400 text-sm mb-1">des conversations</span>
+                      <span className="text-slate-400 text-xs mb-1">des conversations traitées</span>
                     </div>
                     <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-2.5">
                       <div
@@ -866,20 +969,25 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                         style={{ width: `${kpis.conversations > 0 ? Math.min((kpis.escalations / kpis.conversations) * 100, 100) : 0}%` }}
                       />
                     </div>
-                    <p className="text-xs text-slate-400 mt-2">{kpis.escalations} escalade(s) sur {kpis.conversations} conversation(s) traitée(s)</p>
+                    <p className="text-xs text-slate-400">{kpis.escalations} escalade(s) sur {kpis.conversations} conversation(s) traitée(s)</p>
                   </div>
 
                   {/* Taux de fraude / requêtes sensibles bloquées */}
-                  <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4">
-                      <AlertOctagon className="w-4 h-4 text-amber-500" />
-                      <span className="font-bold text-sm">Requêtes sensibles & fraudes interceptées</span>
+                  <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <AlertOctagon className="w-4 h-4 text-amber-500" />
+                        <span className="font-bold text-sm">Requêtes sensibles & fraudes interceptées</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        Conforme Normes BCEAO / UMOA
+                      </span>
                     </div>
-                    <div className="flex items-end gap-2 mb-2">
-                      <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                    <div className="flex items-end gap-2">
+                      <span className="text-3xl font-black text-slate-900 dark:text-white">
                         {kpis.transactions > 0 ? ((kpis.frauds / kpis.transactions) * 100).toFixed(1) : '0.0'}%
                       </span>
-                      <span className="text-slate-400 text-sm mb-1">des transactions</span>
+                      <span className="text-slate-400 text-xs mb-1">des transactions vérifiées</span>
                     </div>
                     <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-2.5">
                       <div
@@ -887,7 +995,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                         style={{ width: `${kpis.transactions > 0 ? Math.min((kpis.frauds / kpis.transactions) * 100, 100) : 0}%` }}
                       />
                     </div>
-                    <p className="text-xs text-slate-400 mt-2">{kpis.frauds} interception(s) sur {kpis.transactions} transaction(s)</p>
+                    <p className="text-xs text-slate-400">{kpis.frauds} interception(s) sur {kpis.transactions} transaction(s)</p>
                   </div>
                 </div>
               </div>
@@ -906,14 +1014,14 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                       Diagnostics en temps réel de l'infrastructure, consommation de ressources et passerelles IA
                     </p>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                     Tous les services opérationnels (99,98 % uptime)
                   </span>
                 </div>
 
                 {/* Grille 4 cartes système & mémoire */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
                   {/* Carte 1 : RAM / Heap V8 */}
                   <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-4.5 shadow-sm space-y-2.5">
                     <div className="flex items-center justify-between">
@@ -935,7 +1043,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                     </div>
                     <div className="flex justify-between text-[11px] text-slate-400 pt-0.5">
                       <span>RSS Total : {systemHealth.memory.rss_mb} Mo</span>
-                      <span>Charge nominale</span>
+                      <span className="text-emerald-500 font-medium">Charge nominale</span>
                     </div>
                   </div>
 
@@ -982,7 +1090,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                     </div>
                     <div className="flex justify-between text-[11px] text-slate-400 pt-0.5">
                       <span>Économie latence</span>
-                      <span>~23 ms / hit</span>
+                      <span className="text-amber-500 font-medium">~23 ms / hit</span>
                     </div>
                   </div>
 
@@ -1004,7 +1112,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                     </div>
                     <div className="flex justify-between text-[11px] text-slate-400 pt-0.5">
                       <span>Coût estimé : ~{systemHealth.tokens.cost_estimate_fcfa} FCFA</span>
-                      <span>(${systemHealth.tokens.cost_estimate_usd})</span>
+                      <span className="text-slate-500">(${systemHealth.tokens.cost_estimate_usd})</span>
                     </div>
                   </div>
                 </div>
@@ -1044,8 +1152,8 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                       <div key={idx} className="bg-slate-50 dark:bg-[#141414] p-3.5 rounded-xl border border-slate-100 dark:border-[#242424] space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-xs text-slate-800 dark:text-slate-200 truncate">{s.name}</span>
-                          <span className="flex items-center gap-1 text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">
-                            <span className={`w-1.5 h-1.5 rounded-full ${s.color}`} />
+                          <span className="flex items-center gap-1.5 text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">
+                            <span className={`w-2 h-2 rounded-full ${s.color} animate-pulse`} />
                             {s.status}
                           </span>
                         </div>
@@ -1055,9 +1163,9 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                   </div>
                 </div>
 
-                {/* Journal d'audit et flux d'événements en direct */}
-                <div className="bg-[#0B0F19] text-slate-300 rounded-2xl border border-slate-800 p-5 shadow-lg space-y-3 font-mono text-xs">
-                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                {/* Journal d'audit et flux d'événements en direct avec Filtres */}
+                <div className="bg-[#0B0F19] text-slate-300 rounded-2xl border border-slate-800 p-5 shadow-lg space-y-3.5 font-mono text-xs">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 flex-wrap gap-2">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
@@ -1069,25 +1177,43 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
                         flux-audit-securite-rag.log
                       </span>
                     </div>
-                    <span className="text-[10px] text-slate-500">Flux temps réel</span>
+
+                    {/* Log Filter Pills */}
+                    <div className="flex items-center gap-1 text-[10px]">
+                      {(['ALL', 'INFO', 'SECURITY', 'AUTH', 'PERF'] as const).map(lvl => (
+                        <button
+                          key={lvl}
+                          onClick={() => setLogFilter(lvl)}
+                          className={`px-2 py-0.5 rounded cursor-pointer transition-colors ${
+                            logFilter === lvl
+                              ? 'bg-[#E21E26] text-white font-bold'
+                              : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                          }`}
+                        >
+                          {lvl === 'ALL' ? 'Tous' : lvl}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                    {systemHealth.recent_logs.map((log, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5 py-1 text-[11px] hover:bg-white/5 px-2 rounded transition-colors">
-                        <span className="text-slate-500 shrink-0 font-sans text-[10px]">{log.time}</span>
-                        <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold shrink-0 ${
-                          log.type === 'INFO' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                          log.type === 'SECURITY' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                          log.type === 'AUTH' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-                          'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                        }`}>
-                          {log.type}
-                        </span>
-                        <span className="text-slate-400 shrink-0 font-bold">[{log.source}]</span>
-                        <span className="text-slate-200">{log.message}</span>
-                      </div>
-                    ))}
+                  <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                    {systemHealth.recent_logs
+                      .filter(l => logFilter === 'ALL' || l.type === logFilter)
+                      .map((log, idx) => (
+                        <div key={idx} className="flex items-start gap-2.5 py-1 text-[11px] hover:bg-white/5 px-2 rounded transition-colors">
+                          <span className="text-slate-500 shrink-0 font-sans text-[10px]">{log.time}</span>
+                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0 ${
+                            log.type === 'INFO' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                            log.type === 'SECURITY' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                            log.type === 'AUTH' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                            'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                          }`}>
+                            {log.type}
+                          </span>
+                          <span className="text-slate-400 shrink-0 font-bold">[{log.source}]</span>
+                          <span className="text-slate-200">{log.message}</span>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>

@@ -1441,9 +1441,6 @@ advice.otherReasons.map(r => `- ${r}`).join('\n') + `\n\n` +
             <div className="h-5 w-px bg-slate-300 dark:bg-[#2a2a2a] hidden sm:block"></div>
             <div className="font-heading font-semibold text-xs sm:text-base text-slate-800 dark:text-[#e5e2e1] flex items-center gap-1.5">
               <span>Conseiller Bancassurance RAG</span>
-              <span className="hidden sm:inline-flex text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 font-mono-code px-2 py-0.5 rounded-full font-bold">
-                CIMA Certified
-              </span>
             </div>
           </div>
 
