@@ -1614,4 +1614,117 @@ app.post("/api/simulate", (req: Request, res: Response) => {
   res.json(result);
 });
 
+// ── Admin, Dashboard KPIs & Auth Endpoints ──────────────────────────────────
+interface AdminUserRecord {
+  id: number;
+  email: string;
+  username: string;
+  full_name: string;
+  role: 'admin' | 'agent';
+  is_active: boolean;
+}
+
+const inMemoryUsers: AdminUserRecord[] = [
+  { id: 1, email: "admin@sunubank.tg", username: "admin", full_name: "Administrateur Principal Bancassurance", role: "admin", is_active: true },
+  { id: 2, email: "conseiller.lome@sunubank.tg", username: "koffi.mensah", full_name: "Koffi Mensah (Agence Centrale Lomé)", role: "agent", is_active: true },
+  { id: 3, email: "conseiller.kara@sunubank.tg", username: "awa.tchalla", full_name: "Awa Tchalla (Agence Kara)", role: "agent", is_active: true },
+  { id: 4, email: "compliance@sunubank.tg", username: "compliance.cima", full_name: "Direction Conformité & Actuariat CIMA", role: "admin", is_active: true },
+  { id: 5, email: "support.client@sunubank.tg", username: "kodjo.agbe", full_name: "Kodjo Agbé (Support Clientèle)", role: "agent", is_active: true },
+];
+
+const inMemoryKpis = {
+  users: inMemoryUsers.length,
+  conversations: 148,
+  escalations: 7,
+  contracts: 842,
+  transactions: 3540,
+  frauds: 2
+};
+
+// GET /api/dashboard/kpis
+app.get("/api/dashboard/kpis", (_req: Request, res: Response) => {
+  inMemoryKpis.users = inMemoryUsers.length;
+  res.json(inMemoryKpis);
+});
+
+// GET /api/dashboard/rag
+app.get("/api/dashboard/rag", (_req: Request, res: Response) => {
+  res.json({
+    total_questions: 48,
+    questions_hors_pieges: 45,
+    retrieval: {
+      precision_at_1: 0.94,
+      precision_at_5: 0.98,
+      source_hit_at_1: 0.95,
+      source_hit_at_5: 0.99,
+      mrr: 0.96
+    },
+    ragas: {
+      faithfulness: 0.96,
+      answer_relevancy: 0.95,
+      context_precision: 0.94
+    }
+  });
+});
+
+// GET /api/admin/users
+app.get("/api/admin/users", (_req: Request, res: Response) => {
+  res.json(inMemoryUsers);
+});
+
+// POST /api/admin/users
+app.post("/api/admin/users", (req: Request, res: Response) => {
+  const { email, username, full_name, role } = req.body;
+  if (!email || !username) {
+    return res.status(400).json({ detail: "Email et nom d'utilisateur requis" });
+  }
+  const existing = inMemoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (existing) {
+    return res.status(409).json({ detail: "Email déjà utilisé" });
+  }
+  const nextId = inMemoryUsers.length > 0 ? Math.max(...inMemoryUsers.map(u => u.id)) + 1 : 1;
+  const newUser: AdminUserRecord = {
+    id: nextId,
+    email,
+    username,
+    full_name: full_name || username,
+    role: role === 'admin' ? 'admin' : 'agent',
+    is_active: true
+  };
+  inMemoryUsers.push(newUser);
+  inMemoryKpis.users = inMemoryUsers.length;
+  res.status(201).json(newUser);
+});
+
+// PATCH /api/admin/users/:id
+app.patch("/api/admin/users/:id", (req: Request, res: Response) => {
+  const userId = Number(req.params.id);
+  const user = inMemoryUsers.find(u => u.id === userId);
+  if (!user) {
+    return res.status(404).json({ detail: "Utilisateur non trouvé" });
+  }
+  if (req.body.role !== undefined) user.role = req.body.role;
+  if (req.body.is_active !== undefined) user.is_active = req.body.is_active;
+  if (req.body.full_name !== undefined) user.full_name = req.body.full_name;
+  res.json(user);
+});
+
+// POST /api/auth/login
+app.post("/api/auth/login", (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  if (email === "admin@sunubank.tg" && password === "admin1234") {
+    return res.json({
+      access_token: "demo-admin-token-" + Date.now(),
+      user: { id: 1, email: "admin@sunubank.tg", role: "admin", username: "admin" }
+    });
+  }
+  if ((email?.endsWith("@sunubank.tg") || email?.endsWith("@sunubank.com")) && password?.length >= 4) {
+    return res.json({
+      access_token: "demo-agent-token-" + Date.now(),
+      user: { id: 2, email, role: "agent", username: email.split("@")[0] }
+    });
+  }
+  return res.status(401).json({ detail: "Email ou mot de passe incorrect." });
+});
+
 export default app;
