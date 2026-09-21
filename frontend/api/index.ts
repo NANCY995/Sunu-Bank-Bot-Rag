@@ -1664,23 +1664,79 @@ app.get("/api/dashboard/kpis", (_req: Request, res: Response) => {
   res.json(inMemoryKpis);
 });
 
-// GET /api/dashboard/rag
+// GET /api/dashboard/rag - Métriques officielles du Mémoire (Chapitre IV)
 app.get("/api/dashboard/rag", (_req: Request, res: Response) => {
   res.json({
-    total_questions: 48,
-    questions_hors_pieges: 45,
+    corpus: {
+      total_chunks: 150,
+      chunk_size_tokens: 500,
+      overlap_pct: 15,
+      embedding_model: "all-MiniLM-L6-v2",
+      dimensions: 384
+    },
+    test_suite: {
+      total_queries: 75,
+      categories_count: 8
+    },
     retrieval: {
-      precision_at_1: 0.94,
-      precision_at_5: 0.98,
-      source_hit_at_1: 0.95,
-      source_hit_at_5: 0.99,
-      mrr: 0.96
+      hit_at_1: 0.547,
+      hit_at_3: 0.720,
+      hit_at_5: 0.787,
+      mrr: 0.434,
+      target_hit_at_5: 0.750,
+      status: "VALIDÉ (H1)"
     },
     ragas: {
-      faithfulness: 0.96,
-      answer_relevancy: 0.95,
-      context_precision: 0.94
-    }
+      faithfulness: 0.840,
+      faithfulness_ci_95: [0.802, 0.878],
+      answer_relevancy: 0.812,
+      context_precision: 0.825,
+      context_recall: 0.795,
+      score_global: 0.818,
+      cima_compliance: 0.924,
+      cima_score_5: 4.62,
+      status: "VALIDÉ (H2)"
+    },
+    usability: {
+      sus_score: 82.5,
+      sus_max: 100,
+      sus_grade: "Excellent",
+      tam_perceived_usefulness: 4.55,
+      tam_perceived_ease_of_use: 4.60,
+      status: "VALIDÉ (H3)"
+    },
+    latency: {
+      total_ms: 1257,
+      security_pii_ms: 8,
+      embedding_ms: 14,
+      chromadb_vector_ms: 9,
+      prompt_ms: 4,
+      llm_gemini_ms: 1210,
+      citations_render_ms: 12
+    },
+    hypotheses: [
+      {
+        id: "H1",
+        title: "Recherche Documentaire & Segmentation",
+        indicator: "Hit@5 ≥ 75,0 % | MRR ≥ 0,400",
+        result: "Hit@5 = 78,7 % | MRR = 0,434",
+        status: "CONFIRMÉE & VALIDÉE"
+      },
+      {
+        id: "H2",
+        title: "Fidélité Factuelle RAGAS & Conformité CIMA",
+        indicator: "Faithfulness ≥ 0,800 | Conformité CIMA ≥ 4,0/5",
+        result: "Faithfulness = 0,840 | CIMA = 92,4 % (4,62/5)",
+        status: "CONFIRMÉE & VALIDÉE"
+      },
+      {
+        id: "H3",
+        title: "Usabilité & Acceptabilité Usager (SUS / TAM)",
+        indicator: "Score SUS ≥ 75,0/100 | Utilité TAM ≥ 4,0/5",
+        result: "Score SUS = 82,5/100 (Excellent) | Utilité = 4,55/5",
+        status: "CONFIRMÉE & VALIDÉE"
+      }
+    ]
   });
 });
 

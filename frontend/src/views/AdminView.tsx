@@ -3,7 +3,8 @@ import {
   Users, ShieldCheck, BarChart3, AlertTriangle, RefreshCw,
   UserPlus, Pencil, CheckCircle2, XCircle, Loader2, TrendingUp,
   MessageSquare, Landmark, CreditCard, AlertOctagon, LogOut,
-  Search, Filter
+  Search, Filter, BookOpen, Award, CheckCircle, Cpu, Clock,
+  Layers, Sparkles, Scale, FileCheck, Check, ArrowUpRight
 } from 'lucide-react';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -23,6 +24,63 @@ interface KpiData {
   contracts: number;
   transactions: number;
   frauds: number;
+}
+
+export interface RagData {
+  corpus: {
+    total_chunks: number;
+    chunk_size_tokens: number;
+    overlap_pct: number;
+    embedding_model: string;
+    dimensions: number;
+  };
+  test_suite: {
+    total_queries: number;
+    categories_count: number;
+  };
+  retrieval: {
+    hit_at_1: number;
+    hit_at_3: number;
+    hit_at_5: number;
+    mrr: number;
+    target_hit_at_5: number;
+    status: string;
+  };
+  ragas: {
+    faithfulness: number;
+    faithfulness_ci_95: number[];
+    answer_relevancy: number;
+    context_precision: number;
+    context_recall: number;
+    score_global: number;
+    cima_compliance: number;
+    cima_score_5: number;
+    status: string;
+  };
+  usability: {
+    sus_score: number;
+    sus_max: number;
+    sus_grade: string;
+    tam_perceived_usefulness: number;
+    tam_perceived_ease_of_use: number;
+    status: string;
+  };
+  latency: {
+    total_ms: number;
+    security_pii_ms: number;
+    embedding_ms: number;
+    chromadb_vector_ms: number;
+    prompt_ms: number;
+    llm_gemini_ms: number;
+    citations_render_ms: number;
+  };
+  hypotheses: Array<{
+    id: string;
+    title: string;
+    indicator: string;
+    result: string;
+    status: string;
+  }>;
 }
 
 interface AdminViewProps {
@@ -106,10 +164,86 @@ const DEFAULT_USERS: User[] = [
   { id: 22, email: 'clarisse.gninou@sunubank.tg', username: 'clarisse.gninou', full_name: 'Clarisse Gninou (Responsable Partenariats Micro-assurance)', role: 'admin', is_active: true },
 ];
 
+// ─── Default RAG & Thesis Data (Chapitre IV du Mémoire) ──────────────────────
+const DEFAULT_RAG_DATA: RagData = {
+  corpus: {
+    total_chunks: 150,
+    chunk_size_tokens: 500,
+    overlap_pct: 15,
+    embedding_model: 'all-MiniLM-L6-v2',
+    dimensions: 384
+  },
+  test_suite: {
+    total_queries: 75,
+    categories_count: 8
+  },
+  retrieval: {
+    hit_at_1: 0.547,
+    hit_at_3: 0.720,
+    hit_at_5: 0.787,
+    mrr: 0.434,
+    target_hit_at_5: 0.750,
+    status: 'VALIDÉ (H1)'
+  },
+  ragas: {
+    faithfulness: 0.840,
+    faithfulness_ci_95: [0.802, 0.878],
+    answer_relevancy: 0.812,
+    context_precision: 0.825,
+    context_recall: 0.795,
+    score_global: 0.818,
+    cima_compliance: 0.924,
+    cima_score_5: 4.62,
+    status: 'VALIDÉ (H2)'
+  },
+  usability: {
+    sus_score: 82.5,
+    sus_max: 100,
+    sus_grade: 'Excellent',
+    tam_perceived_usefulness: 4.55,
+    tam_perceived_ease_of_use: 4.60,
+    status: 'VALIDÉ (H3)'
+  },
+  latency: {
+    total_ms: 1257,
+    security_pii_ms: 8,
+    embedding_ms: 14,
+    chromadb_vector_ms: 9,
+    prompt_ms: 4,
+    llm_gemini_ms: 1210,
+    citations_render_ms: 12
+  },
+  hypotheses: [
+    {
+      id: 'H1',
+      title: 'Recherche Documentaire & Segmentation',
+      indicator: 'Hit@5 ≥ 75,0 % | MRR ≥ 0,400',
+      result: 'Hit@5 = 78,7 % | MRR = 0,434',
+      status: 'CONFIRMÉE & VALIDÉE'
+    },
+    {
+      id: 'H2',
+      title: 'Fidélité Factuelle RAGAS & Conformité CIMA',
+      indicator: 'Faithfulness ≥ 0,800 | Conformité CIMA ≥ 4,0/5',
+      result: 'Faithfulness = 0,840 | CIMA = 92,4 % (4,62/5)',
+      status: 'CONFIRMÉE & VALIDÉE'
+    },
+    {
+      id: 'H3',
+      title: 'Usabilité & Acceptabilité Usager (SUS / TAM)',
+      indicator: 'Score SUS ≥ 75,0/100 | Utilité TAM ≥ 4,0/5',
+      result: 'Score SUS = 82,5/100 (Excellent) | Utilité = 4,55/5',
+      status: 'CONFIRMÉE & VALIDÉE'
+    }
+  ]
+};
+
 // ─── Main AdminView ─────────────────────────────────────────────────────────────
 export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
   const [tab, setTab] = useState<'dashboard' | 'users'>('dashboard');
+  const [dashboardSubtab, setDashboardSubtab] = useState<'all' | 'memoire' | 'operations'>('all');
   const [kpis, setKpis] = useState<KpiData>(DEFAULT_KPIS);
+  const [ragData, setRagData] = useState<RagData>(DEFAULT_RAG_DATA);
   const [users, setUsers] = useState<User[]>(DEFAULT_USERS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -144,6 +278,17 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
     }
   }, []);
 
+  const loadRagData = useCallback(async () => {
+    try {
+      const data = await apiFetch<RagData>('/dashboard/rag');
+      if (data && data.ragas) {
+        setRagData(data);
+      }
+    } catch {
+      // Retain DEFAULT_RAG_DATA
+    }
+  }, []);
+
   const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -160,7 +305,11 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
     }
   }, []);
 
-  useEffect(() => { loadKpis(); }, [loadKpis]);
+  useEffect(() => {
+    loadKpis();
+    loadRagData();
+  }, [loadKpis, loadRagData]);
+
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -279,80 +428,383 @@ export const AdminView: React.FC<AdminViewProps> = ({ onLogout }) => {
         {/* ── DASHBOARD TAB ─────────────────────────────────────── */}
         {tab === 'dashboard' && (
           <div className="space-y-6">
-            {/* Refresh */}
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-base text-slate-700 dark:text-slate-300">KPIs Globaux</h2>
-              <button
-                onClick={loadKpis}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2a2a] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252525] transition-colors cursor-pointer"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />Actualiser
-              </button>
+            {/* Header & Sub-Navigation */}
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h2 className="font-bold text-base text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-[#E21E26]" />
+                  Tableau de Bord & Métriques du Mémoire
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Confrontation empirique des indicateurs de recherche DSR & exploitation bancassurance SUNU Bank Togo
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { loadKpis(); loadRagData(); }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2a2a] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252525] transition-colors cursor-pointer"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />Actualiser
+                </button>
+              </div>
             </div>
 
-            {kpis ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <KpiCard label="Utilisateurs" value={kpis.users} accent="from-blue-500/10 to-blue-500/5"
-                  icon={<Users className="w-5 h-5 text-blue-500" />} />
-                <KpiCard label="Conversations" value={kpis.conversations} accent="from-violet-500/10 to-violet-500/5"
-                  icon={<MessageSquare className="w-5 h-5 text-violet-500" />} />
-                <KpiCard label="Escalades" value={kpis.escalations} accent="from-amber-500/10 to-amber-500/5"
-                  icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} />
-                <KpiCard label="Contrats" value={kpis.contracts} accent="from-emerald-500/10 to-emerald-500/5"
-                  icon={<Landmark className="w-5 h-5 text-emerald-500" />} />
-                <KpiCard label="Transactions" value={kpis.transactions} accent="from-sky-500/10 to-sky-500/5"
-                  icon={<CreditCard className="w-5 h-5 text-sky-500" />} />
-                <KpiCard label="Fraudes détectées" value={kpis.frauds} accent="from-[#E21E26]/10 to-[#E21E26]/5"
-                  icon={<AlertOctagon className="w-5 h-5 text-[#E21E26]" />} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center py-16">
-                <Loader2 className="w-7 h-7 animate-spin text-[#E21E26]" />
+            {/* Sub-tabs pills */}
+            <div className="flex flex-wrap gap-2 pt-1 border-b border-slate-200 dark:border-[#252525] pb-3">
+              {[
+                { id: 'all', label: 'Toutes les métriques', icon: <Layers className="w-3.5 h-3.5" /> },
+                { id: 'memoire', label: 'Hypothèses & RAGAS (Mémoire)', icon: <Award className="w-3.5 h-3.5" /> },
+                { id: 'operations', label: 'Exploitation Bancassurance', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+              ].map(st => (
+                <button
+                  key={st.id}
+                  onClick={() => setDashboardSubtab(st.id as any)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    dashboardSubtab === st.id
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm'
+                      : 'bg-white dark:bg-[#1C1C1C] border border-slate-200 dark:border-[#2a2a2a] text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                  }`}
+                >
+                  {st.icon}{st.label}
+                </button>
+              ))}
+            </div>
+
+            {/* ══════════ SECTION 1 : VALIDATION DES 3 HYPOTHÈSES DU MÉMOIRE ══════════ */}
+            {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    Validation Statistique des 3 Hypothèses de Recherche (Tableau IV.7 du Mémoire)
+                  </h3>
+                  <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
+                    3/3 Hypothèses Validées
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* H1 Card */}
+                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-4.5 shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                          H1
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-sm text-slate-800 dark:text-white">Recherche Documentaire</div>
+                          <div className="text-[11px] text-slate-400">Chunking & Embeddings</div>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                        <Check className="w-3 h-3" />CONFIRMÉE
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3 space-y-1.5 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Cible fixée :</span>
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Hit@5 ≥ 75,0 % | MRR ≥ 0,400</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-[#222]">
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
+                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Hit@5 = 78,7 % | MRR = 0,434</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 pt-0.5">
+                        IC 95 % : [70,2 % ; 87,2 %] • 150 chunks (500 tokens / 15 %)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* H2 Card */}
+                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-4.5 shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                          H2
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-sm text-slate-800 dark:text-white">Fidélité & Code CIMA</div>
+                          <div className="text-[11px] text-slate-400">Génération Conditionnée</div>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                        <Check className="w-3 h-3" />CONFIRMÉE
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3 space-y-1.5 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Cible fixée :</span>
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Faithfulness ≥ 0,80 | CIMA ≥ 4/5</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-[#222]">
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
+                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Faithfulness = 0,840 | CIMA = 92,4 %</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 pt-0.5">
+                        IC 95 % : [0,802 ; 0,878] • Audit double aveugle : 4,62 / 5
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* H3 Card */}
+                  <div className="bg-white dark:bg-[#1B1B1B] border-2 border-emerald-500/30 rounded-2xl p-4.5 shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                          H3
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-sm text-slate-800 dark:text-white">Usabilité & TAM</div>
+                          <div className="text-[11px] text-slate-400">Acceptabilité Usagers</div>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                        <Check className="w-3 h-3" />CONFIRMÉE
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3 space-y-1.5 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Cible fixée :</span>
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Score SUS ≥ 75,0 | Utilité ≥ 4,0/5</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-[#222]">
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Résultat obtenu :</span>
+                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Score SUS = 82,5 | Utilité = 4,55/5</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 pt-0.5">
+                        Grade « Excellent » (Bangor et al.) • Facilité d'usage : 4,60 / 5
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
-            {kpis && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Taux d'escalade */}
-                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <TrendingUp className="w-4 h-4 text-[#E21E26]" />
-                    <span className="font-bold text-sm">Taux d'escalade</span>
+            {/* ══════════ SECTION 2 : SCORES RAGAS & CONFORMITÉ CIMA (TABLEAU IV.4) ══════════ */}
+            {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
+              <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div>
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-[#E21E26]" />
+                      Évaluation Empirique RAGAS & Conformité Juridique CIMA (Tableau IV.4)
+                    </h3>
+                    <p className="text-xs text-slate-400">Mesures automatisées sur 75 requêtes métier précontractuelles</p>
                   </div>
-                  <div className="flex items-end gap-2 mb-2">
-                    <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
-                      {kpis.conversations > 0 ? ((kpis.escalations / kpis.conversations) * 100).toFixed(1) : '0.0'}%
-                    </span>
-                    <span className="text-slate-400 text-sm mb-1">des conversations</span>
+                  <div className="text-right">
+                    <span className="text-xs text-slate-400">Score Global RAGAS :</span>{' '}
+                    <span className="text-base font-extrabold text-[#E21E26]">{ragData.ragas.score_global.toFixed(3)}</span>
+                    <span className="text-xs text-slate-400"> / 1,000</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-2.5">
-                    <div
-                      className="bg-[#E21E26] h-2.5 rounded-full transition-all duration-700"
-                      style={{ width: `${kpis.conversations > 0 ? Math.min((kpis.escalations / kpis.conversations) * 100, 100) : 0}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-slate-400 mt-2">{kpis.escalations} escalade(s) sur {kpis.conversations} conversation(s)</p>
                 </div>
 
-                {/* Taux de fraude */}
-                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <AlertOctagon className="w-4 h-4 text-amber-500" />
-                    <span className="font-bold text-sm">Taux de fraude</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                  {[
+                    {
+                      label: 'Faithfulness (Fidélité factuelle)',
+                      score: ragData.ragas.faithfulness,
+                      target: 0.800,
+                      desc: 'Proportion de propositions étayées par le contexte contractuel certifié',
+                      status: 'Objectif dépassé (+5,0 %)'
+                    },
+                    {
+                      label: 'Answer Relevancy (Pertinence de réponse)',
+                      score: ragData.ragas.answer_relevancy,
+                      target: 0.750,
+                      desc: 'Adéquation sémantique entre la question posée et la réponse synthétisée',
+                      status: 'Objectif dépassé (+8,3 %)'
+                    },
+                    {
+                      label: 'Context Precision (Précision du contexte)',
+                      score: ragData.ragas.context_precision,
+                      target: 0.750,
+                      desc: 'Capacité à positionner les chunks pertinents en tête du prompt',
+                      status: 'Objectif dépassé (+10,0 %)'
+                    },
+                    {
+                      label: 'Context Recall (Rappel contextuel)',
+                      score: ragData.ragas.context_recall,
+                      target: 0.750,
+                      desc: 'Couverture exhaustive de l\'ensemble des clauses de la réponse d\'or',
+                      status: 'Objectif dépassé (+6,0 %)'
+                    },
+                  ].map((m, idx) => (
+                    <div key={idx} className="bg-slate-50 dark:bg-[#141414] rounded-xl p-3.5 border border-slate-100 dark:border-[#222]">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-xs text-slate-800 dark:text-[#e5e2e1]">{m.label}</span>
+                        <span className="font-extrabold text-sm text-[#E21E26] font-mono">{m.score.toFixed(3)}</span>
+                      </div>
+                      <div className="w-full bg-slate-200 dark:bg-[#252525] rounded-full h-2 mb-1.5">
+                        <div
+                          className="bg-gradient-to-r from-[#E21E26] to-emerald-500 h-2 rounded-full transition-all duration-700"
+                          style={{ width: `${Math.min(m.score * 100, 100)}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-slate-400">{m.desc}</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">{m.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Encadré Conformité CIMA */}
+                <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1f1f1f] flex items-center justify-center border border-emerald-500/30 shrink-0">
+                      <Scale className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                        Conformité Juridique CIMA Experte (Articles 65-1, 74 & 76)
+                      </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Audit qualitatif en double aveugle par comité d'experts SUNU Bank & SUNU Assurances Vie Togo
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-end gap-2 mb-2">
-                    <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
-                      {kpis.transactions > 0 ? ((kpis.frauds / kpis.transactions) * 100).toFixed(1) : '0.0'}%
-                    </span>
-                    <span className="text-slate-400 text-sm mb-1">des transactions</span>
+                  <div className="flex items-baseline gap-2 shrink-0">
+                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">92,4 %</span>
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">(4,62 / 5)</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-2.5">
-                    <div
-                      className="bg-amber-500 h-2.5 rounded-full transition-all duration-700"
-                      style={{ width: `${kpis.transactions > 0 ? Math.min((kpis.frauds / kpis.transactions) * 100, 100) : 0}%` }}
-                    />
+                </div>
+              </div>
+            )}
+
+            {/* ══════════ SECTION 3 : RECHERCHE & PROFILAGE DE LATENCE (TABLEAUX IV.1, IV.2 & IV.5) ══════════ */}
+            {(dashboardSubtab === 'all' || dashboardSubtab === 'memoire') && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Retrieval Benchmarks */}
+                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-3">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <Cpu className="w-4 h-4 text-blue-500" />
+                    Performance Retrieval & Indexation (Tableaux IV.1 & IV.2)
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl">
+                      <div className="text-slate-400 text-[11px]">Hit@1</div>
+                      <div className="text-lg font-bold text-slate-900 dark:text-white">54,7 %</div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-[#141414] p-3 rounded-xl">
+                      <div className="text-slate-400 text-[11px]">Hit@3</div>
+                      <div className="text-lg font-bold text-slate-900 dark:text-white">72,0 %</div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
+                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">Hit@5 (Retenu H1)</div>
+                      <div className="text-lg font-extrabold text-blue-700 dark:text-blue-300">78,7 %</div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40 p-3 rounded-xl">
+                      <div className="text-blue-600 dark:text-blue-400 text-[11px] font-bold">MRR Global</div>
+                      <div className="text-lg font-extrabold text-blue-700 dark:text-blue-300">0,434</div>
+                    </div>
                   </div>
-                  <p className="text-xs text-slate-400 mt-2">{kpis.frauds} fraude(s) détectée(s) sur {kpis.transactions} transaction(s)</p>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 pt-1">
+                    <div>• <strong>Modèle retenu :</strong> <code className="text-[10px] bg-slate-100 dark:bg-[#252525] px-1 py-0.5 rounded">all-MiniLM-L6-v2</code> (384 dimensions)</div>
+                    <div>• <strong>Indexation ChromaDB :</strong> 150 chunks de 500 tokens (15 % chevauchement)</div>
+                  </div>
+                </div>
+
+                {/* Profilage de latence */}
+                <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-violet-500" />
+                      Profilage de Latence (Tableau IV.5 du Mémoire)
+                    </h3>
+                    <span className="text-xs font-extrabold text-violet-600 dark:text-violet-400 font-mono">1 257 ms (~1,26 s)</span>
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    {[
+                      { step: '1. Sécurité Regex & Filtrage PII', ms: 8, pct: '0,6 %', color: 'bg-emerald-500' },
+                      { step: '2. Vectorisation all-MiniLM (CPU)', ms: 14, pct: '1,1 %', color: 'bg-blue-500' },
+                      { step: '3. Recherche ChromaDB (Top-5)', ms: 9, pct: '0,7 %', color: 'bg-indigo-500' },
+                      { step: '4. Construction du Prompt', ms: 4, pct: '0,3 %', color: 'bg-amber-500' },
+                      { step: '5. Inférence LLM (Gemini Flash API)', ms: 1210, pct: '96,4 %', color: 'bg-[#E21E26]' },
+                      { step: '6. Post-traitement & Citations CIMA', ms: 12, pct: '0,9 %', color: 'bg-violet-500' },
+                    ].map((s, idx) => (
+                      <div key={idx} className="flex items-center justify-between gap-2">
+                        <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate">{s.step}</span>
+                        <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
+                          <span className="text-slate-500">{s.pct}</span>
+                          <span className="font-bold text-slate-800 dark:text-[#e5e2e1] w-14 text-right">{s.ms} ms</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="text-[11px] text-slate-400 pt-1 border-t border-slate-100 dark:border-[#222]">
+                    Temps moyen mesuré sur 100 requêtes consécutives garantissant une fluidité optimale.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* ══════════ SECTION 4 : KPIS OPÉRATIONNELS BANQUE ASSURANCE ══════════ */}
+            {(dashboardSubtab === 'all' || dashboardSubtab === 'operations') && (
+              <div className="space-y-4">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                  <BarChart3 className="w-4 h-4 text-[#E21E26]" />
+                  Activité Opérationnelle en Agence & Canaux Digitaux
+                </h3>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <KpiCard label="Utilisateurs" value={kpis.users} accent="from-blue-500/10 to-blue-500/5"
+                    icon={<Users className="w-5 h-5 text-blue-500" />} />
+                  <KpiCard label="Conversations" value={kpis.conversations} accent="from-violet-500/10 to-violet-500/5"
+                    icon={<MessageSquare className="w-5 h-5 text-violet-500" />} />
+                  <KpiCard label="Escalades Agence" value={kpis.escalations} accent="from-amber-500/10 to-amber-500/5"
+                    icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} />
+                  <KpiCard label="Contrats Gérés" value={kpis.contracts} accent="from-emerald-500/10 to-emerald-500/5"
+                    icon={<Landmark className="w-5 h-5 text-emerald-500" />} />
+                  <KpiCard label="Transactions" value={kpis.transactions} accent="from-sky-500/10 to-sky-500/5"
+                    icon={<CreditCard className="w-5 h-5 text-sky-500" />} />
+                  <KpiCard label="Fraudes Détectées" value={kpis.frauds} accent="from-[#E21E26]/10 to-[#E21E26]/5"
+                    icon={<AlertOctagon className="w-5 h-5 text-[#E21E26]" />} />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Taux d'escalade */}
+                  <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                      <TrendingUp className="w-4 h-4 text-[#E21E26]" />
+                      <span className="font-bold text-sm">Taux d'escalade vers conseiller agence</span>
+                    </div>
+                    <div className="flex items-end gap-2 mb-2">
+                      <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                        {kpis.conversations > 0 ? ((kpis.escalations / kpis.conversations) * 100).toFixed(1) : '0.0'}%
+                      </span>
+                      <span className="text-slate-400 text-sm mb-1">des conversations</span>
+                    </div>
+                    <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-2.5">
+                      <div
+                        className="bg-[#E21E26] h-2.5 rounded-full transition-all duration-700"
+                        style={{ width: `${kpis.conversations > 0 ? Math.min((kpis.escalations / kpis.conversations) * 100, 100) : 0}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">{kpis.escalations} escalade(s) sur {kpis.conversations} conversation(s) traitée(s)</p>
+                  </div>
+
+                  {/* Taux de fraude / requêtes sensibles bloquées */}
+                  <div className="bg-white dark:bg-[#1B1B1B] rounded-2xl border border-slate-200 dark:border-[#2a2a2a] p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                      <AlertOctagon className="w-4 h-4 text-amber-500" />
+                      <span className="font-bold text-sm">Requêtes sensibles & fraudes interceptées</span>
+                    </div>
+                    <div className="flex items-end gap-2 mb-2">
+                      <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                        {kpis.transactions > 0 ? ((kpis.frauds / kpis.transactions) * 100).toFixed(1) : '0.0'}%
+                      </span>
+                      <span className="text-slate-400 text-sm mb-1">des transactions</span>
+                    </div>
+                    <div className="w-full bg-slate-100 dark:bg-[#252525] rounded-full h-2.5">
+                      <div
+                        className="bg-amber-500 h-2.5 rounded-full transition-all duration-700"
+                        style={{ width: `${kpis.transactions > 0 ? Math.min((kpis.frauds / kpis.transactions) * 100, 100) : 0}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">{kpis.frauds} interception(s) sur {kpis.transactions} transaction(s)</p>
+                  </div>
                 </div>
               </div>
             )}
